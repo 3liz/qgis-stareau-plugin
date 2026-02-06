@@ -40,7 +40,7 @@ CREATE TABLE "stareau_aep".aep_canalisation (
   cote_debut float4 NULL, -- cote de la génératrice superieure
   cote_fin float4 NULL, -- cote génératrice supérieure
   -- id_aep_reservoir : lien vers réservoir créer dans le fichier 200
-  CONSTRAINT pk_aep_canalisation PRIMARY KEY (id_canalisation)
+  CONSTRAINT pk_aep_canalisation PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 COMMENT ON TABLE "stareau_aep".aep_canalisation IS 'assemblage de tuyau, de leurs pièces et des ouvrages qui permet le transport des eaux entre deux points';
@@ -70,7 +70,7 @@ CREATE TABLE "stareau_aep".aep_captage (
   ref_dup text NULL, -- référence arrêté autorisation
   ref_bss text NULL, -- référence Banque Sous Sol -brgm
   debit_max_autorise text NULL,-- Débit max autorisé mentionné dans la DUP, accompagné de son unité
-  CONSTRAINT pk_aep_captage PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_captage PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_aep".aep_captage IS 'Ouvrage de prélèvement exploitant une ressource en eau, que ce soit en surface (prise d''eau en rivière) ou dans le sous-sol (forage ou puits atteignant un aquifère';
@@ -100,7 +100,7 @@ CREATE TABLE "stareau_aep".aep_reservoir (
   cote_radier float4 NULL, -- cote NGF du fond de cuve la plus basse
   cote_trop_plein float4 NULL, -- cote NGF du trop-plein
   telegestion text NOT NULL,-- >présence d'une gestion à distance
-  CONSTRAINT pk_aep_reservoir PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_reservoir PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
 COMMENT ON TABLE "stareau_aep".aep_reservoir IS 'installation destinée au stockage de l''eau';
@@ -128,7 +128,7 @@ CREATE TABLE "stareau_aep".aep_traitement (
   capacite float4 NULL, -- capacité de traitement m3/j
   debit_ref float4 NULL, -- débit de référence m3/j
   telegestion text NOT NULL, -- >présence d'une gestion à distance
-  CONSTRAINT pk_aep_traitement PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_traitement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_aep".aep_traitement IS 'ensemble des installations chargées de traiter les eaux brutes en vue de leur potabilisation et distribution';
@@ -155,7 +155,7 @@ CREATE TABLE stareau_aep.aep_point_mesure (
   marque text NULL, -- marque compteur
   numero_serie text NULL, -- numéro série
   telegestion text NOT NULL,-- >présence d'une gestion à distance
-  CONSTRAINT pk_aep_point_mesure PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_point_mesure PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
 COMMENT ON TABLE stareau_aep.aep_point_mesure IS 'table des point de mesure (compteurs) sur réseaux';
@@ -182,7 +182,7 @@ CREATE TABLE "stareau_aep".aep_vanne (
   blocage text NOT NULL, --vanne bloquée
   motorisation text NOT NULL, -- motorisation
   telegestion text NOT NULL,-- Présence d'une gestion à distance
-  CONSTRAINT pk_aep_vanne PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_vanne PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_aep".aep_vanne IS 'Appareillage capable d''intercepter ou laisser libre le passage de l''eau dans le réseau, hors régulation.';
@@ -212,7 +212,7 @@ CREATE TABLE "stareau_aep".aep_regulation (
   diametre float4 NULL, -- diametre nominal
   annee_fabrication int2 NULL, -- année de fabrication
   telegestion text NOT NULL,-- telegestion/telereleve*
-  CONSTRAINT pk_aep_regulation PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_regulation PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 
@@ -238,7 +238,7 @@ CREATE TABLE "stareau_aep".aep_pompage (
   nb_pompes int2 null default 1, -- nombre de pompes
   capacite float4 NULL, -- capacite nominale de pompage m3/j
   telegestion text NOT NULL,-- Présence d'une gestion à distance
-  CONSTRAINT pk_aep_pompage PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_pompage PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_aep".aep_pompage IS 'ensemble des dispositifs permettant d''aspirer, de refouler ou de comprimer des eaux';
@@ -258,7 +258,7 @@ CREATE TABLE "stareau_aep".aep_appareillage (
   type_appareillage text NOT NULL, -- >type d'appariellage
   diametre float4 NULL, -- diametre nominal
   telegestion text NOT NULL, -- Présence d'une gestion à distance
-  CONSTRAINT pk_noeud_reseau PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_noeud_reseau PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_aep".aep_appareillage IS 'Équipements divers sur le réseau d''eau potable non pris en compte dans les autres classes d''entités';
@@ -273,17 +273,19 @@ COMMENT ON COLUMN "stareau_aep".aep_appareillage.telegestion IS '*Présence d''u
 --STATION D'ALERTE (hors topologie)
 
 CREATE TABLE stareau_aep.aep_station_alerte (
+  fid INT GENERATED BY DEFAULT AS IDENTITY, -- feature id entier correspondant au modèle SIG
   id_aep_station_alerte TEXT NULL, -- identifiant
   nom_usuel text NULL, -- nom d'usage
   telegestion text NOT NULL,
   geom public.geometry(point, 2154) NOT NULL,
-  CONSTRAINT pk_aep_station_alerte PRIMARY KEY (id_aep_station_alerte)
+  CONSTRAINT pk_aep_station_alerte PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
 COMMENT ON TABLE stareau_aep.aep_station_alerte IS 'Équipement permettant de déclencher une alerte en cas de pollution ou de dépassement de seuils';
 
 -- Column comments
 
+COMMENT ON COLUMN stareau_aep.aep_station_alerte.fid IS 'identifiant SIG';
 COMMENT ON COLUMN stareau_aep.aep_station_alerte.id_aep_station_alerte IS 'identifiant métier';
 COMMENT ON COLUMN stareau_aep.aep_station_alerte.nom_usuel IS 'nom d''usage';
 COMMENT ON COLUMN stareau_aep.aep_station_alerte.telegestion IS '*Présence d''une gestion à distance*';
@@ -293,7 +295,7 @@ COMMENT ON COLUMN stareau_aep.aep_station_alerte.telegestion IS '*Présence d''u
 CREATE TABLE "stareau_aep".aep_piece (
   id_aep_piece TEXT NULL,
   type_piece text NOT NULL, -- > type de pièce
-  CONSTRAINT pk_aep_piece PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_piece PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_aep".aep_piece IS 'Pièces sur canalisation principale';
@@ -306,19 +308,21 @@ COMMENT ON COLUMN "stareau_aep".aep_piece.type_piece IS '*type de pièce*';
 --- PIECE (HORS TOPOLOGIE)
 
 CREATE TABLE "stareau_aep".aep_piece_hors_topo (
+  fid INT GENERATED BY DEFAULT AS IDENTITY, -- feature id entier correspondant au modèle SIG
   id_aep_pieceht text NOT NULL DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
   --id_aep_pieceht INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_aep_pieceht TEXT NOT NULL,  -- ou INT -- pour personnalisation ou récupération de l'id existant
   type_piece text NOT NULL, -- > type de pièce
   ref_canalisation text NULL, -- référence à la conduite de rattachement
   geom public.geometry(point, 2154) NOT NULL,
-  CONSTRAINT aep_piece_ht_pk PRIMARY KEY (id_aep_pieceht)
+  CONSTRAINT aep_piece_ht_pk PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
 COMMENT ON TABLE "stareau_aep".aep_piece_hors_topo IS 'Pièces sur canalisations principales HORS TOPOLOGIE (pas sur un noeud réseau)';
 
 -- Column comments
 
+COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.fid IS 'identifiant SIG';
 COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.id_aep_pieceht IS 'identifiant métier';
 COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.type_piece IS '*type de pièce*';
 COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.ref_canalisation  IS 'référence à la conduite de rattachement(id_canalisation)';

@@ -36,7 +36,7 @@ CREATE TABLE "stareau_aep_brcht".aep_canalisation_branchement (
   protection_cathodique text NULL, -- >presence protection cathodique
   cote_debut float4 NULL, -- cote de la génératrice superieure
   cote_fin float4 NULL, -- cote génératrice supérieure
-  CONSTRAINT pk_aep_cana_brcht PRIMARY KEY (id_canalisation)
+  CONSTRAINT pk_aep_cana_brcht PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 COMMENT ON TABLE "stareau_aep_brcht".aep_canalisation_branchement IS 'conduite et accessoire mis en oeuvre pour amener l''eau du réseau de desserte jusqu''au point de livraison à l''usager, à l''exception des conduites et accessoires privés des immeubles collectifs';
@@ -56,7 +56,7 @@ CREATE TABLE "stareau_aep_brcht".aep_point_livraison (
   type_usager text NOT NULL, -- >type usager desservis
   ref_externe text NULL, -- référence externe (sdis, exploitation...)
   ref_client text NULL, -- référence client
-  CONSTRAINT pk_aep_point_livraison PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_point_livraison PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_aep_brcht".aep_point_livraison IS 'point de livraison';
@@ -75,7 +75,7 @@ CREATE TABLE stareau_aep_brcht.aep_raccord (
   id_raccord text null,
 --type_raccord text NULL, -- > type de raccord
   ref_canalisation text NOT NULL, -- lien vers canalisation
-  CONSTRAINT pk_aep_raccord_brcht PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_raccord_brcht PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
 COMMENT ON TABLE stareau_aep_brcht.aep_raccord IS 'Point de raccordement entre le branchement et la canalisation (non sécant)';
@@ -91,7 +91,7 @@ COMMENT ON COLUMN stareau_aep_brcht.aep_raccord.ref_canalisation IS 'lien vers c
 CREATE TABLE stareau_aep_brcht.aep_piece_branchement (
   id_piece_branchement text NULL,
   type_piece_branchement text NOT NULL, -- >type de pièce
-  CONSTRAINT pk_aep_piece_brcht PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_piece_brcht PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
 COMMENT ON TABLE stareau_aep_brcht.aep_piece_branchement IS 'Pièces de branchement qui impactent le modèle hydraulique, et donc associées à des noeuds';
@@ -108,7 +108,7 @@ CREATE TABLE stareau_aep_brcht.aep_vanne_branchement (
   diametre float4 NULL, -- diamètre nominale de la vanne
   etat_ouverture text NOT NULL, -- >état d'ouverture
   sens_fermeture text NOT NULL, -- >sens de fermeture
-  CONSTRAINT pk_aep_vanne_brcht PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_aep_vanne_brcht PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
 COMMENT ON TABLE stareau_aep_brcht.aep_vanne_branchement IS 'élément de coupure sur le branchement';
@@ -119,5 +119,3 @@ COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.type_vanne_branchement
 COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.diametre IS 'diamètre nominal de la vanne';
 COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.sens_fermeture IS '*sens de fermeture*';
 COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.etat_ouverture IS '*état d''ouverture*';
-
-

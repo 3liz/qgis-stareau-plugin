@@ -33,7 +33,7 @@ CREATE TABLE "stareau_ass_brcht".ass_canalisation_branchement (
   contenu_canalisation text NOT NULL,
   altitude_fil_eau_amont float4 NULL, -- altitude fil d'eau amont
   altitude_fil_eau_aval float4 NULL, -- altitude fil d'eau aval
-  CONSTRAINT pk_ass_cana_brcht PRIMARY KEY (id_canalisation)
+  CONSTRAINT pk_ass_cana_brcht PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 COMMENT ON TABLE "stareau_ass_brcht".ass_canalisation_branchement IS 'Ensemble des éléments physiques assurant le raccordement entre le point de collecte et le réseau d’assainissement';
@@ -58,7 +58,7 @@ CREATE TABLE "stareau_ass_brcht".ass_point_collecte (
   z_tampon float4 NULL, -- z tampon
   z_radier float4 NULL, -- z radier
   profondeur float4 NULL, -- profondeur mesurée ou calculée
-  CONSTRAINT pk_ass_point_collecte PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_ass_point_collecte PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".dimension,"stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_ass_brcht".ass_point_collecte IS 'Interface physique fixe en amont de laquelle le service public de l’eau n’a plus la responsabilité légale pleine et entière du service ou des infrastructures';
@@ -79,7 +79,7 @@ CREATE TABLE "stareau_ass_brcht".ass_raccord (
   id_ass_raccord TEXT NULL,
   type_raccord text NOT NULL, -- type de raccord
   ref_canalisation text NULL, -- identifiant de la cana principale
-  CONSTRAINT pk_ass_raccord_brcht PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_ass_raccord_brcht PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
 COMMENT ON TABLE "stareau_ass_brcht".ass_raccord IS 'pièce de raccordement sur la conduite principale';
@@ -97,7 +97,7 @@ CREATE TABLE stareau_ass_brcht.ass_engouffrement_point (
   type_engouffrement text NOT NULL, -- >type d'engouffrement
   decantation text NOT NULL, -- >présence décantation
   siphon text NOT NULL, -- > présence d'un siphon
-  CONSTRAINT pk_ass_engouf_pt PRIMARY KEY (id_noeud_reseau)
+  CONSTRAINT pk_ass_engouf_pt PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
 
@@ -115,7 +115,7 @@ CREATE TABLE stareau_ass_brcht.ass_engouffrement_ligne (
   type_engouffrement text NOT NULL, -- >type d'engouffrement
   decantation text NOT NULL, -- >présence décantation
   siphon text NOT NULL, -- > présence d'un siphon
-  CONSTRAINT pk_ass_engouf_ln PRIMARY KEY (id_canalisation)
+  CONSTRAINT pk_ass_engouf_ln PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 
@@ -132,7 +132,7 @@ CREATE TABLE stareau_ass_brcht.ass_engouffrement_surface (
   type_engouffrement text NOT NULL, -- >type d'engouffrement
   decantation text NOT NULL, -- >présence décantation
   siphon text NOT NULL, -- > présence d'un siphon
-  CONSTRAINT pk_ass_engouf_sf PRIMARY KEY (id_emprise)
+  CONSTRAINT pk_ass_engouf_sf PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise,"stareau_principale".dimension);
 
