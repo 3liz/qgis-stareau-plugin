@@ -1,0 +1,30 @@
+[general]
+name=stareau
+qgisMinimumVersion=3.34
+description=stareau
+
+# Done by qgis-plugin-ci
+version=master
+changelog=
+commitNumber=
+commitSha1=
+dateTime=
+# End of qgis-plugin-ci
+
+author=3Liz
+email=info@3liz.com
+tags=stareau
+about=stareau
+icon=resources/icons/icon.png
+category=
+tracker=https://github.com/3liz/qgis-stareau-plugin
+repository=https://github.com/3liz/qgis-stareau-plugin
+homepage=https://github.com/3liz/qgis-stareau-plugin
+experimental=True
+deprecated=False
+
+hasProcessingProvider=True
+
+[stareau]
+schemaVersion=1
+schemaName=stareau
