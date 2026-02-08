@@ -136,7 +136,19 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         # Drop schema if needed
         if override:
             feedback.pushInfo(tr(f"Trying to drop schema {schema}…"))
-            sql = f"DROP SCHEMA IF EXISTS {schema} CASCADE;"
+            sql = (
+                f"DROP SCHEMA IF EXISTS defense_incendie CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_aep_brcht CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_aep CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_ass_brcht CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_ass CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_principale CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_commun CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_valeur CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema} CASCADE;\n"
+                f"DROP DOMAIN IF EXISTS public.c_insee;\n"
+                f"DROP DOMAIN IF EXISTS public.c_annee;"
+            )
             try:
                 connection.executeSql(sql)
             except QgsProviderConnectionException as e:
@@ -227,7 +239,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                 )
             values = ',\n'.join(values)
             sql = (
-                f"INSERT INTO stareau_valeur.{table_name} (code, valeur, description) VALUES"
+                f"INSERT INTO stareau_valeur.{table_name} (code, valeur, description) VALUES\n"
                 f"{values}\n"
                 f"ON CONFLICT (code) DO NOTHING"
             )
