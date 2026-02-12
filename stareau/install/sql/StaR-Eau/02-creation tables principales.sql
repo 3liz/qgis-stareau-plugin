@@ -64,21 +64,21 @@ CREATE TABLE "stareau_principale".champ_commun(
    fictif BOOL DEFAULT false NULL,
    etat_service TEXT NOT NULL, --etat de service (com_etat_service)
    --insee_commune varchar(5) NOT NULL, --Insee de la commune
-   insee_commune c_insee NOT NULL, --Insee de la commune
+   insee_commune stareau.c_insee NOT NULL, --Insee de la commune
    localisation TEXT NULL, --adresse, nom de la rue principale, ou localisation relative du patrimoine
    maitre_ouvrage TEXT NOT NULL, --propriétaire de patrimoine
    exploitant TEXT NOT NULL, --exploitant actuel du patrimoine
    entreprise_pose TEXT, --entreprise ayant effectué les travaux de mise en place
    precision_xy VARCHAR(1) NOT NULL,
    precision_z VARCHAR(1) NOT NULL,
-   an_pose_sup c_annee NOT NULL, --Année marquant la fin de la période de pose
-   an_pose_inf c_annee, --Année marquant la début de la période de pose
-   an_service_sup c_annee, --Année marquant la fin de la période de mise en service
-   an_service_inf c_annee, --Année marquant le début de la période de mise en service
-   an_abandon_sup c_annee,--Année marquant la fin de la période d'arrêt définitif
-   an_abandon_inf c_annee,--Année marquant le début de la période d'arrêt définitif
-   an_rehab_sup c_annee,--Année marquant la fin de la période de réhabilitation
-   an_rehab_inf c_annee,--Année marquant le début de la période de mise en service
+   an_pose_sup stareau.c_annee NOT NULL, --Année marquant la fin de la période de pose
+   an_pose_inf stareau.c_annee, --Année marquant la début de la période de pose
+   an_service_sup stareau.c_annee, --Année marquant la fin de la période de mise en service
+   an_service_inf stareau.c_annee, --Année marquant le début de la période de mise en service
+   an_abandon_sup stareau.c_annee,--Année marquant la fin de la période d'arrêt définitif
+   an_abandon_inf stareau.c_annee,--Année marquant le début de la période d'arrêt définitif
+   an_rehab_sup stareau.c_annee,--Année marquant la fin de la période de réhabilitation
+   an_rehab_inf stareau.c_annee,--Année marquant le début de la période de mise en service
    date_creation TIMESTAMP NOT NULL,
    origine_creation TEXT NOT NULL,
    date_maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
