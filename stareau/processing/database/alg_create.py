@@ -146,8 +146,8 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                 f"DROP SCHEMA IF EXISTS {schema}_commun CASCADE;\n"
                 f"DROP SCHEMA IF EXISTS {schema}_valeur CASCADE;\n"
                 f"DROP SCHEMA IF EXISTS {schema} CASCADE;\n"
-                f"DROP DOMAIN IF EXISTS public.c_insee;\n"
-                f"DROP DOMAIN IF EXISTS public.c_annee;"
+                f"DROP DOMAIN IF EXISTS {schema}.c_insee;\n"
+                f"DROP DOMAIN IF EXISTS {schema}.c_annee;"
             )
             try:
                 connection.executeSql(sql)
@@ -239,7 +239,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                 )
             values = ',\n'.join(values)
             sql = (
-                f"INSERT INTO stareau_valeur.{table_name} (code, valeur, description) VALUES\n"
+                f"INSERT INTO {schema}_valeur.{table_name} (code, valeur, description) VALUES\n"
                 f"{values}\n"
                 f"ON CONFLICT (code) DO NOTHING"
             )
