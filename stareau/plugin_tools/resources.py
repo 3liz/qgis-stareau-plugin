@@ -84,6 +84,9 @@ def plugin_name_normalized() -> str:
     return plugin_name().lower().translate(normalized_chars)
 
 
+def srid_value() -> int:
+    return 2154
+
 #
 # UI
 #

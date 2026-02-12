@@ -13,6 +13,7 @@ from stareau.plugin_tools.resources import (
     available_migrations,
     schema_name,
     schema_version,
+    srid_value,
 )
 from stareau.processing.database import CreateDatabaseStructure
 from stareau.processing.provider import Provider
@@ -338,6 +339,53 @@ def test_processing_create_with_schema_name(
             records[0][0],
             4,
             f"Le nombre de lignes de la table `{schema}_valeur.{table}` n'est pas au moins égal à 4."
+        )
+
+
+def test_processing_create_with_crs(
+    db_connection: psycopg.Connection,
+    processing_provider: Provider,
+):
+    plugin_schema_name = schema_name()
+    plugin_srid = srid_value()
+    srid = 3943
+    params = {
+        "CONNECTION_NAME": "test",
+        "OVERRIDE": True,
+        "CRS": f"EPSG:{srid}",
+    }
+
+    feedback = LoggerProcessingFeedBack()
+
+    # Run create database structure alg
+    alg = f"{processing_provider.id()}:create_database_structure"
+    processing_output = processing.run(alg, params, feedback=feedback)
+
+    assert processing_output["OUTPUT_STATUS"] == 1
+    assert processing_output["OUTPUT_VERSION"] == schema_version()
+
+    cursor = db_connection.cursor()
+    case = unittest.TestCase()
+    # Check the list of geometries
+    cursor.execute(
+        f"""
+        SELECT *
+        FROM geometry_columns
+        WHERE f_table_schema LIKE '{plugin_schema_name}%'
+        ORDER BY f_table_schema,f_table_name
+        """
+    )
+    records = cursor.fetchall()
+    for record in records:
+        case.assertNotEqual(
+            record[5],
+            plugin_srid,
+            f"Le SRID de {record[1]}.{record[2]} de la colonne {record[3]} ne devrait pas être {plugin_srid}",
+        )
+        case.assertEqual(
+            record[5],
+            srid,
+            f"Le SRID de {record[1]}.{record[2]} de la colonne {record[3]} devrait être {srid} au lieu de {record[5]}",
         )
 
 

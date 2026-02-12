@@ -8,6 +8,7 @@ from qgis.core import (
     QgsProcessingOutputNumber,
     QgsProcessingOutputString,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterProviderConnection,
     QgsProcessingParameterString,
     QgsProject,
@@ -30,6 +31,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
     CONNECTION_NAME = "CONNECTION_NAME"
     OVERRIDE = "OVERRIDE"
     SCHEMA = "SCHEMA"
+    CRS = 'CRS'
 
     OUTPUT_STATUS = "OUTPUT_STATUS"
     OUTPUT_STRING = "OUTPUT_STRING"
@@ -90,6 +92,14 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                 defaultValue=resources.schema_name(),
             ),
         )
+        self.addParameter(
+            QgsProcessingParameterCrs(
+                self.CRS,
+                tr('Projection des géométries'),
+                defaultValue=f"EPSG:{resources.srid_value()}",
+                optional=False,
+            )
+        )
 
         # OUTPUTS
         # Add output for status (integer) and message (string)
@@ -122,6 +132,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
     def create_database(
         connection_name: str,
         schema: str,
+        srid: int,
         *,
         version: int,
         override: bool,
@@ -158,6 +169,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         # Create full structure
         # SCHEMA is used in the path even if the target schema is not the same
         plugin_schema_name = resources.schema_name()
+        plugin_srid = resources.srid_value()
         sql_files = [
             "00_initialize_database.sql",
             "StaR-Eau/00-creation schemas.sql",
@@ -199,6 +211,9 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                     sql = sql.replace(f"{plugin_schema_name}_", f"{schema}_")
                     sql = sql.replace(f"{plugin_schema_name}.", f"{schema}.")
                     sql = sql.replace(f" {plugin_schema_name};", f" {schema};")
+
+                if srid != plugin_srid:
+                    sql = sql.replace(f", {plugin_srid})", f", {srid})")
 
                 try:
                     connection.executeSql(sql)
@@ -270,10 +285,12 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         override = self.parameterAsBool(parameters, self.OVERRIDE, context)
         install_dir = resources.plugin_path().joinpath("install")
         version = resources.schema_version()
+        srid = int(self.parameterAsCrs(parameters, self.CRS, context).authid().replace('EPSG:', ''))
 
         self.create_database(
             connection_name,
             schema,
+            srid,
             version=version,
             override=override,
             install_dir=install_dir,
