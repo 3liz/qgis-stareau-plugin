@@ -326,3 +326,18 @@ COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.fid IS 'identifiant SIG';
 COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.id_aep_pieceht IS 'identifiant métier';
 COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.type_piece IS '*type de pièce*';
 COMMENT ON COLUMN "stareau_aep".aep_piece_hors_topo.ref_canalisation  IS 'référence à la conduite de rattachement(id_canalisation)';
+
+
+-- SET DEFAULT type_reseau value 'aep'
+
+ALTER TABLE stareau_aep.aep_appareillage ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_canalisation ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_captage ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_piece ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_piece_hors_topo ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_point_mesure ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_pompage ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_regulation ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_reservoir ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_traitement ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep.aep_vanne ALTER COLUMN type_reseau SET DEFAULT 'aep';

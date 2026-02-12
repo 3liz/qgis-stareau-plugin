@@ -119,3 +119,9 @@ COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.type_vanne_branchement
 COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.diametre IS 'diamètre nominal de la vanne';
 COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.sens_fermeture IS '*sens de fermeture*';
 COMMENT ON COLUMN stareau_aep_brcht.aep_vanne_branchement.etat_ouverture IS '*état d''ouverture*';
+
+-- SET DEFAULT type_reseau value 'aep'
+
+ALTER TABLE stareau_aep_brcht.aep_canalisation_branchement ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep_brcht.aep_piece_branchement ALTER COLUMN type_reseau SET DEFAULT 'aep';
+ALTER TABLE stareau_aep_brcht.aep_vanne_branchement ALTER COLUMN type_reseau SET DEFAULT 'aep';
