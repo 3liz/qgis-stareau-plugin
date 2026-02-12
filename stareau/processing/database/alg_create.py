@@ -137,7 +137,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         if override:
             feedback.pushInfo(tr(f"Trying to drop schema {schema}…"))
             sql = (
-                f"DROP SCHEMA IF EXISTS defense_incendie CASCADE;\n"
+                f"DROP SCHEMA IF EXISTS {schema}_defense_incendie CASCADE;\n"
                 f"DROP SCHEMA IF EXISTS {schema}_aep_brcht CASCADE;\n"
                 f"DROP SCHEMA IF EXISTS {schema}_aep CASCADE;\n"
                 f"DROP SCHEMA IF EXISTS {schema}_ass_brcht CASCADE;\n"

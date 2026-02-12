@@ -11,6 +11,7 @@ from qgis import processing
 from stareau.plugin_tools.feedback import LoggerProcessingFeedBack
 from stareau.plugin_tools.resources import (
     available_migrations,
+    schema_name,
     schema_version,
 )
 from stareau.processing.database import CreateDatabaseStructure
@@ -26,6 +27,7 @@ SCHEMAS = [
     "stareau_aep",
     "stareau_aep_brcht",
     "stareau_valeur",
+    "stareau_defense_incendie",
 ]
 # This list must not be changed
 # as it correspond to the list of tables
@@ -179,6 +181,14 @@ TABLES_FOR_FIRST_VERSION["stareau_valeur"] = [
     "com_type_reseau",
     "com_type_usager"
 ]
+TABLES_FOR_FIRST_VERSION["stareau_defense_incendie"] = [
+    "pei",
+    "pei_diam",
+    "pei_precision",
+    "pei_source",
+    "pei_statut",
+    "pei_type",
+]
 
 # Expected list of tables for current version
 # Must be changed any time the SQL structure is changed
@@ -256,6 +266,7 @@ def test_processing_create(
             4,
             f"Le nombre de lignes de la table `stareau_valeur.{table}` n'est pas au moins égal à 4."
         )
+
 
 @unittest.skip("not yet ready")
 def test_upgrade_from(
