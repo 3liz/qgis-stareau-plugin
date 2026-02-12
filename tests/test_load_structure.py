@@ -268,6 +268,79 @@ def test_processing_create(
         )
 
 
+def test_processing_create_with_schema_name(
+    db_connection: psycopg.Connection,
+    processing_provider: Provider,
+):
+    plugin_schema_name = schema_name()
+    schema = "cnm_eau"
+    params = {
+        "CONNECTION_NAME": "test",
+        "OVERRIDE": True,
+        "SCHEMA": schema,
+    }
+
+    feedback = LoggerProcessingFeedBack()
+
+    # Run create database structure alg
+    alg = f"{processing_provider.id()}:create_database_structure"
+    processing_output = processing.run(alg, params, feedback=feedback)
+
+    assert processing_output["OUTPUT_STATUS"] == 1
+    assert processing_output["OUTPUT_VERSION"] == schema_version()
+
+    cursor = db_connection.cursor()
+    case = unittest.TestCase()
+
+    for db_schema in SCHEMAS:
+        db_new_schema = db_schema.replace(f"{plugin_schema_name}", f"{schema}")
+        # Check the number of tables
+        cursor.execute(
+            f"""
+            SELECT count(table_name)
+            FROM information_schema.tables
+            WHERE table_schema = '{db_new_schema}'
+            """
+        )
+        records = cursor.fetchall()
+        case.assertEqual(
+            len(TABLES_FOR_FIRST_VERSION[db_schema]),
+            records[0][0],
+            f"Le nombre de table du schéma `{db_new_schema}` n'est pas celui attendu"
+        )
+        # Check the list of tables
+        cursor.execute(
+            f"""
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = '{db_new_schema}'
+            ORDER BY table_name
+            """
+        )
+        records = cursor.fetchall()
+        result = [r[0] for r in records]
+        case.assertCountEqual(
+            TABLES_FOR_FIRST_VERSION[db_schema],
+            result,
+            f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue"
+        )
+
+    for table in TABLES_FOR_FIRST_VERSION["stareau_valeur"]:
+        # Check the number of rows in each table
+        cursor.execute(
+            f"""
+            SELECT count(*)
+            FROM {schema}_valeur.{table}
+            """
+        )
+        records = cursor.fetchall()
+        case.assertGreaterEqual(
+            records[0][0],
+            4,
+            f"Le nombre de lignes de la table `{schema}_valeur.{table}` n'est pas au moins égal à 4."
+        )
+
+
 @unittest.skip("not yet ready")
 def test_upgrade_from(
     db_schema: str,
