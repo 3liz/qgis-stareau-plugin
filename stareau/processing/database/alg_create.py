@@ -95,7 +95,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         self.addParameter(
             QgsProcessingParameterCrs(
                 self.CRS,
-                tr('Projection des géométries'),
+                tr('Geometry CRS'),
                 defaultValue=f"EPSG:{resources.srid_value()}",
                 optional=False,
             )
