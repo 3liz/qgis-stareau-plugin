@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, List, Optional, Tuple, Union
 
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
     QgsExpressionContextUtils,
     QgsProject,
@@ -11,7 +12,9 @@ from qgis.core import (
     QgsProviderRegistry,
 )
 
-from ..plugin_tools.resources import plugin_name_normalized, plugin_path
+from ..plugin_tools import resources
+# shorcut exposed
+plugin_name_normalized = resources.plugin_name_normalized
 
 CONNECTION_NAME_CONTEXT_VAR = f"{plugin_name_normalized()}_connection_name"
 
@@ -78,6 +81,8 @@ def getVersionInteger(f):
 
 def createAdministrationProjectFromTemplate(
     connection_name: str,
+    schema_name: str,
+    crs: QgsCoordinateReferenceSystem,
     project_file_path: str,
 ) -> bool:
     """
@@ -97,12 +102,48 @@ def createAdministrationProjectFromTemplate(
     # lead to a real mess
 
     # Read in the template file
-    template_file = plugin_path("resources", "qgis", "plugin_admin.qgs")
+    template_file = resources.plugin_path("resources", "qgis", "plugin_admin.qgs")
     with open(template_file, "r") as fin:
         filedata = fin.read()
 
+    plugin_schema_name = resources.schema_name()
+    plugin_srid = resources.srid_value()
     # Replace the database connection information
     filedata = filedata.replace("service='pg_stareau_service'", connection_info)
+
+    # Replace the schema name
+    if schema_name != plugin_schema_name:
+        filedata = filedata.replace(" table=&quot;stareau", f" table=&quot;{schema_name}")
+        filedata = filedata.replace(" table=\"stareau", f" table=\"{schema_name}")
+
+    # Replace the CRS
+    if crs.postgisSrid() != plugin_srid:
+        default_crs = QgsCoordinateReferenceSystem(f"EPSG:{plugin_srid}")
+        filedata = filedata.replace(f"<wkt>{default_crs.toWkt()}</wkt>", f"<wkt>{default_crs.toWkt()}</wkt>")
+        filedata = filedata.replace(f"<proj4>{default_crs.toProj4()}</proj4>", f"<proj4>{crs.toProj4()}</proj4>")
+        filedata = filedata.replace(f"<srsid>{default_crs.srsid()}</srsid>", f"<srsid>{crs.srsid()}</srsid>")
+        filedata = filedata.replace(f"<srid>{default_crs.postgisSrid()}</srid>", f"<srid>{crs.postgisSrid()}</srid>")
+        filedata = filedata.replace(f"<authid>{default_crs.authid()}</authid>", f"<authid>{crs.authid()}</authid>")
+        filedata = filedata.replace(
+            f"<description>{default_crs.description()}</description>",
+            f"<description>{crs.description()}</description>",
+        )
+        filedata = filedata.replace(
+            f"<projectionacronym>{default_crs.projectionAcronym()}</projectionacronym>",
+            f"<projectionacronym>{crs.projectionAcronym()}</projectionacronym>",
+        )
+        filedata = filedata.replace(
+            f"<ellipsoidAcronym>{default_crs.ellipsoidAcronym()}</ellipsoidAcronym>",
+            f"<ellipsoidAcronym>{crs.ellipsoidAcronym()}</ellipsoidAcronym>",
+        )
+        if crs.isGeographic() != default_crs.isGeographic() and not default_crs.isGeographic():
+            # ESPG:2154 is not geographic
+            # but the project contains an EPSG:4326 definition for CoordinateCustomCrs
+            filedata = filedata.replace(
+                f"<geographicflag>false</geographicflag>",
+                f"<geographicflag>true</geographicflag>",
+            )
+        filedata = filedata.replace(f" crs=\"{default_crs.authid()}\"", f" crs=\"{crs.authid()}\"")
 
     # Replace also the QGIS project variable
     filedata = filedata.replace("stareau_connection_name_value", connection_name)
@@ -110,7 +151,7 @@ def createAdministrationProjectFromTemplate(
         fout.write(filedata)
 
     # Copy the Lizmap configuration
-    config_file = plugin_path("resources", "qgis", "plugin_admin.qgs.cfg")
+    config_file = resources.plugin_path("resources", "qgis", "plugin_admin.qgs.cfg")
     config_file_path = Path(config_file)
     if config_file_path.exists():
         shutil.copyfile(config_file, f"{project_file_path}.cfg")

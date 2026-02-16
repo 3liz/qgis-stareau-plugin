@@ -2,11 +2,15 @@ from qgis.core import (
     QgsProcessingException,
     QgsProcessingOutputNumber,
     QgsProcessingOutputString,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterProviderConnection,
+    QgsProcessingParameterString,
     QgsProject,
+    QgsProviderRegistry,
 )
 
+from ..plugin_tools import resources
 from ..plugin_tools.i18n import tr
 from .base_algorithm import BaseProcessingAlgorithm
 from .tools import (
@@ -19,6 +23,8 @@ from .tools import (
 
 class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
     CONNECTION_NAME = "CONNECTION_NAME"
+    SCHEMA = "SCHEMA"
+    CRS = "CRS"
     PROJECT_FILE = "PROJECT_FILE"
 
     OUTPUT_STATUS = "OUTPUT_STATUS"
@@ -69,6 +75,22 @@ class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
         param.setHelp(tr("The database where the plugin schema has been installed."))
         self.addParameter(param)
 
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.SCHEMA,
+                tr("Schema name"),
+                defaultValue=resources.schema_name(),
+            ),
+        )
+        self.addParameter(
+            QgsProcessingParameterCrs(
+                self.CRS,
+                tr('Geometry CRS'),
+                defaultValue=f"EPSG:{resources.srid_value()}",
+                optional=False,
+            )
+        )
+
         # target project file
         self.addParameter(
             QgsProcessingParameterFileDestination(
@@ -96,6 +118,14 @@ class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
         if connection_name not in get_postgis_connection_list():
             return False, tr("The configured connection name does not exists in QGIS")
 
+        metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
+        connection = metadata.findConnection(connection_name)
+        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+
+        # Check that the schema exists
+        if schema not in connection.schemas():
+            return False, tr("The schema does not exists in the database")
+
         # Check if the target project file ends with qgs
         project_file = self.parameterAsString(parameters, self.PROJECT_FILE, context)
         if not project_file.endswith(".qgs"):
@@ -106,10 +136,14 @@ class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         # Database connection parameters
         connection_name = parameters[self.CONNECTION_NAME]
+        # Schema name
+        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        # CRS
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         # Write the file out again
         project_file = self.parameterAsString(parameters, self.PROJECT_FILE, context)
-        if not createAdministrationProjectFromTemplate(connection_name, project_file):
+        if not createAdministrationProjectFromTemplate(connection_name, schema, crs, project_file):
             raise QgsProcessingException(f"Connection {connection_name} not found")
 
         msg = tr("QGIS Administration project has been successfully created from database connection")

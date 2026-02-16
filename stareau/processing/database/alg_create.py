@@ -31,7 +31,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
     CONNECTION_NAME = "CONNECTION_NAME"
     OVERRIDE = "OVERRIDE"
     SCHEMA = "SCHEMA"
-    CRS = 'CRS'
+    CRS = "CRS"
 
     OUTPUT_STATUS = "OUTPUT_STATUS"
     OUTPUT_STRING = "OUTPUT_STRING"
