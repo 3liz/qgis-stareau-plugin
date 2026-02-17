@@ -29,8 +29,8 @@
 --canalisation de branchement
 CREATE TABLE "stareau_ass_brcht".ass_canalisation_branchement (
   id_ass_canalisation_branchement TEXT NULL, -- identifiant
-  fonction_canalisation text NOT NULL, -- *fonction de la canalisation dans le réseau*
-  contenu_canalisation text NOT NULL,
+  fonction_canalisation text NOT NULL DEFAULT 'non_renseigne'::text, -- *fonction de la canalisation dans le réseau*
+  contenu_canalisation text NOT NULL DEFAULT 'non_renseigne'::text,
   altitude_fil_eau_amont float4 NULL, -- altitude fil d'eau amont
   altitude_fil_eau_aval float4 NULL, -- altitude fil d'eau aval
   CONSTRAINT pk_ass_cana_brcht PRIMARY KEY (fid)
@@ -51,8 +51,8 @@ COMMENT ON COLUMN "stareau_ass_brcht".ass_canalisation_branchement.altitude_fil_
 --point de collecte assainissement
 CREATE TABLE "stareau_ass_brcht".ass_point_collecte (
   id_point_collecte text null,
-  type_point_collecte text NOT NULL, -- >type de boite de branchement
-  type_usager text NOT NULL, -- >type d''usagers raccordé
+  type_point_collecte text NOT NULL DEFAULT 'non_renseigne'::text, -- >type de boite de branchement
+  type_usager text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d''usagers raccordé
   ref_externe text NULL, -- référence externe
   materiau text NOT NULL, -- materiau
   z_tampon float4 NULL, -- z tampon
@@ -77,7 +77,7 @@ COMMENT ON COLUMN "stareau_ass_brcht".ass_point_collecte.profondeur IS 'profonde
 --ass_raccord
 CREATE TABLE "stareau_ass_brcht".ass_raccord (
   id_ass_raccord TEXT NULL,
-  type_raccord text NOT NULL, -- type de raccord
+  type_raccord text NOT NULL DEFAULT 'non_renseigne'::text, -- type de raccord
   ref_canalisation text NULL, -- identifiant de la cana principale
   CONSTRAINT pk_ass_raccord_brcht PRIMARY KEY (fid)
 )
@@ -94,9 +94,9 @@ COMMENT ON COLUMN "stareau_ass_brcht".ass_raccord.ref_canalisation IS 'canalisat
 ---point
 CREATE TABLE stareau_ass_brcht.ass_engouffrement_point (
   id_ass_engouffrement_point TEXT NULL, -- identifiant
-  type_engouffrement text NOT NULL, -- >type d'engouffrement
-  decantation text NOT NULL, -- >présence décantation
-  siphon text NOT NULL, -- > présence d'un siphon
+  type_engouffrement text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'engouffrement
+  decantation text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence décantation
+  siphon text NOT NULL DEFAULT 'non_renseigne'::text, -- > présence d'un siphon
   CONSTRAINT pk_ass_engouf_pt PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
@@ -112,9 +112,9 @@ COMMENT ON COLUMN stareau_ass_brcht.ass_engouffrement_point.siphon IS '*présenc
 ----ligne
 CREATE TABLE stareau_ass_brcht.ass_engouffrement_ligne (
   id_ass_engouffrement_ligne text NULL, -- identifiant
-  type_engouffrement text NOT NULL, -- >type d'engouffrement
-  decantation text NOT NULL, -- >présence décantation
-  siphon text NOT NULL, -- > présence d'un siphon
+  type_engouffrement text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'engouffrement
+  decantation text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence décantation
+  siphon text NOT NULL DEFAULT 'non_renseigne'::text, -- > présence d'un siphon
   CONSTRAINT pk_ass_engouf_ln PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
@@ -129,9 +129,9 @@ COMMENT ON COLUMN stareau_ass_brcht.ass_engouffrement_ligne.siphon IS '*présenc
 ---surface
 CREATE TABLE stareau_ass_brcht.ass_engouffrement_surface (
   id_ass_engouffrement_surface text NULL, -- identifiant
-  type_engouffrement text NOT NULL, -- >type d'engouffrement
-  decantation text NOT NULL, -- >présence décantation
-  siphon text NOT NULL, -- > présence d'un siphon
+  type_engouffrement text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'engouffrement
+  decantation text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence décantation
+  siphon text NOT NULL DEFAULT 'non_renseigne'::text, -- > présence d'un siphon
   CONSTRAINT pk_ass_engouf_sf PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise,"stareau_principale".dimension);

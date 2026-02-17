@@ -28,10 +28,10 @@
 CREATE TABLE "stareau_ass".ass_traitement (
   id_ass_traitement TEXT NULL,
   nom_usuel text NOT NULL, -- nom de l'ouvrage (nomouvragedepollution)
-  code_ouvrage_sandre text NOT NULL, -- code sandre de l'ouvrage (cdouvragedepollution)
-  techno_traitement text NOT NULL, -- >technologie du traitement
+  code_ouvrage_sandre text NOT NULL DEFAULT 'non_renseigne'::text, -- code sandre de l'ouvrage (cdouvragedepollution)
+  techno_traitement text NOT NULL DEFAULT 'non_renseigne'::text, -- >technologie du traitement
   capacite_nominale integer NULL, -- capacité nominale du traitement (capaciteNom)
-  telegestion text NOT null,
+  telegestion text NOT null DEFAULT 'non_renseigne'::text, -- télégestion (com_oui_non)
   CONSTRAINT pk_ass_traitement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -51,10 +51,10 @@ COMMENT ON COLUMN "stareau_ass".ass_traitement.telegestion IS '*présence d''une
 CREATE TABLE "stareau_ass".ass_pretraitement (
   id_ass_pretraitement TEXT NULL, -- identifiant
   nom_usuel text NULL, -- nom usuel
-  type_pretraitement text NOT NULL, -- > type de prétraitement
+  type_pretraitement text NOT NULL DEFAULT 'non_renseigne'::text, -- > type de prétraitement
   capacite int4 NOT NULL, -- capacité du prétraitement
   volume float4 NOT NULL, -- volume total du stockage éventuel
-  telegestion text NOT NULL, -- >présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence d'une gestion à distance
   CONSTRAINT pk_ass_pretraitement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -73,9 +73,9 @@ COMMENT ON COLUMN "stareau_ass".ass_pretraitement.nom_usuel IS 'nom d''usage du 
 
 CREATE TABLE "stareau_ass".ass_equipement (
   id_ass_equipement TEXT NULL,
-  type_equipement text NOT NULL, -- *type équipement*
-  fonction_equipement text NOT NULL, -- *fonction de l'équipement*
-  telegestion text NOT NULL, -- >présence d'une gestion à distance
+  type_equipement text NOT NULL DEFAULT 'non_renseigne'::text, -- *type équipement*
+  fonction_equipement text NOT NULL DEFAULT 'non_renseigne'::text, -- *fonction de l'équipement*
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence d'une gestion à distance
   CONSTRAINT pk_ass_equipement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -92,16 +92,16 @@ COMMENT ON COLUMN "stareau_ass".ass_equipement.telegestion IS '*présence d''une
 
 CREATE TABLE "stareau_ass".ass_pompage (
   id_ass_pompage TEXT NULL,
-  type_pompage text NOT NULL, -- >type de pompage
+  type_pompage text NOT NULL DEFAULT 'non_renseigne'::text, -- >type de pompage
   nom_usuel text NULL, -- nom d'usage du pompage
-  fonction_pompage text NOT NULL, -- >fonction du pompage
+  fonction_pompage text NOT NULL DEFAULT 'non_renseigne'::text, -- >fonction du pompage
   nb_pompe int2 NOT NULL DEFAULT 1, -- nombre de pompe
   debit_temps_sec float4 NULL, -- débit maxi moyen par temps sec (m3/h)
   debit_temps_pluie float4 NULL, -- débit maxi moyen par temps de pluie (m3/h)
   nb_bache int2 NULL DEFAULT 1, -- nombre de bâche du poste
   volume_bache float4 NULL, -- volume total de la ou des bâches
   cote_trop_plein float4 NULL, -- cote de déversement du trop-plein (NGF)
-  telegestion text NOT NULL, -- présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- présence d'une gestion à distance
   CONSTRAINT pk_ass_pompage PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
@@ -130,10 +130,10 @@ COMMENT ON COLUMN "stareau_ass".ass_pompage.nom_usuel IS 'nom d''usage du pompag
 CREATE TABLE "stareau_ass".ass_chambre_depollution (
   id_ass_chambre_depollution TEXT NULL,
   nom_usuel text NULL, -- nom usuel
-  type_chambre_depollution text NOT NULL, -- > type de chambre de dépollution
-  bypass TEXT NOT NULL, -- présence d'un by-pass
+  type_chambre_depollution text NOT NULL DEFAULT 'non_renseigne'::text, -- > type de chambre de dépollution
+  bypass TEXT NOT NULL DEFAULT 'non_renseigne'::text, -- présence d'un by-pass
   volume_chambre float4 NULL, -- volume totale en m3
-  telegestion text NOT NULL, -- >présence ou non d'une télégestion
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence ou non d'une télégestion
   CONSTRAINT pk_ass_chambre PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
@@ -152,9 +152,9 @@ COMMENT ON COLUMN "stareau_ass".ass_chambre_depollution.telegestion IS '*présen
 
 CREATE TABLE "stareau_ass".ass_canalisation (
   id_ass_canalisation TEXT NULL,
-  fonction_canalisation text NOT NULL, -- *fonction de la canalisation dans le réseau*
-  contenu_canalisation text NOT NULL,
-  visitable text NOT NULL, -- *possibilité de visite pédestre*
+  fonction_canalisation text NOT NULL DEFAULT 'non_renseigne'::text, -- *fonction de la canalisation dans le réseau*
+  contenu_canalisation text NOT NULL DEFAULT 'non_renseigne'::text,
+  visitable text NOT NULL DEFAULT 'non_renseigne'::text, -- *possibilité de visite pédestre*
   altitude_fil_eau_amont float4 NULL, -- altitude fil d'eau amont
   altitude_fil_eau_aval float4 NULL, -- altitude fil d'eau aval
   bassin_collecte text NULL, -- identifiant bassin de collecte
@@ -181,7 +181,7 @@ COMMENT ON COLUMN "stareau_ass".ass_canalisation.bassin_collecte IS 'identifiant
 
 CREATE TABLE "stareau_ass".ass_piece (
   id_ass_piece TEXT NULL,
-  type_piece text NOT NULL, -- > type de pièce
+  type_piece text NOT NULL DEFAULT 'non_renseigne'::text, -- > type de pièce
   CONSTRAINT pk_ass_piece PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -199,9 +199,8 @@ CREATE TABLE "stareau_ass".ass_piece_hors_topo (
   id_ass_pieceht text NOT NULL UNIQUE DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
   --id_ass_pieceht INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_ass_pieceht TEXT NOT NULL,  -- ou INT -- pour personnalisation ou récupération de l'id existant
-  type_piece text NOT NULL, -- > type de pièce
-  ref_canalisation
- text NULL, -- référence à la conduite de rattachement
+  type_piece text NOT NULL DEFAULT 'non_renseigne'::text, -- > type de pièce
+  ref_canalisation text NULL, -- référence à la conduite de rattachement
   geom public.geometry(point, 2154) NOT NULL,
   CONSTRAINT ass_piece_ht_pk PRIMARY KEY (fid)
 )
@@ -223,11 +222,11 @@ CREATE TABLE "stareau_ass".ass_point_mesure (
 --id_ass_point_mesure INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
 --id_ass_point_mesure TEXT NOt NULL, --
   nom_usuel text NULL,
-  type_point_mesure text NOT NULL, -- >type du point de mesure
-  code_sandre text NOT NULL, -- >code sandre officiel
+  type_point_mesure text NOT NULL DEFAULT 'non_renseigne'::text, -- >type du point de mesure
+  code_sandre text NOT NULL DEFAULT 'non_renseigne'::text, -- >code sandre officiel
   id_sandre text NULL, -- identifiant SANDRE
   ref_ouvrage text NULL, -- référence à l'ouvrage de rattachement
-  telegestion text NOT NULL, -- >présence ou non d'une télégestion
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence ou non d'une télégestion
   geom public.geometry(point, 2154) NOT NULL,
   CONSTRAINT pk_ass_point_mesure PRIMARY KEY (fid)
 )
@@ -249,10 +248,10 @@ COMMENT ON COLUMN stareau_ass.ass_point_mesure.telegestion IS '*présence d''une
 
 CREATE TABLE "stareau_ass".ass_regard (
   id_ass_regard TEXT NULL,
-  type_regard text NOT NULL, -- type de regard *
-  materiau text NOT NULL, -- matériau constitutif du regard *
-  "position" text NOT NULL, -- position par rapport à la canalisation *
-  type_descente text NOT NULL, -- élément de descente dans le regard *
+  type_regard text NOT NULL DEFAULT 'non_renseigne'::text, -- type de regard *
+  materiau text NOT NULL DEFAULT 'nr'::text, -- matériau constitutif du regard *
+  "position" text NOT NULL DEFAULT 'non_renseigne'::text, -- position par rapport à la canalisation *
+  type_descente text NOT NULL DEFAULT 'non_renseigne'::text, -- élément de descente dans le regard *
   nb_paliers int2 NULL, -- nombre de paliers
   z_tampon float4 NULL, -- cote NGF du tampon
   z_radier float4 NULL, -- cote NGF du point le plus bas du regard
@@ -279,7 +278,7 @@ COMMENT ON COLUMN "stareau_ass".ass_regard.profondeur_mesure IS 'profondeur mesu
 CREATE TABLE stareau_ass.ass_exutoire (
   id_ass_exutoire text NULL, -- identifiant
   code_topage text NULL, -- Code TOPAGE du milieu récepteur
-  destination text NOT NULL, --type de milieu récepteur
+  destination text NOT NULL DEFAULT 'non_renseigne'::text, --type de milieu récepteur
   CONSTRAINT pk_ass_exutoire PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -298,11 +297,11 @@ CREATE TABLE stareau_ass.ass_point_prelevement (
 --id_ass_point_prelevement INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
 --id_ass_point_prelevement TEXT NOt NULL, --
 	nom_usuel text NULL, -- nom d'usage
-	type_point_prelevement text NOT NULL, -- *type de point prélèvement*
-	code_sandre text NOT NULL, -- *code SANDRE*
+	type_point_prelevement text NOT NULL DEFAULT 'non_renseigne'::text, -- *type de point prélèvement*
+	code_sandre text NOT NULL DEFAULT 'non_renseigne'::text, -- *code SANDRE*
   id_sandre text NULL, --
 	ref_ouvrage text NULL, -- référence à l'ouvrage de rattachement
-	geom public.geometry(point, 2154) NOT NULL,
+	geom public.geometry(point, 2154) NOT NULL DEFAULT 'non_renseigne'::text,
 	CONSTRAINT pk_ass_point_prelevement PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
@@ -323,14 +322,14 @@ COMMENT ON COLUMN stareau_ass.ass_point_prelevement.ref_ouvrage IS 'référence 
 CREATE TABLE stareau_ass.ass_bassin (
   id_ass_bassin TEXT NULL, -- identifiant
   nom_usuel text NULL, -- nom usuel
-  type_bassin text NOT NULL, -- >type de bassin
-  fonction_bassin text NOT NULL, -- >fonction du bassin
-  structure_bassin text NOT NULL, -- >structure du bassin
+  type_bassin text NOT NULL DEFAULT 'non_renseigne'::text, -- >type de bassin
+  fonction_bassin text NOT NULL DEFAULT 'non_renseigne'::text, -- >fonction du bassin
+  structure_bassin text NOT NULL DEFAULT 'non_renseigne'::text, -- >structure du bassin
   capacite text NULL, -- capacité maximale de stockage en m3
   debit_fuite numeric NULL, -- Quantité limitée d'eau en M3/s qui s'évacue du bassin de stockage par l'intermédiaire d'un dispositif de régulation
   cote_radier numeric NULL, -- Cote NGF du point le plus bas du fond de bassin
   cote_trop_plein numeric NULL, -- cote NGF de débordement du bassin
-  telegestion text NOT NULL, -- >présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence d'une gestion à distance
   CONSTRAINT pk_ass_bassin PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
@@ -358,8 +357,8 @@ CREATE TABLE stareau_ass.ass_gestion_epl_point (
   --id_ass_gestion_epl_point INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_ass_gestion_epl_point TEXT NOt NULL, --
   nom_usuel text NULL, -- nom usuel
-	type_gestion_epl text NOT NULL, -- *type d'ouvrage de gestion*
-	fonction_gestion_epl text NOT NULL, -- *fonction de l'ouvrage de gestion*
+	type_gestion_epl text NOT NULL DEFAULT 'non_renseigne'::text, -- *type d'ouvrage de gestion*
+	fonction_gestion_epl text NOT NULL DEFAULT 'non_renseigne'::text, -- *fonction de l'ouvrage de gestion*
   capacite text NULL, -- capacité maximale de stockage en m3
   debit_fuite numeric NULL, -- Quantité limitée d'eau en M3/s qui s'évacue par l'intermédiaire d'un dispositif de régulation
   cote_radier numeric NULL, -- Cote NGF du point le plus bas
@@ -392,8 +391,8 @@ CREATE TABLE stareau_ass.ass_gestion_epl_ligne (
   --id_ass_gestion_epl_ligne INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_ass_gestion_epl_ligne TEXT NOt NULL, --
   nom_usuel text NULL, -- nom usuel
-	type_gestion_epl text NOT NULL, -- *type d'ouvrage de gestion*
-	fonction_gestion_epl text NOT NULL, -- *fonction de l'ouvrage de gestion*
+	type_gestion_epl text NOT NULL DEFAULT 'non_renseigne'::text, -- *type d'ouvrage de gestion*
+	fonction_gestion_epl text NOT NULL DEFAULT 'non_renseigne'::text, -- *fonction de l'ouvrage de gestion*
   capacite text NULL, -- capacité maximale de stockage en m3
   debit_fuite numeric NULL, -- Quantité limitée d'eau en M3/s qui s'évacue par l'intermédiaire d'un dispositif de régulation
   cote_radier numeric NULL, -- Cote NGF du point le plus bas
@@ -425,8 +424,8 @@ CREATE TABLE stareau_ass.ass_gestion_epl_surface (
   --id_ass_gestion_epl_surface INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_ass_gestion_epl_surface TEXT NOt NULL, --
   nom_usuel text NULL, -- nom usuel
-	type_gestion_epl text NOT NULL, -- *type d'ouvrage de gestion*
-	fonction_gestion_epl text NOT NULL, -- *fonction de l'ouvrage de gestion*
+	type_gestion_epl text NOT NULL DEFAULT 'non_renseigne'::text, -- *type d'ouvrage de gestion*
+	fonction_gestion_epl text NOT NULL DEFAULT 'non_renseigne'::text, -- *fonction de l'ouvrage de gestion*
   capacite text NULL, -- capacité maximale de stockage en m3
   debit_fuite numeric NULL, -- Quantité limitée d'eau en M3/s qui s'évacue par l'intermédiaire d'un dispositif de régulation
   cote_radier numeric NULL, -- Cote NGF du point le plus bas
@@ -456,7 +455,7 @@ COMMENT ON COLUMN stareau_ass.ass_gestion_epl_surface.telegestion IS '*présence
 
 CREATE TABLE "stareau_ass".ass_ouvrage_special_point (
   id_ass_ouvrage_special_p TEXT NULL,
-  type_ouvrage_special text NOT NULL, -- >type d'ouvrage spécial
+  type_ouvrage_special text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'ouvrage spécial
   ref_ouvrage text NULL, -- ouvrage ou canalisation de rattachement
   CONSTRAINT pk_ass_ouvrage_special_p PRIMARY KEY (fid)
 )
@@ -473,7 +472,7 @@ COMMENT ON COLUMN "stareau_ass".ass_ouvrage_special_point.ref_ouvrage IS 'ouvrag
 
 CREATE TABLE "stareau_ass".ass_ouvrage_special_ligne (
   id_ass_ouvrage_special_l TEXT NULL,
-  type_ouvrage_special text NOT NULL, -- >type d'ouvrage spécial
+  type_ouvrage_special text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'ouvrage spécial
   ref_ouvrage text NULL, -- ouvrage ou canalisation de rattachement
   CONSTRAINT pk_ass_ouvrage_special_l PRIMARY KEY (fid)
 )
@@ -490,7 +489,7 @@ COMMENT ON COLUMN "stareau_ass".ass_ouvrage_special_ligne.ref_ouvrage IS 'ouvrag
 
 CREATE TABLE "stareau_ass".ass_ouvrage_special_surface (
   id_ass_ouvrage_special_s TEXT NULL,
-  type_ouvrage_special text NOT NULL, -- >type d'ouvrage spécial
+  type_ouvrage_special text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'ouvrage spécial
   ref_ouvrage text NULL, -- ouvrage ou canalisation de rattachement
   CONSTRAINT pk_ass_ouvrage_special_s PRIMARY KEY (fid)
 )

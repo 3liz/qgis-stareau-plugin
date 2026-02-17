@@ -62,16 +62,16 @@ CREATE TABLE "stareau_principale".champ_commun(
    --id_champ_commun INT GENERATED ALWAYS AS IDENTITY,
    type_reseau TEXT NOT NULL, --type de réseau (com_type_reseau)
    fictif BOOL DEFAULT false NULL,
-   etat_service TEXT NOT NULL, --etat de service (com_etat_service)
+   etat_service TEXT NOT NULL DEFAULT 'non_renseigne'::text, --etat de service (com_etat_service)
    --insee_commune varchar(5) NOT NULL, --Insee de la commune
    insee_commune stareau.c_insee NOT NULL, --Insee de la commune
    localisation TEXT NULL, --adresse, nom de la rue principale, ou localisation relative du patrimoine
-   maitre_ouvrage TEXT NOT NULL, --propriétaire de patrimoine
-   exploitant TEXT NOT NULL, --exploitant actuel du patrimoine
+   maitre_ouvrage TEXT NOT NULL DEFAULT 'non_renseigne'::text, --propriétaire de patrimoine
+   exploitant TEXT NOT NULL DEFAULT 'non_renseigne'::text, --exploitant actuel du patrimoine
    entreprise_pose TEXT, --entreprise ayant effectué les travaux de mise en place
    precision_xy VARCHAR(1) NOT NULL,
    precision_z VARCHAR(1) NOT NULL,
-   an_pose_sup stareau.c_annee NOT NULL, --Année marquant la fin de la période de pose
+   an_pose_sup stareau.c_annee DEFAULT -9999 NOT NULL, --Année marquant la fin de la période de pose
    an_pose_inf stareau.c_annee, --Année marquant la début de la période de pose
    an_service_sup stareau.c_annee, --Année marquant la fin de la période de mise en service
    an_service_inf stareau.c_annee, --Année marquant le début de la période de mise en service
@@ -79,8 +79,8 @@ CREATE TABLE "stareau_principale".champ_commun(
    an_abandon_inf stareau.c_annee,--Année marquant le début de la période d'arrêt définitif
    an_rehab_sup stareau.c_annee,--Année marquant la fin de la période de réhabilitation
    an_rehab_inf stareau.c_annee,--Année marquant le début de la période de mise en service
-   date_creation TIMESTAMP NOT NULL,
-   origine_creation TEXT NOT NULL,
+   date_creation TIMESTAMP DEFAULT NOW() NOT NULL,
+   origine_creation TEXT NOT NULL DEFAULT 'non_renseigne'::text,
    date_maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
    origine_maj TEXT NULL,
    lien_doc1 TEXT,
@@ -142,12 +142,12 @@ CREATE TABLE "stareau_principale".canalisation (
   --id_canalisation INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_canalisation TEXT NOT NULL, -- pour personnalisation ou récupération de l'id existant
   geom public.geometry(linestring, 2154) NOT NULL,
-  mode_circulation text NOT NULL, -- mode de circulation
-  type_pose text NOT NULL, -- type de pose
-  raison_pose text NOT NULL, -- raison de la pose
-  materiau text NOT NULL, -- materiau
-  revetement_interieur text NOT NULL, -- revêtement intérieur
-  diametre_equivalent int2 NOT NULL, -- diametre nominal
+  mode_circulation text NOT NULL DEFAULT 'non_renseigne'::text, -- mode de circulation
+  type_pose text NOT NULL DEFAULT 'non_renseigne'::text, -- type de pose
+  raison_pose text NOT NULL DEFAULT 'non_renseigne'::text, -- raison de la pose
+  materiau text NOT NULL DEFAULT 'nr'::text, -- materiau
+  revetement_interieur text NOT NULL DEFAULT 'non_renseigne'::text, -- revêtement intérieur
+  diametre_equivalent int2 NOT NULL DEFAULT 0, -- diametre nominal
   longueur_terrain real NULL, -- longueur réelle terrain
   sensible BOOL DEFAULT false NULL,
   noeudterminal text NOT NULL, -- noeud terminal
@@ -176,7 +176,7 @@ CREATE TABLE "stareau_principale".emprise (
   id_emprise text NOT NULL UNIQUE DEFAULT gen_random_uuid(), -- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
   --id_emprise INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_emprise text NOT NULL, -- pour personnalisation ou récupération de l'id existant
-  visible TEXT NOT NULL, -- visible de la surface ?
+  visible TEXT NOT NULL DEFAULT 'non_renseigne'::text, -- visible de la surface ? (com_oui_non)
   geom public.geometry(polygon, 2154) NOT NULL,
   --geom public.geometry(polygonZ, 2154) NOT NULL,
   CONSTRAINT pk_emprise PRIMARY KEY (fid)

@@ -31,7 +31,7 @@ CREATE TABLE stareau_aep.aep_affleurant (
   id_aep_affleurant text NOT NULL UNIQUE DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_aep_affleurant text NULL,
 --id_aep_affleurant INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto,
-  type_affleurant text NOT NULL,
+  type_affleurant text NOT NULL DEFAULT 'non_renseigne'::text,
   id_affleurant_pcrs text NULL,
   id_emprise text NULL, -- lien vers emprise
   id_noeud_reseau text NULL, -- lien vers élément ponctuel
@@ -61,7 +61,7 @@ CREATE TABLE stareau_ass.ass_affleurant (
   id_ass_affleurant text NOT NULL UNIQUE DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_ass_affleurant text NULL,
 --id_ass_affleurant INT GENERATED ALWAYS AS IDENTITY, -- id numérique à numérotation auto,
-  type_affleurant text NOT NULL,
+  type_affleurant text NOT NULL DEFAULT 'non_renseigne'::text,
   id_affleurant_pcrs text NULL,
   id_emprise text NULL, -- lien vers emprise
   id_noeud_reseau text NULL, -- lien vers élément ponctuel
@@ -90,7 +90,7 @@ CREATE TABLE stareau_aep.aep_genie_civil(
   id_aep_genie_civil text NOT NULL DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_aep_genie_civil text NULL,
 --id_aep_genie_civil INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto,
-  materiau TEXT NOT NULL,
+  materiau TEXT NOT NULL DEFAULT 'nr'::text,
   niveau int2 NOT null default 0 ,-- niveau par rapport au sol
   CONSTRAINT pk_aep_genie_civil PRIMARY KEY (fid)
 )
@@ -109,7 +109,7 @@ CREATE TABLE stareau_ass.ass_genie_civil(
   id_ass_genie_civil text NOT NULL DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_ass_genie_civil text NULL,
 --id_ass_genie_civil INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto,
-  materiau TEXT NOT NULL,
+  materiau TEXT NOT NULL DEFAULT 'nr'::text,
   niveau int2 NOT NULL default 0 ,-- niveau par rapport au sol
   CONSTRAINT pk_ass_genie_civil PRIMARY KEY (fid)
 )
@@ -128,8 +128,8 @@ CREATE TABLE stareau_aep.aep_perimetre_gestion (
   id_aep_perimetre_gestion text NOT NULL DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_aep_perimetre_gestion text NULL,
 --id_aep_perimetre_gestion INT GENERATED ALWAYS AS IDENTITY, -- id numérique à numérotation auto,
-  type_perimetre_gestion text NOT NULL, --*type de périmètre*
-  type_acces text NOT NULL, --*type d'accès*
+  type_perimetre_gestion text NOT NULL DEFAULT 'non_renseigne'::text, --*type de périmètre*
+  type_acces text NOT NULL DEFAULT 'non_renseigne'::text, --*type d'accès*
   CONSTRAINT pk_aep_perimetre_gestion PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise);
@@ -147,8 +147,8 @@ CREATE TABLE stareau_ass.ass_perimetre_gestion (
   id_ass_perimetre_gestion text NOT NULL DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_ass_perimetre_gestion text NULL,
 --id_ass_perimetre_gestion INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto,
-  type_perimetre_gestion text NOT NULL, -- >type de périmètre
-  type_acces text NOT NULL, -- >type d'accès
+  type_perimetre_gestion text NOT NULL DEFAULT 'non_renseigne'::text, -- >type de périmètre
+  type_acces text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'accès
   CONSTRAINT pk_ass_perimetre_gestion PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise);
@@ -167,8 +167,8 @@ CREATE TABLE stareau_aep.aep_protection_mecanique (
   id_aep_protection_mecanique text NOT NULL UNIQUE DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_aep_protection_mecanique int4 GENERATED ALWAYS AS IDENTITY NOT NULL,
 --id_aep_protection_mecanique text NOT NULL, -- DEFAULT gen_random_uuid(), -- uuid par défaut peut-être retirer pour autre identifiant
-  type_protection text NOT NULL, -- * type de protection *
-  materiau text NOT NULL, -- * materiau * constitutif de la protection
+  type_protection text NOT NULL DEFAULT 'non_renseigne'::text, -- * type de protection *
+  materiau text NOT NULL DEFAULT 'nr'::text, -- * materiau * constitutif de la protection
   geom public.geometry(linestring, 2154) NOT NULL,
   CONSTRAINT pk_aep_protect_meca PRIMARY KEY (fid)
 )
@@ -189,8 +189,8 @@ CREATE TABLE stareau_ass.ass_protection_mecanique (
   id_ass_protection_mecanique text NOT NULL UNIQUE DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_ass_protection_mecanique int4 GENERATED ALWAYS AS IDENTITY NOT NULL,
 --id_ass_protection_mecanique text NOT NULL, -- DEFAULT gen_random_uuid(), -- uuid par défaut peut-être retirer pour autre identifiant
-  type_protection text NOT NULL, -- * type de protection *
-  materiau text NOT NULL, -- * materiau constitutif de la protection*
+  type_protection text NOT NULL DEFAULT 'non_renseigne'::text, -- * type de protection *
+  materiau text NOT NULL DEFAULT 'nr'::text, -- * materiau constitutif de la protection*
   geom public.geometry(linestring, 2154) NOT NULL,
   CONSTRAINT pk_ass_protect_meca PRIMARY KEY (fid)
 )
@@ -232,10 +232,10 @@ CREATE TABLE "stareau_commun".pluviometre (
   id_pluviometre text NOT NULL UNIQUE DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
 --id_pluviometre INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto,
 --id_pluviometre text NOT NULL,
-  type_pluviometre text NOT NULL, -- type de pluviometre*
+  type_pluviometre text NOT NULL DEFAULT 'non_renseigne'::text, -- type de pluviometre*
   nom_usuel text NOT NULL, -- nom usuel
   ref_meteo_france text NULL, -- référence MétéoFrance
-  telegestion text NOT NULL,
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- télégestion (com_oui_non)
   geom public.geometry(point, 2154) NOT NULL,
   CONSTRAINT pk_pluviometre PRIMARY KEY (fid)
 )
@@ -289,8 +289,8 @@ CREATE TABLE "stareau_commun".point_geolocalisation (
   --id_point_geolocalisation INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_point_geolocalisation TEXT NOT NULL,  -- ou INT -- pour personnalisation ou récupération de l'id existant
   z_objet float4 NULL, -- cote altimétrique de l'objet
-  reference_z text NOT NULL, -- lieu de lever du Z*
-  mode_lever text NOT NULL, -- mode de lever*
+  reference_z text NOT NULL DEFAULT 'non_renseigne'::text, -- lieu de lever du Z*
+  mode_lever text NOT NULL DEFAULT 'non_renseigne'::text, -- mode de lever*
   date_lever timestamp NULL, -- date du lever
   mesure_precision_xy float4 NULL, -- qualité précision GPS HRMS en cm/m
   mesure_precision_z float4 NULL, -- qualité précision GPS HRMS en cm/m

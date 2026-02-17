@@ -30,11 +30,11 @@
 
 CREATE TABLE "stareau_aep".aep_canalisation (
   id_aep_canalisation text null, -- pour id_existant
-  fonction_canalisation text NOT NULL, -- >fonction canalisation dans le réseau
-  contenu_canalisation text NOT NULL, -- >type d'eau transportée
+  fonction_canalisation text NOT NULL DEFAULT 'non_renseigne'::text, -- >fonction canalisation dans le réseau
+  contenu_canalisation text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'eau transportée
   protection_cathodique text NULL, -- >presence protection cathodique
   etage_pression text NULL, -- reference etage de pression
-  type_pression text NOT NULL, -- >pression de distribution
+  type_pression text NOT NULL DEFAULT 'non_renseigne'::text, -- >pression de distribution
   secteur_hydraulique text NULL, -- secteur ou ilot de distribution
   ref_udi text NULL, -- référence unité de distribution (référence ARS)
   cote_debut float4 NULL, -- cote de la génératrice superieure
@@ -63,9 +63,9 @@ COMMENT ON COLUMN "stareau_aep".aep_canalisation.type_pression IS '*type de pres
 CREATE TABLE "stareau_aep".aep_captage (
   id_aep_captage TEXT NULL,
   nom_usuel text NULL, -- nom d'usage
-  type_captage text NOT NULL, -- type de captage
+  type_captage text NOT NULL DEFAULT 'non_renseigne'::text, -- type de captage
   nom_ressource text NULL, -- nom ressource
-  type_ressource text NOT NULL, -- type de ressource
+  type_ressource text NOT NULL DEFAULT 'non_renseigne'::text, -- type de ressource
   ref_aac text NULL, -- reference aire alimentation captage
   ref_dup text NULL, -- référence arrêté autorisation
   ref_bss text NULL, -- référence Banque Sous Sol -brgm
@@ -93,13 +93,13 @@ COMMENT ON COLUMN "stareau_aep".aep_captage.debit_max_autorise IS 'Débit max au
 CREATE TABLE "stareau_aep".aep_reservoir (
   id_aep_reservoir TEXT NULL,
   nom_usuel text NULL, -- nom d'usage
-  type_reservoir text NOT NULL, -- >type réservoir
+  type_reservoir text NOT NULL DEFAULT 'non_renseigne'::text, -- >type réservoir
   nb_cuves int2 NOT NULL DEFAULT 1, -- nombre de cuves
   volume_utile int2 NULL, -- volume total utile m3
   cote_sol float4 NULL, -- cote NGF sol du reservoir
   cote_radier float4 NULL, -- cote NGF du fond de cuve la plus basse
   cote_trop_plein float4 NULL, -- cote NGF du trop-plein
-  telegestion text NOT NULL,-- >présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text,-- >présence d'une gestion à distance
   CONSTRAINT pk_aep_reservoir PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
@@ -123,11 +123,11 @@ COMMENT ON COLUMN "stareau_aep".aep_reservoir.telegestion IS '*présence d''une 
 CREATE TABLE "stareau_aep".aep_traitement (
   id_aep_traitement TEXT NULL,
   nom_usuel text NULL, -- nom d'usage
-  fonction_traitement text NOT NULL, -- >fonction traitement
-  type_desinfection text NOT NULL, -- >type désinfection
+  fonction_traitement text NOT NULL DEFAULT 'non_renseigne'::text, -- >fonction traitement
+  type_desinfection text NOT NULL DEFAULT 'non_renseigne'::text, -- >type désinfection
   capacite float4 NULL, -- capacité de traitement m3/j
   debit_ref float4 NULL, -- débit de référence m3/j
-  telegestion text NOT NULL, -- >présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- >présence d'une gestion à distance
   CONSTRAINT pk_aep_traitement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -148,13 +148,13 @@ COMMENT ON COLUMN "stareau_aep".aep_traitement.telegestion IS '*présence d''une
 CREATE TABLE stareau_aep.aep_point_mesure (
   id_aep_point_mesure TEXT NULL,
   nom_usuel text NULL,
-  type_point_mesure text NOT NULL, -- *type point de mesure*
-  fonction_point_mesure text NOT NULL, -- *fonction point de mesure*
+  type_point_mesure text NOT NULL DEFAULT 'non_renseigne'::text, -- *type point de mesure*
+  fonction_point_mesure text NOT NULL DEFAULT 'non_renseigne'::text, -- *fonction point de mesure*
   calibre float4 NULL, -- calibre/diametre
   annee_fabrication int4 NULL, -- année fabrication
   marque text NULL, -- marque compteur
   numero_serie text NULL, -- numéro série
-  telegestion text NOT NULL,-- >présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text,-- >présence d'une gestion à distance
   CONSTRAINT pk_aep_point_mesure PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
@@ -174,14 +174,14 @@ COMMENT ON COLUMN stareau_aep.aep_point_mesure.telegestion IS '*présence d''une
 
 CREATE TABLE "stareau_aep".aep_vanne (
   id_aep_vanne TEXT NULL,
-  type_vanne text NOT NULL, -- type_vanne
-  fonction_vanne text NOT NULL, -- fonction vanne
+  type_vanne text NOT NULL DEFAULT 'non_renseigne'::text, -- type_vanne
+  fonction_vanne text NOT NULL DEFAULT 'non_renseigne'::text, -- fonction vanne
   diametre float4 NULL, -- diametre nominal
-  sens_fermeture text NOT NULL, -- sens fermeture
-  etat_ouverture text NOT NULL, -- état ouverture
-  blocage text NOT NULL, --vanne bloquée
-  motorisation text NOT NULL, -- motorisation
-  telegestion text NOT NULL,-- Présence d'une gestion à distance
+  sens_fermeture text NOT NULL DEFAULT 'non_renseigne'::text, -- sens fermeture
+  etat_ouverture text NOT NULL DEFAULT 'non_renseigne'::text, -- état ouverture
+  blocage text NOT NULL DEFAULT 'non_renseigne'::text, --vanne bloquée
+  motorisation text NOT NULL DEFAULT 'non_renseigne'::text, -- motorisation
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text,-- Présence d'une gestion à distance
   CONSTRAINT pk_aep_vanne PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -204,14 +204,14 @@ COMMENT ON COLUMN "stareau_aep".aep_vanne.telegestion IS '*présence d''une gest
 CREATE TABLE "stareau_aep".aep_regulation (
   id_aep_regulation TEXT NULL,
   nom_usuel text NULL, -- nom usage
-  type_regulation text NOT NULL, -- type régulation*
-  type_consigne text NOT NULL, -- type consigne*
+  type_regulation text NOT NULL DEFAULT 'non_renseigne'::text, -- type régulation*
+  type_consigne text NOT NULL DEFAULT 'non_renseigne'::text, -- type consigne*
   consigne_amont float4 NULL, -- consigne en amont
   consigne_aval float4 NULL, -- consigne en aval
   marque text NULL, -- marque de l'appareil
   diametre float4 NULL, -- diametre nominal
   annee_fabrication int2 NULL, -- année de fabrication
-  telegestion text NOT NULL,-- telegestion/telereleve*
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text,-- telegestion/telereleve*
   CONSTRAINT pk_aep_regulation PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -233,11 +233,11 @@ COMMENT ON COLUMN "stareau_aep".aep_regulation.telegestion IS '*présence d''une
 CREATE TABLE "stareau_aep".aep_pompage (
   id_aep_pompage TEXT NULL, -- identifiant
   nom_usuel text NULL, -- nom d'usage
-  fonction_pompage text NOT NULL, -- >fonction du pompage
-  installation_pompage text NOT NULL, -- >mode installation
+  fonction_pompage text NOT NULL DEFAULT 'non_renseigne'::text, -- >fonction du pompage
+  installation_pompage text NOT NULL DEFAULT 'non_renseigne'::text, -- >mode installation
   nb_pompes int2 null default 1, -- nombre de pompes
   capacite float4 NULL, -- capacite nominale de pompage m3/j
-  telegestion text NOT NULL,-- Présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text,-- Présence d'une gestion à distance
   CONSTRAINT pk_aep_pompage PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -255,9 +255,9 @@ COMMENT ON COLUMN "stareau_aep".aep_pompage.telegestion IS '*présence d''une ge
 --APPAREILLAGE
 CREATE TABLE "stareau_aep".aep_appareillage (
   id_aep_appareillage TEXT NULL,
-  type_appareillage text NOT NULL, -- >type d'appariellage
+  type_appareillage text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'appariellage
   diametre float4 NULL, -- diametre nominal
-  telegestion text NOT NULL, -- Présence d'une gestion à distance
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text, -- Présence d'une gestion à distance
   CONSTRAINT pk_noeud_reseau PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -274,10 +274,10 @@ COMMENT ON COLUMN "stareau_aep".aep_appareillage.telegestion IS '*Présence d''u
 
 CREATE TABLE stareau_aep.aep_station_alerte (
   fid INT GENERATED BY DEFAULT AS IDENTITY, -- feature id entier correspondant au modèle SIG
-  id_aep_station_alerte TEXT NULL, -- identifiant
+  id_aep_station_alerte TEXT NULL DEFAULT 'non_renseigne'::text, -- identifiant
   nom_usuel text NULL, -- nom d'usage
-  telegestion text NOT NULL,
-  geom public.geometry(point, 2154) NOT NULL,
+  telegestion text NOT NULL DEFAULT 'non_renseigne'::text,
+  geom public.geometry(point, 2154) NOT NULL DEFAULT 'non_renseigne'::text,
   CONSTRAINT pk_aep_station_alerte PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
@@ -294,7 +294,7 @@ COMMENT ON COLUMN stareau_aep.aep_station_alerte.telegestion IS '*Présence d''u
 
 CREATE TABLE "stareau_aep".aep_piece (
   id_aep_piece TEXT NULL,
-  type_piece text NOT NULL, -- > type de pièce
+  type_piece text NOT NULL DEFAULT 'non_renseigne'::text, -- > type de pièce
   CONSTRAINT pk_aep_piece PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
@@ -312,7 +312,7 @@ CREATE TABLE "stareau_aep".aep_piece_hors_topo (
   id_aep_pieceht text NOT NULL DEFAULT gen_random_uuid(), ---- >=PG13 uuid par défaut peut-être retirer pour autre identifiant
   --id_aep_pieceht INT GENERATED ALWAYS AS IDENTITY, -- id numerique à numérotation auto
   --id_aep_pieceht TEXT NOT NULL,  -- ou INT -- pour personnalisation ou récupération de l'id existant
-  type_piece text NOT NULL, -- > type de pièce
+  type_piece text NOT NULL DEFAULT 'non_renseigne'::text, -- > type de pièce
   ref_canalisation text NULL, -- référence à la conduite de rattachement
   geom public.geometry(point, 2154) NOT NULL,
   CONSTRAINT aep_piece_ht_pk PRIMARY KEY (fid)

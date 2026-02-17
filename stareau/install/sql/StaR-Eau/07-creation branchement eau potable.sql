@@ -31,8 +31,8 @@
 
 CREATE TABLE "stareau_aep_brcht".aep_canalisation_branchement (
   id_aep_canalisation_branchement text null,
-  fonction_canalisation text NOT NULL, -- >fonction du branchement
-  contenu_canalisation text NOT NULL, -- >type d'eau transportée
+  fonction_canalisation text NOT NULL DEFAULT 'non_renseigne'::text, -- >fonction du branchement
+  contenu_canalisation text NOT NULL DEFAULT 'non_renseigne'::text, -- >type d'eau transportée
   protection_cathodique text NULL, -- >presence protection cathodique
   cote_debut float4 NULL, -- cote de la génératrice superieure
   cote_fin float4 NULL, -- cote génératrice supérieure
@@ -52,8 +52,8 @@ COMMENT ON COLUMN "stareau_aep_brcht".aep_canalisation_branchement.cote_fin IS '
 
 CREATE TABLE "stareau_aep_brcht".aep_point_livraison (
   id_point_livraison text NULL,
-  type_point_livraison text NOT NULL, -- >type point livraison
-  type_usager text NOT NULL, -- >type usager desservis
+  type_point_livraison text NOT NULL DEFAULT 'non_renseigne'::text, -- >type point livraison
+  type_usager text NOT NULL DEFAULT 'non_renseigne'::text, -- >type usager desservis
   ref_externe text NULL, -- référence externe (sdis, exploitation...)
   ref_client text NULL, -- référence client
   CONSTRAINT pk_aep_point_livraison PRIMARY KEY (fid)
@@ -90,7 +90,7 @@ COMMENT ON COLUMN stareau_aep_brcht.aep_raccord.ref_canalisation IS 'lien vers c
 
 CREATE TABLE stareau_aep_brcht.aep_piece_branchement (
   id_piece_branchement text NULL,
-  type_piece_branchement text NOT NULL, -- >type de pièce
+  type_piece_branchement text NOT NULL DEFAULT 'non_renseigne'::text, -- >type de pièce
   CONSTRAINT pk_aep_piece_brcht PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
@@ -104,10 +104,10 @@ COMMENT ON COLUMN stareau_aep_brcht.aep_piece_branchement.type_piece_branchement
 
 CREATE TABLE stareau_aep_brcht.aep_vanne_branchement (
   id_vanne_branchement text null,
-  type_vanne_branchement text NOT NULL, -- >type de vanne
+  type_vanne_branchement text NOT NULL DEFAULT 'non_renseigne'::text, -- >type de vanne
   diametre float4 NULL, -- diamètre nominale de la vanne
-  etat_ouverture text NOT NULL, -- >état d'ouverture
-  sens_fermeture text NOT NULL, -- >sens de fermeture
+  etat_ouverture text NOT NULL DEFAULT 'non_renseigne'::text, -- >état d'ouverture
+  sens_fermeture text NOT NULL DEFAULT 'non_renseigne'::text, -- >sens de fermeture
   CONSTRAINT pk_aep_vanne_brcht PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
