@@ -268,6 +268,9 @@ def test_processing_create(
             f"Le nombre de lignes de la table `stareau_valeur.{table}` n'est pas au moins égal à 4."
         )
 
+    # Close connection
+    db_connection.close()
+
 
 def test_processing_create_with_schema_name(
     db_connection: psycopg.Connection,
@@ -358,6 +361,10 @@ def test_processing_create_with_schema_name(
         """
     )
 
+    # Close connection
+    db_connection.close()
+
+
 def test_processing_create_with_crs(
     db_connection: psycopg.Connection,
     processing_provider: Provider,
@@ -403,6 +410,9 @@ def test_processing_create_with_crs(
             srid,
             f"Le SRID de {record[1]}.{record[2]} de la colonne {record[3]} devrait être {srid} au lieu de {record[5]}",
         )
+
+    # Close connection
+    db_connection.close()
 
 
 def test_processing_trigger(
@@ -625,6 +635,8 @@ def test_processing_trigger(
             case.assertEqual(record[7], nodes['ass_rega_0077750'][3])
             case.assertEqual(record[8], nodes['ass_rega_0077750'][4])
 
+    # Close connection
+    db_connection.close()
 
 @unittest.skip("not yet ready")
 def test_upgrade_from(
