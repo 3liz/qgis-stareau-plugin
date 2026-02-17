@@ -40,7 +40,6 @@ COMMENT ON TABLE "stareau_ass".ass_traitement IS 'Ensemble des installations cha
 -- Column comments
 COMMENT ON COLUMN "stareau_ass".ass_traitement.id_ass_traitement IS 'identifiant métier';
 COMMENT ON COLUMN "stareau_ass".ass_traitement.nom_usuel IS 'nom de l''ouvrage (nomouvragedepollution)';
-COMMENT ON COLUMN "stareau_ass".ass_traitement.nom_usuel IS 'nom de l''ouvrage (nomouvragedepollution)';
 COMMENT ON COLUMN "stareau_ass".ass_traitement.code_ouvrage_sandre IS 'code sandre de l''ouvrage (cdouvragedepollution)';
 COMMENT ON COLUMN "stareau_ass".ass_traitement.techno_traitement IS '*technologie du traitement*';
 COMMENT ON COLUMN "stareau_ass".ass_traitement.capacite_nominale IS 'capacité nominale du traitement (capaciteNom)';
