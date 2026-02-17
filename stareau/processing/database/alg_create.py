@@ -247,6 +247,10 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                 ('non_determine', 'Non déterminé(e)', 'information inconnue ou non disponible et ne peut pas l\'être'),
                 ('autre', 'Autre', 'ne figure pas dans la liste ci-dessus. cf. commentaire')
             ]
+            if table_name == 'com_precision':
+                additional_values = [
+                    ('N', 'Non renseigné(e)', 'information en recherche ou disponible mais non saisie'),
+                ]
             for row in additional_values:
                 values.append(
                     f"("
