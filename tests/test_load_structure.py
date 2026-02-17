@@ -438,12 +438,12 @@ def test_processing_trigger(
             forme, id_ass_regard, type_regard, materiau, position, type_descente
         ) VALUES (
             'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
-            '', '', -9999, NOW(), 'non_renseigne', NOW(),
+            'C', 'C', -9999, NOW(), 'non_renseigne', NOW(),
             St_SetSRID(ST_MakePoint(770192.899, 6280461.411), 2154),
             'non_renseigne', 'ass_rega_0034073', 'non_renseigne', 'nr', 'non_renseigne', 'non_renseigne'
         ), (
             'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
-            '', '', -9999, NOW(), 'non_renseigne', NOW(),
+            'C', 'C', -9999, NOW(), 'non_renseigne', NOW(),
             St_SetSRID(ST_MakePoint(770200.024, 6280431.888), 2154),
             'non_renseigne', 'ass_rega_0030456', 'non_renseigne', 'nr', 'non_renseigne', 'non_renseigne'
         );
@@ -479,13 +479,13 @@ def test_processing_trigger(
             forme, id_ass_canalisation, fonction_canalisation, contenu_canalisation, visitable
         ) VALUES (
             'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
-            '', '', -9999, NOW(), 'non_renseigne', NOW(),
+            'C', 'C', -9999, NOW(), 'non_renseigne', NOW(),
             ST_GeomFromText('LINESTRING(770192.9 6280461.4, 770200.0 6280431.9)', 2154),
             'gravitaire', 'non_renseigne', 'non_renseigne', 'beton', 'non_renseigne', 1800,
             'non_renseigne', 'ass_cana_0001774', 'non_renseigne', 'non_renseigne', 'non_renseigne'
         ), (
             'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
-            '', '', -9999, NOW(), 'non_renseigne', NOW(),
+            'C', 'C', -9999, NOW(), 'non_renseigne', NOW(),
             ST_GeomFromText('LINESTRING(770200.0 6280431.9, 770223.974 6280429.045)', 2154),
             'gravitaire', 'non_renseigne', 'non_renseigne', 'beton', 'non_renseigne', 1800,
             'non_renseigne', 'ass_cana_0001775_v', 'non_renseigne', 'non_renseigne', 'non_renseigne'
@@ -529,7 +529,7 @@ def test_processing_trigger(
             forme, id_ass_regard, type_regard, materiau, position, type_descente
         ) VALUES (
             'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
-            '', '', -9999, NOW(), 'non_renseigne', NOW(),
+            'C', 'C', -9999, NOW(), 'non_renseigne', NOW(),
             St_SetSRID(ST_MakePoint(770223.9, 6280429.0), 2154),
             'non_renseigne', 'ass_rega_0077750', 'non_renseigne', 'nr', 'non_renseigne', 'non_renseigne'
         );
