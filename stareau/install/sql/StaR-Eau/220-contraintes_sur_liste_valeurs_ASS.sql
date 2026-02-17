@@ -102,6 +102,7 @@ ALTER TABLE stareau_ass.ass_gestion_epl_ligne ADD CONSTRAINT ass_gestion_epl_lig
 ALTER TABLE stareau_ass.ass_gestion_epl_ligne ADD CONSTRAINT ass_gestion_epl_ligne_forme_fk FOREIGN KEY (forme) REFERENCES stareau_valeur.com_forme(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_ligne ADD CONSTRAINT ass_gestion_epl_ligne_type_gestion_epl_fk FOREIGN KEY (type_gestion_epl) REFERENCES stareau_valeur.ass_type_gestion_epl(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_ligne ADD CONSTRAINT ass_gestion_epl_ligne_fonction_gestion_epl_fk FOREIGN KEY (fonction_gestion_epl) REFERENCES stareau_valeur.ass_fonction_gestion_epl(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_gestion_epl_ligne ADD CONSTRAINT ass_gestion_epl_ligne_telegestion_fk FOREIGN KEY (telegestion) REFERENCES stareau_valeur.com_oui_non(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_point_type_reseau_fk FOREIGN KEY (type_reseau) REFERENCES stareau_valeur.com_type_reseau(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_point_etat_service_fk FOREIGN KEY (etat_service) REFERENCES stareau_valeur.com_etat_service(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_point_precision_xy_fk FOREIGN KEY (precision_xy) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
@@ -111,6 +112,7 @@ ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_poi
 ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_point_forme_fk FOREIGN KEY (forme) REFERENCES stareau_valeur.com_forme(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_point_type_gestion_epl_fk FOREIGN KEY (type_gestion_epl) REFERENCES stareau_valeur.ass_type_gestion_epl(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_point_fonction_gestion_epl_fk FOREIGN KEY (fonction_gestion_epl) REFERENCES stareau_valeur.ass_fonction_gestion_epl(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_gestion_epl_point ADD CONSTRAINT ass_gestion_epl_point_telegestion_fk FOREIGN KEY (telegestion) REFERENCES stareau_valeur.com_oui_non(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_surface_type_reseau_fk FOREIGN KEY (type_reseau) REFERENCES stareau_valeur.com_type_reseau(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_surface_etat_service_fk FOREIGN KEY (etat_service) REFERENCES stareau_valeur.com_etat_service(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_surface_precision_xy_fk FOREIGN KEY (precision_xy) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
@@ -120,12 +122,18 @@ ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_s
 ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_surface_forme_fk FOREIGN KEY (forme) REFERENCES stareau_valeur.com_forme(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_surface_type_gestion_epl_fk FOREIGN KEY (type_gestion_epl) REFERENCES stareau_valeur.ass_type_gestion_epl(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_surface_fonction_gestion_epl_fk FOREIGN KEY (fonction_gestion_epl) REFERENCES stareau_valeur.ass_fonction_gestion_epl(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_gestion_epl_surface ADD CONSTRAINT ass_gestion_epl_surface_telegestion_fk FOREIGN KEY (telegestion) REFERENCES stareau_valeur.com_oui_non(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_type_reseau_fk FOREIGN KEY (type_reseau) REFERENCES stareau_valeur.com_type_reseau(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_etat_service_fk FOREIGN KEY (etat_service) REFERENCES stareau_valeur.com_etat_service(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_precision_xy_fk FOREIGN KEY (precision_xy) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_precision_z_fk FOREIGN KEY (precision_z) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_origine_creation_fk FOREIGN KEY (origine_creation) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_origine_maj_fk FOREIGN KEY (origine_maj) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_mode_circulation_fk FOREIGN KEY (mode_circulation) REFERENCES stareau_valeur.com_mode_circulation(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_type_pose_fk FOREIGN KEY (type_pose) REFERENCES stareau_valeur.com_type_pose(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_raison_pose_fk FOREIGN KEY (raison_pose) REFERENCES stareau_valeur.com_raison_pose(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_materiau_fk FOREIGN KEY (materiau) REFERENCES stareau_valeur.com_materiau(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_revetement_interieur_fk FOREIGN KEY (revetement_interieur) REFERENCES stareau_valeur.com_revetement_interieur(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_forme_fk FOREIGN KEY (forme) REFERENCES stareau_valeur.com_forme(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_ligne ADD CONSTRAINT ass_ouvrage_special_ligne_type_ouvrage_special_fk FOREIGN KEY (type_ouvrage_special) REFERENCES stareau_valeur.ass_type_ouvrage_special(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_point ADD CONSTRAINT ass_ouvrage_special_point_type_reseau_fk FOREIGN KEY (type_reseau) REFERENCES stareau_valeur.com_type_reseau(code) ON UPDATE CASCADE;
@@ -142,6 +150,7 @@ ALTER TABLE stareau_ass.ass_ouvrage_special_surface ADD CONSTRAINT ass_ouvrage_s
 ALTER TABLE stareau_ass.ass_ouvrage_special_surface ADD CONSTRAINT ass_ouvrage_special_surface_precision_z_fk FOREIGN KEY (precision_z) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_surface ADD CONSTRAINT ass_ouvrage_special_surface_origine_creation_fk FOREIGN KEY (origine_creation) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_surface ADD CONSTRAINT ass_ouvrage_special_surface_origine_maj_fk FOREIGN KEY (origine_maj) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_ouvrage_special_surface ADD CONSTRAINT ass_ouvrage_special_surface_visible_fk FOREIGN KEY (visible) REFERENCES stareau_valeur.com_oui_non(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_surface ADD CONSTRAINT ass_ouvrage_special_surface_forme_fk FOREIGN KEY (forme) REFERENCES stareau_valeur.com_forme(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_ouvrage_special_surface ADD CONSTRAINT ass_ouvrage_special_surface_type_ouvrage_special_fk FOREIGN KEY (type_ouvrage_special) REFERENCES stareau_valeur.ass_type_ouvrage_special(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_perimetre_gestion ADD CONSTRAINT ass_perimetre_gestion_etat_service_fk FOREIGN KEY (etat_service) REFERENCES stareau_valeur.com_etat_service(code) ON UPDATE CASCADE;
@@ -181,7 +190,7 @@ ALTER TABLE stareau_ass.ass_point_prelevement ADD CONSTRAINT ass_point_preleveme
 ALTER TABLE stareau_ass.ass_point_prelevement ADD CONSTRAINT ass_point_prelevement_precision_z_fk FOREIGN KEY (precision_z) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_point_prelevement ADD CONSTRAINT ass_point_prelevement_origine_creation_fk FOREIGN KEY (origine_creation) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_point_prelevement ADD CONSTRAINT ass_point_prelevement_origine_maj_fk FOREIGN KEY (origine_maj) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
-ALTER TABLE stareau_ass.ass_point_prelevement ADD CONSTRAINT ass_point_prelevement_type_point_mesure_fk FOREIGN KEY (type_point_prelevement) REFERENCES stareau_valeur.ass_type_point_prelevement(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_ass.ass_point_prelevement ADD CONSTRAINT ass_point_prelevement_type_point_prelevement_fk FOREIGN KEY (type_point_prelevement) REFERENCES stareau_valeur.ass_type_point_prelevement(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_point_prelevement ADD CONSTRAINT ass_point_prelevement_code_sandre_fk FOREIGN KEY (code_sandre) REFERENCES stareau_valeur.ass_code_sandre(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_pompage ADD CONSTRAINT ass_pompage_type_reseau_fk FOREIGN KEY (type_reseau) REFERENCES stareau_valeur.com_type_reseau(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_ass.ass_pompage ADD CONSTRAINT ass_pompage_etat_service_fk FOREIGN KEY (etat_service) REFERENCES stareau_valeur.com_etat_service(code) ON UPDATE CASCADE;

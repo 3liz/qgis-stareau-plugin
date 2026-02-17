@@ -37,6 +37,7 @@ ALTER TABLE stareau_commun.pluviometre ADD CONSTRAINT pluviometre_precision_xy_f
 ALTER TABLE stareau_commun.pluviometre ADD CONSTRAINT pluviometre_precision_z_fk FOREIGN KEY (precision_z) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_commun.pluviometre ADD CONSTRAINT pluviometre_origine_creation_fk FOREIGN KEY (origine_creation) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_commun.pluviometre ADD CONSTRAINT pluviometre_origine_maj_fk FOREIGN KEY (origine_maj) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_commun.pluviometre ADD CONSTRAINT pluviometre_type_pluviometre_fk FOREIGN KEY (type_pluviometre) REFERENCES stareau_valeur.com_type_pluviometre(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_commun.pluviometre ADD CONSTRAINT pluviometre_telegestion_fk FOREIGN KEY (telegestion) REFERENCES stareau_valeur.com_oui_non(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalisation_type_reseau_fk FOREIGN KEY (type_reseau) REFERENCES stareau_valeur.com_type_reseau(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalisation_etat_service_fk FOREIGN KEY (etat_service) REFERENCES stareau_valeur.com_etat_service(code) ON UPDATE CASCADE;
@@ -44,6 +45,8 @@ ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalis
 ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalisation_precision_z_fk FOREIGN KEY (precision_z) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalisation_origine_creation_fk FOREIGN KEY (origine_creation) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalisation_origine_maj_fk FOREIGN KEY (origine_maj) REFERENCES stareau_valeur.com_origine(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalisation_reference_z_fk FOREIGN KEY (reference_z) REFERENCES stareau_valeur.com_reference_z(code) ON UPDATE CASCADE;
+ALTER TABLE stareau_commun.point_geolocalisation ADD CONSTRAINT point_geolocalisation_mode_lever_fk FOREIGN KEY (mode_lever) REFERENCES stareau_valeur.com_mode_lever(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_principale.canalisation ADD CONSTRAINT canalisation_type_reseau_fk FOREIGN KEY (type_reseau) REFERENCES stareau_valeur.com_type_reseau(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_principale.canalisation ADD CONSTRAINT canalisation_etat_service_fk FOREIGN KEY (etat_service) REFERENCES stareau_valeur.com_etat_service(code) ON UPDATE CASCADE;
 ALTER TABLE stareau_principale.canalisation ADD CONSTRAINT canalisation_precision_xy_fk FOREIGN KEY (precision_xy) REFERENCES stareau_valeur.com_precision(code) ON UPDATE CASCADE;
