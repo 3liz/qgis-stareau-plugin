@@ -74,7 +74,7 @@ COMMENT ON COLUMN "stareau_aep_brcht".aep_point_livraison.type_usager IS '*type 
 CREATE TABLE stareau_aep_brcht.aep_raccord (
   id_raccord text null,
 --type_raccord text NULL, -- > type de raccord
-  ref_canalisation text NOT NULL, -- lien vers canalisation
+  ref_canalisation text NULL, -- lien vers canalisation
   CONSTRAINT pk_aep_raccord_brcht PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.noeud_reseau);
