@@ -389,6 +389,124 @@ COMMENT ON FUNCTION stareau.after_noeud_reseau_insert_or_update() IS
 en assignant la valeur ''non_renseigne'' pour le noeud supprimé.
 ';
 
+-- ass_downstream(text)
+CREATE FUNCTION stareau.ass_downstream(id_noeud_reseau text)
+    RETURNS TABLE (
+        idx integer,
+        fid_canalisation integer,
+        fid_noeudinitial integer,
+        id_noeudinitial text,
+        fid_noeudterminal integer,
+        id_noeudterminal text
+    )
+    LANGUAGE plpgsql AS
+    $func$
+    BEGIN
+        RETURN QUERY EXECUTE
+        format(
+        $$
+            WITH RECURSIVE walk_network(
+                idx, fid_canalisation,
+                fid_noeudinitial, id_noeudinitial,
+                fid_noeudterminal, id_noeudterminal,
+                all_parents
+            ) AS (
+                SELECT 1 AS idx, c.fid,
+                    ni.fid, c.noeudinitial,
+                    nt.fid, c.noeudterminal,
+                    array[c.fid] as all_parents
+                FROM stareau_principale.canalisation AS c
+                JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
+                JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
+                WHERE c.type_reseau <> 'aep'
+                AND ni.type_reseau <> 'aep'
+                AND ni.id_noeud_reseau = '%1$s'
+                UNION
+                SELECT w.idx+1 AS idx, c.fid,
+                    ni.fid, c.noeudinitial,
+                    nt.fid, c.noeudterminal,
+                    w.all_parents || c.fid
+                FROM stareau_principale.canalisation AS c
+                JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
+                JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
+                JOIN walk_network AS w ON ni.fid = w.fid_noeudterminal
+                WHERE TRUE
+                AND c.fid <> ALL (w.all_parents)
+            )
+            SELECT idx, fid_canalisation, fid_noeudinitial, id_noeudinitial, fid_noeudterminal, id_noeudterminal
+            FROM walk_network
+            ORDER BY idx
+        $$,
+        id_noeud_reseau
+        );
+    END
+    $func$;
+
+-- FUNCTION ass_downstream(text)
+COMMENT ON FUNCTION stareau.ass_downstream(id_noeud_reseau text) IS
+'Fonction de parcours du réseau en aval d''un noeud de réseau ASS.
+Retourne les canalisations et les noeuds de réseau en aval du noeud de réseau passé en paramètre.
+';
+
+-- ass_upstream(text)
+CREATE FUNCTION stareau.ass_upstream(id_noeud_reseau text)
+    RETURNS TABLE (
+        idx integer,
+        fid_canalisation integer,
+        fid_noeudinitial integer,
+        id_noeudinitial text,
+        fid_noeudterminal integer,
+        id_noeudterminal text
+    )
+    LANGUAGE plpgsql AS
+    $func$
+    BEGIN
+        RETURN QUERY EXECUTE
+        format(
+        $$
+            WITH RECURSIVE walk_network(
+                idx, fid_canalisation,
+                fid_noeudinitial, id_noeudinitial,
+                fid_noeudterminal, id_noeudterminal,
+                all_parents
+            ) AS (
+                SELECT 1 AS idx, c.fid,
+                    ni.fid, c.noeudinitial,
+                    nt.fid, c.noeudterminal,
+                    array[c.fid] as all_parents
+                FROM stareau_principale.canalisation AS c
+                JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
+                JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
+                WHERE c.type_reseau <> 'aep'
+                AND nt.type_reseau <> 'aep'
+                AND nt.id_noeud_reseau = '%1$s'
+                UNION
+                SELECT w.idx+1 AS idx, c.fid,
+                    ni.fid, c.noeudinitial,
+                    nt.fid, c.noeudterminal,
+                    w.all_parents || c.fid
+                FROM stareau_principale.canalisation AS c
+                JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
+                JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
+                JOIN walk_network AS w ON nt.fid = w.fid_noeudinitial
+                WHERE TRUE
+                AND c.fid <> ALL (w.all_parents)
+            )
+            SELECT idx, fid_canalisation, fid_noeudinitial, id_noeudinitial, fid_noeudterminal, id_noeudterminal
+            FROM walk_network
+            ORDER BY idx
+        $$,
+        id_noeud_reseau
+        );
+    END
+    $func$;
+
+-- FUNCTION ass_upstream(text)
+COMMENT ON FUNCTION stareau.ass_upstream(id_noeud_reseau text) IS
+'Fonction de parcours du réseau en amnt d''un noeud de réseau ASS.
+Retourne les canalisations et les noeuds de réseau en amont du noeud de réseau passé en paramètre.
+';
+
 --
 -- PostgreSQL database dump complete
 --
