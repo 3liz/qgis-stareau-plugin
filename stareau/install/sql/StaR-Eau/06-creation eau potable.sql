@@ -43,6 +43,7 @@ CREATE TABLE "stareau_aep".aep_canalisation (
   CONSTRAINT pk_aep_canalisation PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
+CREATE INDEX sidx_aep_canalisation_geom ON stareau_aep.aep_canalisation USING gist (geom); --- indexation
 COMMENT ON TABLE "stareau_aep".aep_canalisation IS 'assemblage de tuyau, de leurs pièces et des ouvrages qui permet le transport des eaux entre deux points';
 
 -- Column comments
@@ -73,6 +74,7 @@ CREATE TABLE "stareau_aep".aep_captage (
   CONSTRAINT pk_aep_captage PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_captage_geom ON stareau_aep.aep_captage USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_captage IS 'Ouvrage de prélèvement exploitant une ressource en eau, que ce soit en surface (prise d''eau en rivière) ou dans le sous-sol (forage ou puits atteignant un aquifère';
 
 -- Column comments
@@ -103,6 +105,7 @@ CREATE TABLE "stareau_aep".aep_reservoir (
   CONSTRAINT pk_aep_reservoir PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
+CREATE INDEX sidx_aep_reservoir_geom ON stareau_aep.aep_reservoir USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_reservoir IS 'installation destinée au stockage de l''eau';
 
 -- Column comments
@@ -131,6 +134,7 @@ CREATE TABLE "stareau_aep".aep_traitement (
   CONSTRAINT pk_aep_traitement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_traitement_geom ON stareau_aep.aep_traitement USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_traitement IS 'ensemble des installations chargées de traiter les eaux brutes en vue de leur potabilisation et distribution';
 
 -- Column comments
@@ -185,6 +189,7 @@ CREATE TABLE "stareau_aep".aep_vanne (
   CONSTRAINT pk_aep_vanne PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_vanne_geom ON stareau_aep.aep_vanne USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_vanne IS 'Appareillage capable d''intercepter ou laisser libre le passage de l''eau dans le réseau, hors régulation.';
 
 
@@ -215,6 +220,7 @@ CREATE TABLE "stareau_aep".aep_regulation (
   CONSTRAINT pk_aep_regulation PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_regulation_geom ON stareau_aep.aep_regulation USING gist (geom);  ---indexation
 
 COMMENT ON TABLE "stareau_aep".aep_regulation IS 'appareil de régulation du débit ou de la pression';
 COMMENT ON COLUMN "stareau_aep".aep_regulation.id_aep_regulation IS 'identifiant métier';
@@ -241,6 +247,7 @@ CREATE TABLE "stareau_aep".aep_pompage (
   CONSTRAINT pk_aep_pompage PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_pompage_geom ON stareau_aep.aep_pompage USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_pompage IS 'ensemble des dispositifs permettant d''aspirer, de refouler ou de comprimer des eaux';
 
 -- Column comments
@@ -261,6 +268,7 @@ CREATE TABLE "stareau_aep".aep_appareillage (
   CONSTRAINT pk_noeud_reseau PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_appareillage_geom ON stareau_aep.aep_appareillage USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_appareillage IS 'Équipements divers sur le réseau d''eau potable non pris en compte dans les autres classes d''entités';
 
 -- Column comments
@@ -281,6 +289,7 @@ CREATE TABLE stareau_aep.aep_station_alerte (
   CONSTRAINT pk_aep_station_alerte PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
+CREATE INDEX sidx_aep_station_alerte_geom ON stareau_aep.aep_station_alerte USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_aep.aep_station_alerte IS 'Équipement permettant de déclencher une alerte en cas de pollution ou de dépassement de seuils';
 
 -- Column comments
@@ -298,6 +307,7 @@ CREATE TABLE "stareau_aep".aep_piece (
   CONSTRAINT pk_aep_piece PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_piece_geom ON stareau_aep.aep_piece USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_piece IS 'Pièces sur canalisation principale';
 
 -- Column comments
@@ -318,6 +328,7 @@ CREATE TABLE "stareau_aep".aep_piece_hors_topo (
   CONSTRAINT aep_piece_ht_pk PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
+CREATE INDEX sidx_aep_piece_hors_topo_geom ON stareau_aep.aep_piece_hors_topo USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep".aep_piece_hors_topo IS 'Pièces sur canalisations principales HORS TOPOLOGIE (pas sur un noeud réseau)';
 
 -- Column comments

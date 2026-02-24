@@ -39,6 +39,7 @@ CREATE TABLE "stareau_aep_brcht".aep_canalisation_branchement (
   CONSTRAINT pk_aep_cana_brcht PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
+CREATE INDEX sidx_aep_canalisation_branchement_geom ON stareau_aep_brcht.aep_canalisation_branchement USING gist (geom); --- indexation
 COMMENT ON TABLE "stareau_aep_brcht".aep_canalisation_branchement IS 'conduite et accessoire mis en oeuvre pour amener l''eau du réseau de desserte jusqu''au point de livraison à l''usager, à l''exception des conduites et accessoires privés des immeubles collectifs';
 
 -- Column comments
@@ -59,6 +60,7 @@ CREATE TABLE "stareau_aep_brcht".aep_point_livraison (
   CONSTRAINT pk_aep_point_livraison PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_aep_point_livraison_geom ON stareau_aep_brcht.aep_point_livraison USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_aep_brcht".aep_point_livraison IS 'point de livraison';
 
 -- Column comments

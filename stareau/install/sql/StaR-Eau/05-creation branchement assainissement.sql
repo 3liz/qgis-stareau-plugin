@@ -36,6 +36,7 @@ CREATE TABLE "stareau_ass_brcht".ass_canalisation_branchement (
   CONSTRAINT pk_ass_cana_brcht PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_canalisation_branchement_geom ON stareau_ass_brcht.ass_canalisation_branchement USING gist (geom); --- indexation
 COMMENT ON TABLE "stareau_ass_brcht".ass_canalisation_branchement IS 'Ensemble des éléments physiques assurant le raccordement entre le point de collecte et le réseau d’assainissement';
 
 -- Column comments
@@ -82,6 +83,7 @@ CREATE TABLE "stareau_ass_brcht".ass_raccord (
   CONSTRAINT pk_ass_raccord_brcht PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_ass_raccord_geom ON stareau_ass_brcht.ass_raccord USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass_brcht".ass_raccord IS 'pièce de raccordement sur la conduite principale';
 
 -- Column comments
@@ -100,6 +102,7 @@ CREATE TABLE stareau_ass_brcht.ass_engouffrement_point (
   CONSTRAINT pk_ass_engouf_pt PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_engouffrement_point_geom ON stareau_ass_brcht.ass_engouffrement_point USING gist (geom);  ---indexation
 
 -- Column comments
 
@@ -118,6 +121,7 @@ CREATE TABLE stareau_ass_brcht.ass_engouffrement_ligne (
   CONSTRAINT pk_ass_engouf_ln PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_engouffrement_ligne_geom ON stareau_ass_brcht.ass_engouffrement_ligne USING gist (geom); --- indexation
 
 -- Column comments
 COMMENT ON TABLE stareau_ass_brcht.ass_engouffrement_ligne IS 'Élément du système d’assainissement permettant l''introduction des eaux de ruissellement';
@@ -135,6 +139,7 @@ CREATE TABLE stareau_ass_brcht.ass_engouffrement_surface (
   CONSTRAINT pk_ass_engouf_sf PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_engouffrement_surface_geom ON stareau_ass_brcht.ass_engouffrement_surface USING gist (geom);  ---indexation
 
 -- Column comments
 COMMENT ON TABLE stareau_ass_brcht.ass_engouffrement_surface IS 'Élément du système d’assainissement permettant l''introduction des eaux de ruissellement';

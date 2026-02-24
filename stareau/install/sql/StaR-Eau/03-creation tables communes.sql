@@ -95,6 +95,7 @@ CREATE TABLE stareau_aep.aep_genie_civil(
   CONSTRAINT pk_aep_genie_civil PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise);
+CREATE INDEX sidx_aep_genie_civil_geom ON stareau_aep.aep_genie_civil USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_aep.aep_genie_civil IS 'enveloppe externe de génie civil';
 
 -- Column comments
@@ -114,6 +115,7 @@ CREATE TABLE stareau_ass.ass_genie_civil(
   CONSTRAINT pk_ass_genie_civil PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise);
+CREATE INDEX sidx_ass_genie_civil_geom ON stareau_ass.ass_genie_civil USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_genie_civil IS 'enveloppe externe de génie civil';
 
 -- Column comments
@@ -133,6 +135,7 @@ CREATE TABLE stareau_aep.aep_perimetre_gestion (
   CONSTRAINT pk_aep_perimetre_gestion PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise);
+CREATE INDEX sidx_aep_perimetre_gestion_geom ON stareau_aep.aep_perimetre_gestion USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_aep.aep_perimetre_gestion IS 'périmètre virtuel ou administratif autour des installations ou des ouvrages.';
 
 -- Column comments
@@ -152,6 +155,7 @@ CREATE TABLE stareau_ass.ass_perimetre_gestion (
   CONSTRAINT pk_ass_perimetre_gestion PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise);
+CREATE INDEX sidx_ass_perimetre_gestion_geom ON stareau_ass.ass_perimetre_gestion USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_perimetre_gestion IS 'périmètre virtuel ou administratif autour des installations ou des ouvrages.';
 
 -- Column comments
@@ -173,6 +177,7 @@ CREATE TABLE stareau_aep.aep_protection_mecanique (
   CONSTRAINT pk_aep_protect_meca PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun,stareau_principale.dimension);
+CREATE INDEX sidx_aep_protection_mecanique_geom ON stareau_aep.aep_protection_mecanique USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_aep.aep_protection_mecanique IS 'Construction dans laquelle les canalisations sont protégées et/ou guidées. (hors topologie)';
 
 -- Column comments
@@ -195,6 +200,7 @@ CREATE TABLE stareau_ass.ass_protection_mecanique (
   CONSTRAINT pk_ass_protect_meca PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun,stareau_principale.dimension);
+CREATE INDEX sidx_ass_protection_mecanique_geom ON stareau_ass.ass_protection_mecanique USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_protection_mecanique IS 'Construction dans laquelle les canalisations sont protégées et/ou guidées. (hors topologie)';
 
 -- Column comments
@@ -240,6 +246,7 @@ CREATE TABLE "stareau_commun".pluviometre (
   CONSTRAINT pk_pluviometre PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".champ_commun);
+CREATE INDEX sidx_pluviometre_geom ON stareau_commun.pluviometre USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_commun".pluviometre IS 'pluviometre';
 
 -- Column comments
@@ -268,6 +275,7 @@ CREATE TABLE "stareau_commun".piezometre (
   CONSTRAINT pk_piezometre PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".champ_commun);
+CREATE INDEX sidx_piezometre_geom ON stareau_commun.piezometre USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_commun".piezometre IS 'forage non exploité qui permet la mesure du niveau de l''eau souterraine en un point donné de la nappe';
 
 -- Column comments

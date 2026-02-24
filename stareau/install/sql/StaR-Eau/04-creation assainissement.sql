@@ -35,6 +35,7 @@ CREATE TABLE "stareau_ass".ass_traitement (
   CONSTRAINT pk_ass_traitement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_ass_traitement_geom ON stareau_ass.ass_traitement USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_traitement IS 'Ensemble des installations chargées de traiter les eaux collectées par le réseau de collecte des eaux usées avant rejet au milieu naturel et dans le respect de la réglementation.';
 
 -- Column comments
@@ -57,6 +58,7 @@ CREATE TABLE "stareau_ass".ass_pretraitement (
   CONSTRAINT pk_ass_pretraitement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_ass_pretraitement_geom ON stareau_ass.ass_pretraitement USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_pretraitement IS 'Les prétraitements ont pour objectif d''éliminer les éléments les plus grossiers. Il s''agit des déchets volumineux (dégrillage), des sables et graviers (dessablage) et des graisses (dégraissage-déshuilage).';
 
 -- Column comments
@@ -78,6 +80,7 @@ CREATE TABLE "stareau_ass".ass_equipement (
   CONSTRAINT pk_ass_equipement PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_ass_equipement_geom ON stareau_ass.ass_equipement USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_equipement IS 'Composant associé à un ouvrage, par installation, montage, liaison ou mise en œuvre pour son exploitation afin d’assurer la fonction qui lui est dévolue.';
 
 -- Column comments
@@ -104,6 +107,7 @@ CREATE TABLE "stareau_ass".ass_pompage (
   CONSTRAINT pk_ass_pompage PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_pompage_geom ON stareau_ass.ass_pompage USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_pompage IS 'Bâtiment, structures et équipements utilisés pour transférer les eaux usées par une conduite de relèvement ou tout autre dispositif de relevage.
 On distingue habituellement plusieurs types :
 • station de refoulement,
@@ -136,6 +140,7 @@ CREATE TABLE "stareau_ass".ass_chambre_depollution (
   CONSTRAINT pk_ass_chambre PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_chambre_depollution_geom ON stareau_ass.ass_chambre_depollution USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_chambre_depollution IS 'Une installation ou une structure conçue pour traiter ou réduire la charge polluante des eaux usées ou des effluents avant leur rejet dans l''environnement. Elle est généralement intégrée à un système d''assainissement pour améliorer la qualité des eaux avant qu''elles ne soient rejetées dans les cours d''eau ou les réseaux de collecte.';
 
 -- Column comments
@@ -162,6 +167,7 @@ CREATE TABLE "stareau_ass".ass_canalisation (
   CONSTRAINT pk_ass_canalisation PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_canalisation_geom ON stareau_ass.ass_canalisation USING gist (geom); --- indexation
 COMMENT ON TABLE "stareau_ass".ass_canalisation IS 'canalisation assainissement';
 
 -- Column comments
@@ -184,6 +190,7 @@ CREATE TABLE "stareau_ass".ass_piece (
   CONSTRAINT pk_ass_piece PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_ass_piece_geom ON stareau_ass.ass_piece USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_piece IS 'Pièces sur canalisations principales';
 
 -- Column comments
@@ -204,6 +211,7 @@ CREATE TABLE "stareau_ass".ass_piece_hors_topo (
   CONSTRAINT ass_piece_ht_pk PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
+CREATE INDEX sidx_ass_piece_hors_topo_geom ON stareau_ass.ass_piece_hors_topo USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_piece_hors_topo IS 'Pièces sur canalisations principales HORS TOPOLOGIE (pas sur un noeud réseau)';
 
 -- Column comments
@@ -230,6 +238,7 @@ CREATE TABLE "stareau_ass".ass_point_mesure (
   CONSTRAINT pk_ass_point_mesure PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
+CREATE INDEX sidx_ass_point_mesure_geom ON stareau_ass.ass_point_mesure USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_point_mesure IS 'Point de suivi remarquable du fonctionnement d''un ouvrage d''assainissement';
 
 -- Column comments
@@ -258,6 +267,7 @@ CREATE TABLE "stareau_ass".ass_regard (
   CONSTRAINT pk_ass_regard PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_regard_geom ON stareau_ass.ass_regard USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_regard IS 'enceinte munie d''un tampon amovible, réalisé sur un branchement ou un collecteur afin de permettre l''entrée du personnel';
 
 -- Column comments
@@ -281,6 +291,7 @@ CREATE TABLE stareau_ass.ass_exutoire (
   CONSTRAINT pk_ass_exutoire PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau);
+CREATE INDEX sidx_ass_exutoire_geom ON stareau_ass.ass_exutoire USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_exutoire IS 'Point de rejet dans le milieu récepteur';
 
 -- Column comments
@@ -304,6 +315,7 @@ CREATE TABLE stareau_ass.ass_point_prelevement (
 	CONSTRAINT pk_ass_point_prelevement PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun);
+CREATE INDEX sidx_ass_point_prelevement_geom ON stareau_ass.ass_point_prelevement USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_point_prelevement IS 'Emplacement spécifique où des échantillons d''effluents sont prélevés aux fins d''analyses et de tests.';
 
 -- Column comments
@@ -332,6 +344,7 @@ CREATE TABLE stareau_ass.ass_bassin (
   CONSTRAINT pk_ass_bassin PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_bassin_geom ON stareau_ass.ass_bassin USING gist (geom);  ---indexation
 
 COMMENT ON TABLE stareau_ass.ass_bassin IS 'Ouvrage retenant momentanément des eaux pendant les périodes pluvieuses, que ce soit des eaux pluviales seules ou un mélange d''eaux pluviales et d''eaux usées.';
 
@@ -367,6 +380,7 @@ CREATE TABLE stareau_ass.ass_gestion_epl_point (
 	CONSTRAINT pk_ass_gestion_epl_point PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun,stareau_principale.dimension);
+CREATE INDEX sidx_ass_gestion_epl_point_geom ON stareau_ass.ass_gestion_epl_point USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_gestion_epl_point IS 'gestion des ouvrages pluviaux ponctuels';
 
 -- Column comments
@@ -401,6 +415,7 @@ CREATE TABLE stareau_ass.ass_gestion_epl_ligne (
 	CONSTRAINT pk_ass_gestion_epl_ligne PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun,stareau_principale.dimension);
+CREATE INDEX sidx_ass_gestion_epl_ligne_geom ON stareau_ass.ass_gestion_epl_ligne USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_gestion_epl_ligne IS 'gestion des ouvrages pluviaux linéaires';
 
 -- Column comments
@@ -434,6 +449,7 @@ CREATE TABLE stareau_ass.ass_gestion_epl_surface (
 	CONSTRAINT pk_ass_gestion_epl_surface PRIMARY KEY (fid)
 )
 INHERITS (stareau_principale.champ_commun,stareau_principale.dimension);
+CREATE INDEX sidx_ass_gestion_epl_surface_geom ON stareau_ass.ass_gestion_epl_surface USING gist (geom);  ---indexation
 COMMENT ON TABLE stareau_ass.ass_gestion_epl_surface IS 'gestion des ouvrages pluviaux surfaciques';
 
 -- Column comments
@@ -459,6 +475,7 @@ CREATE TABLE "stareau_ass".ass_ouvrage_special_point (
   CONSTRAINT pk_ass_ouvrage_special_p PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".noeud_reseau,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_ouvrage_special_point_geom ON stareau_ass.ass_ouvrage_special_point USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_ouvrage_special_point IS 'Ouvrage particulier ne rentrant pas dans une autre classe d''entités - point';
 
 -- Column comments
@@ -476,6 +493,7 @@ CREATE TABLE "stareau_ass".ass_ouvrage_special_ligne (
   CONSTRAINT pk_ass_ouvrage_special_l PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_ouvrage_special_ligne_geom ON stareau_ass.ass_ouvrage_special_ligne USING gist (geom); --- indexation
 COMMENT ON TABLE "stareau_ass".ass_ouvrage_special_ligne IS 'Ouvrage particulier ne rentrant pas dans une autre classe d''entités_ligne';
 
 -- Column comments
@@ -493,6 +511,7 @@ CREATE TABLE "stareau_ass".ass_ouvrage_special_surface (
   CONSTRAINT pk_ass_ouvrage_special_s PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".emprise,"stareau_principale".dimension);
+CREATE INDEX sidx_ass_ouvrage_special_surface_geom ON stareau_ass.ass_ouvrage_special_surface USING gist (geom);  ---indexation
 COMMENT ON TABLE "stareau_ass".ass_ouvrage_special_surface IS 'Ouvrage particulier ne rentrant pas dans une autre classe d''entités_surface';
 
 -- Column comments
