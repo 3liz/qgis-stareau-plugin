@@ -40,6 +40,8 @@ CREATE TABLE "stareau_aep_brcht".aep_canalisation_branchement (
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 CREATE INDEX sidx_aep_canalisation_branchement_geom ON stareau_aep_brcht.aep_canalisation_branchement USING gist (geom); --- indexation
+CREATE INDEX idx_aep_canalisation_branchement_noeudterminal ON stareau_aep_brcht.aep_canalisation_branchement (noeudterminal); --- btree indexation
+CREATE INDEX idx_aep_canalisation_branchement_noeudinitial ON stareau_aep_brcht.aep_canalisation_branchement (noeudinitial); --- btree indexation
 COMMENT ON TABLE "stareau_aep_brcht".aep_canalisation_branchement IS 'conduite et accessoire mis en oeuvre pour amener l''eau du réseau de desserte jusqu''au point de livraison à l''usager, à l''exception des conduites et accessoires privés des immeubles collectifs';
 
 -- Column comments

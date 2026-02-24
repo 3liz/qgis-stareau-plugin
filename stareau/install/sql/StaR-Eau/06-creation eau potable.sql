@@ -44,6 +44,9 @@ CREATE TABLE "stareau_aep".aep_canalisation (
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 CREATE INDEX sidx_aep_canalisation_geom ON stareau_aep.aep_canalisation USING gist (geom); --- indexation
+CREATE INDEX idx_aep_canalisation_noeudterminal ON stareau_aep.aep_canalisation (noeudterminal); --- btree indexation
+CREATE INDEX idx_aep_canalisation_noeudinitial ON stareau_aep.aep_canalisation (noeudinitial); --- btree indexation
+CREATE INDEX idx_aep_canalisation_id ON stareau_aep.aep_canalisation (id_canalisation); --- btree indexation
 COMMENT ON TABLE "stareau_aep".aep_canalisation IS 'assemblage de tuyau, de leurs pièces et des ouvrages qui permet le transport des eaux entre deux points';
 
 -- Column comments

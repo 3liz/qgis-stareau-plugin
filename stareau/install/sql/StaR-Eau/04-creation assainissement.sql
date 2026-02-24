@@ -168,6 +168,8 @@ CREATE TABLE "stareau_ass".ass_canalisation (
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 CREATE INDEX sidx_ass_canalisation_geom ON stareau_ass.ass_canalisation USING gist (geom); --- indexation
+CREATE INDEX idx_ass_canalisation_noeudterminal ON stareau_ass.ass_canalisation (noeudterminal); --- btree indexation
+CREATE INDEX idx_ass_canalisation_noeudinitial ON stareau_ass.ass_canalisation (noeudinitial); --- btree indexation
 COMMENT ON TABLE "stareau_ass".ass_canalisation IS 'canalisation assainissement';
 
 -- Column comments

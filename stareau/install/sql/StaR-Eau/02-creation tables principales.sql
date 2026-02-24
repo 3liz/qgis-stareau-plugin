@@ -129,6 +129,8 @@ CREATE TABLE "stareau_principale".noeud_reseau (
 )
 INHERITS ("stareau_principale".champ_commun);
 CREATE INDEX sidx_noeud_geom ON stareau_principale.noeud_reseau USING gist (geom);  ---indexation
+CREATE INDEX idx_noeud_type_reseau ON stareau_principale.noeud_reseau (type_reseau); --- btree indexation
+CREATE INDEX idx_noeud_id_noeud ON stareau_principale.noeud_reseau (id_noeud_reseau); --- btree indexation
 
 COMMENT ON TABLE "stareau_principale".noeud_reseau IS 'table mère des éléments ponctuels';
 COMMENT ON COLUMN "stareau_principale".noeud_reseau.fid IS 'identifiant SIG';
@@ -156,6 +158,10 @@ CREATE TABLE "stareau_principale".canalisation (
 )
 INHERITS ("stareau_principale".champ_commun);
 CREATE INDEX sidx_canalisation_geom ON stareau_principale.canalisation USING gist (geom); --- indexation
+CREATE INDEX idx_canalisation_type_reseau ON stareau_principale.canalisation (type_reseau); --- btree indexation
+CREATE INDEX idx_canalisation_noeudterminal ON stareau_principale.canalisation (noeudterminal); --- btree indexation
+CREATE INDEX idx_canalisation_noeudinitial ON stareau_principale.canalisation (noeudinitial); --- btree indexation
+CREATE INDEX idx_canalisation_id ON stareau_principale.canalisation (id_canalisation); --- btree indexation
 
 COMMENT ON TABLE "stareau_principale".canalisation IS 'table mère des éléments linéaire';
 COMMENT ON COLUMN "stareau_principale".canalisation.fid IS 'identifiant SIG';

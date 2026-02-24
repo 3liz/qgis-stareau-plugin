@@ -37,6 +37,8 @@ CREATE TABLE "stareau_ass_brcht".ass_canalisation_branchement (
 )
 INHERITS ("stareau_principale".canalisation,"stareau_principale".dimension);
 CREATE INDEX sidx_ass_canalisation_branchement_geom ON stareau_ass_brcht.ass_canalisation_branchement USING gist (geom); --- indexation
+CREATE INDEX idx_ass_canalisation_branchement_noeudterminal ON stareau_ass_brcht.ass_canalisation_branchement (noeudterminal); --- btree indexation
+CREATE INDEX idx_ass_canalisation_branchement_noeudinitial ON stareau_ass_brcht.ass_canalisation_branchement (noeudinitial); --- btree indexation
 COMMENT ON TABLE "stareau_ass_brcht".ass_canalisation_branchement IS 'Ensemble des éléments physiques assurant le raccordement entre le point de collecte et le réseau d’assainissement';
 
 -- Column comments
