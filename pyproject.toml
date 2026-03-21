@@ -130,21 +130,17 @@ suppress-dummy-args = true
 python_version = "3.10"
 
 [[tool.mypy.overrides]]
-module = "qgis.*"
+module = [
+    "qgis.*",
+    "osgeo.*",
+    "processing.*",
+]
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = "osgeo.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "processing.*"
-ignore_missing_imports = true
 
 #
 # Coverage
 #
-
 [tool.coverage.run]
 source = ["stareau"]
 branch = true

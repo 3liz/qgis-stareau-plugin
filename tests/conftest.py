@@ -16,7 +16,7 @@ from .conftest_database import (  # noqa F401
     db_schema,
     processing_provider,
 )
-from .qgis_testing import load_plugin, install_logger_hook
+from .qgis_testing import install_logger_hook, load_plugin
 
 # with warnings.catch_warnings():
 #    warnings.filterwarnings("ignore", category=DeprecationWarning)

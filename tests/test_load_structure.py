@@ -19,7 +19,6 @@ from stareau.plugin_tools.resources import (
 from stareau.processing.database import CreateDatabaseStructure
 from stareau.processing.provider import Provider
 
-
 SCHEMAS = [
     "stareau",
     "stareau_commun",
@@ -181,7 +180,7 @@ TABLES_FOR_FIRST_VERSION["stareau_valeur"] = [
     "com_type_pose",
     "com_type_protection",
     "com_type_reseau",
-    "com_type_usager"
+    "com_type_usager",
 ]
 TABLES_FOR_FIRST_VERSION["stareau_defense_incendie"] = [
     "pei",
@@ -235,7 +234,7 @@ def test_processing_create(
         case.assertEqual(
             len(TABLES_FOR_FIRST_VERSION[db_schema]),
             records[0][0],
-            f"Le nombre de table du schéma `{db_schema}` n'est pas celui attendu"
+            f"Le nombre de table du schéma `{db_schema}` n'est pas celui attendu",
         )
         # Check the list of tables
         cursor.execute(
@@ -251,7 +250,7 @@ def test_processing_create(
         case.assertCountEqual(
             TABLES_FOR_FIRST_VERSION[db_schema],
             result,
-            f"La liste des tables du schéma `{db_schema}` n'est pas celle attendue"
+            f"La liste des tables du schéma `{db_schema}` n'est pas celle attendue",
         )
 
     for table in TABLES_FOR_FIRST_VERSION["stareau_valeur"]:
@@ -266,7 +265,7 @@ def test_processing_create(
         case.assertGreaterEqual(
             records[0][0],
             4,
-            f"Le nombre de lignes de la table `stareau_valeur.{table}` n'est pas au moins égal à 4."
+            f"Le nombre de lignes de la table `stareau_valeur.{table}` n'est pas au moins égal à 4.",
         )
 
     # Close connection
@@ -311,7 +310,7 @@ def test_processing_create_with_schema_name(
         case.assertEqual(
             len(TABLES_FOR_FIRST_VERSION[db_schema]),
             records[0][0],
-            f"Le nombre de table du schéma `{db_new_schema}` n'est pas celui attendu"
+            f"Le nombre de table du schéma `{db_new_schema}` n'est pas celui attendu",
         )
         # Check the list of tables
         cursor.execute(
@@ -327,7 +326,7 @@ def test_processing_create_with_schema_name(
         case.assertCountEqual(
             TABLES_FOR_FIRST_VERSION[db_schema],
             result,
-            f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue"
+            f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue",
         )
 
     for table in TABLES_FOR_FIRST_VERSION["stareau_valeur"]:
@@ -342,7 +341,7 @@ def test_processing_create_with_schema_name(
         case.assertGreaterEqual(
             records[0][0],
             4,
-            f"Le nombre de lignes de la table `{schema}_valeur.{table}` n'est pas au moins égal à 4."
+            f"Le nombre de lignes de la table `{schema}_valeur.{table}` n'est pas au moins égal à 4.",
         )
 
     # clear
@@ -409,7 +408,8 @@ def test_processing_create_with_crs(
         case.assertEqual(
             record[5],
             srid,
-            f"Le SRID de {record[1]}.{record[2]} de la colonne {record[3]} devrait être {srid} au lieu de {record[5]}",
+            f"Le SRID de {record[1]}.{record[2]} de la colonne {record[3]} "
+            f"devrait être {srid} au lieu de {record[5]}",
         )
 
     # Close connection
@@ -471,10 +471,10 @@ def test_processing_trigger(
     nodes = {}
     records = cursor.fetchall()
     for record in records:
-        if record[2] == 'ass_rega_0034073':
+        if record[2] == "ass_rega_0034073":
             case.assertEqual(record[3], 770192.9)
             case.assertEqual(record[4], 6280461.4)
-        elif record[2] == 'ass_rega_0030456':
+        elif record[2] == "ass_rega_0030456":
             case.assertEqual(record[3], 770200.0)
             case.assertEqual(record[4], 6280431.9)
         nodes[record[2]] = record
@@ -515,18 +515,18 @@ def test_processing_trigger(
     )
     records = cursor.fetchall()
     for record in records:
-        if record[2] == 'ass_cana_0001774':
-            case.assertEqual(record[3], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[5], nodes['ass_rega_0034073'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0034073'][4])
-            case.assertEqual(record[4], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[7], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[8], nodes['ass_rega_0030456'][4])
-        if record[2] == 'ass_cana_0001775_v':
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[5], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0030456'][4])
-            case.assertEqual(record[4], 'non_renseigne')
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0034073"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0034073"][4])
+            case.assertEqual(record[4], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[7], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0030456"][4])
+        if record[2] == "ass_cana_0001775_v":
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0030456"][4])
+            case.assertEqual(record[4], "non_renseigne")
             case.assertEqual(record[7], 770223.95)
             case.assertEqual(record[8], 6280429.05)
 
@@ -557,13 +557,13 @@ def test_processing_trigger(
     nodes = {}
     records = cursor.fetchall()
     for record in records:
-        if record[2] == 'ass_rega_0034073':
+        if record[2] == "ass_rega_0034073":
             case.assertEqual(record[3], 770192.9)
             case.assertEqual(record[4], 6280461.4)
-        elif record[2] == 'ass_rega_0030456':
+        elif record[2] == "ass_rega_0030456":
             case.assertEqual(record[3], 770200.0)
             case.assertEqual(record[4], 6280431.9)
-        elif record[2] == 'ass_rega_0077750':
+        elif record[2] == "ass_rega_0077750":
             case.assertEqual(record[3], 770223.9)
             case.assertEqual(record[4], 6280429.0)
         nodes[record[2]] = record
@@ -579,23 +579,23 @@ def test_processing_trigger(
     )
     records = cursor.fetchall()
     for record in records:
-        if record[2] == 'ass_cana_0001774':
-            case.assertEqual(record[3], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[5], nodes['ass_rega_0034073'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0034073'][4])
-            case.assertEqual(record[4], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[7], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[8], nodes['ass_rega_0030456'][4])
-        if record[2] == 'ass_cana_0001775_v':
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[5], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0030456'][4])
-            case.assertNotEqual(record[4], 'non_renseigne')
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0034073"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0034073"][4])
+            case.assertEqual(record[4], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[7], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0030456"][4])
+        if record[2] == "ass_cana_0001775_v":
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0030456"][4])
+            case.assertNotEqual(record[4], "non_renseigne")
             case.assertNotEqual(record[7], 770223.95)
             case.assertNotEqual(record[8], 6280429.05)
-            case.assertEqual(record[4], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[7], nodes['ass_rega_0077750'][3])
-            case.assertEqual(record[8], nodes['ass_rega_0077750'][4])
+            case.assertEqual(record[4], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[7], nodes["ass_rega_0077750"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0077750"][4])
 
     # DELETE noeud_reseau ass_rega_0030456
     cursor.execute(
@@ -616,25 +616,25 @@ def test_processing_trigger(
     )
     records = cursor.fetchall()
     for record in records:
-        if record[2] == 'ass_cana_0001774':
-            case.assertEqual(record[3], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[5], nodes['ass_rega_0034073'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0034073'][4])
-            case.assertNotEqual(record[4], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[4], 'non_renseigne')
-            case.assertEqual(record[7], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[8], nodes['ass_rega_0030456'][4])
-        if record[2] == 'ass_cana_0001775_v':
-            case.assertNotEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[3], 'non_renseigne')
-            case.assertEqual(record[5], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0030456'][4])
-            case.assertNotEqual(record[4], 'non_renseigne')
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0034073"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0034073"][4])
+            case.assertNotEqual(record[4], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[4], "non_renseigne")
+            case.assertEqual(record[7], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0030456"][4])
+        if record[2] == "ass_cana_0001775_v":
+            case.assertNotEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[3], "non_renseigne")
+            case.assertEqual(record[5], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0030456"][4])
+            case.assertNotEqual(record[4], "non_renseigne")
             case.assertNotEqual(record[7], 770223.95)
             case.assertNotEqual(record[8], 6280429.05)
-            case.assertEqual(record[4], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[7], nodes['ass_rega_0077750'][3])
-            case.assertEqual(record[8], nodes['ass_rega_0077750'][4])
+            case.assertEqual(record[4], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[7], nodes["ass_rega_0077750"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0077750"][4])
 
     # Close connection
     db_connection.close()
@@ -888,17 +888,17 @@ def test_processing_downstream(
     count_records = 0
     count_checking = 0
     for record in records:
-        if record[2] == 'ass_cana_0001774':
-            case.assertEqual(record[3], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[4], nodes['ass_rega_0030456'][1])
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[4], nodes["ass_rega_0030456"][1])
             count_checking += 1
-        if record[2] == 'ass_cana_0001775_v':
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[4], nodes['ass_rega_0077750'][1])
+        if record[2] == "ass_cana_0001775_v":
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[4], nodes["ass_rega_0077750"][1])
             count_checking += 1
-        if record[2] == 'ass_cana_0001776_v':
-            case.assertEqual(record[3], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[4], nodes['ass_rega_0029618'][1])
+        if record[2] == "ass_cana_0001776_v":
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[4], nodes["ass_rega_0029618"][1])
             count_checking += 1
         count_records += 1
     case.assertEqual(count_checking, 3)
@@ -908,7 +908,7 @@ def test_processing_downstream(
     cursor.execute(
         f"""
         SELECT d.idx, c.id_ass_canalisation, d.id_noeudinitial, d.id_noeudterminal
-        FROM "{plugin_schema_name}".ass_downstream('{nodes['ass_rega_0034073'][1]}') d
+        FROM "{plugin_schema_name}".ass_downstream('{nodes["ass_rega_0034073"][1]}') d
         JOIN "{plugin_schema_name}_ass".ass_canalisation c ON d.fid_canalisation = c.fid;
         """
     )
@@ -917,19 +917,19 @@ def test_processing_downstream(
     count_checking = 0
     for record in records:
         if record[0] == 1:
-            case.assertEqual(record[2], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[1], 'ass_cana_0001774')
+            case.assertEqual(record[2], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[1], "ass_cana_0001774")
             count_checking += 1
         elif record[0] == 2:
-            case.assertEqual(record[2], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[1], 'ass_cana_0001775_v')
+            case.assertEqual(record[2], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[1], "ass_cana_0001775_v")
             count_checking += 1
         elif record[0] == 3:
-            case.assertEqual(record[2], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0029618'][1])
-            case.assertEqual(record[1], 'ass_cana_0001776_v')
+            case.assertEqual(record[2], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0029618"][1])
+            case.assertEqual(record[1], "ass_cana_0001776_v")
             count_checking += 1
         count_records += 1
     case.assertEqual(count_checking, 3)
@@ -939,7 +939,7 @@ def test_processing_downstream(
     cursor.execute(
         f"""
         SELECT d.idx, c.id_ass_canalisation, d.id_noeudinitial, d.id_noeudterminal
-        FROM "{plugin_schema_name}".ass_downstream('{nodes['ass_rega_0030456'][1]}') d
+        FROM "{plugin_schema_name}".ass_downstream('{nodes["ass_rega_0030456"][1]}') d
         JOIN "{plugin_schema_name}_ass".ass_canalisation c ON d.fid_canalisation = c.fid;
         """
     )
@@ -948,14 +948,14 @@ def test_processing_downstream(
     count_checking = 0
     for record in records:
         if record[0] == 1:
-            case.assertEqual(record[2], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[1], 'ass_cana_0001775_v')
+            case.assertEqual(record[2], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[1], "ass_cana_0001775_v")
             count_checking += 1
         elif record[0] == 2:
-            case.assertEqual(record[2], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0029618'][1])
-            case.assertEqual(record[1], 'ass_cana_0001776_v')
+            case.assertEqual(record[2], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0029618"][1])
+            case.assertEqual(record[1], "ass_cana_0001776_v")
             count_checking += 1
         count_records += 1
     case.assertEqual(count_checking, 2)
@@ -1076,17 +1076,17 @@ def test_processing_upstream(
     count_records = 0
     count_checking = 0
     for record in records:
-        if record[2] == 'ass_cana_0001774':
-            case.assertEqual(record[3], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[4], nodes['ass_rega_0030456'][1])
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[4], nodes["ass_rega_0030456"][1])
             count_checking += 1
-        if record[2] == 'ass_cana_0001775_v':
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[4], nodes['ass_rega_0077750'][1])
+        if record[2] == "ass_cana_0001775_v":
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[4], nodes["ass_rega_0077750"][1])
             count_checking += 1
-        if record[2] == 'ass_cana_0001776_v':
-            case.assertEqual(record[3], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[4], nodes['ass_rega_0029618'][1])
+        if record[2] == "ass_cana_0001776_v":
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[4], nodes["ass_rega_0029618"][1])
             count_checking += 1
         count_records += 1
     case.assertEqual(count_checking, 3)
@@ -1096,7 +1096,7 @@ def test_processing_upstream(
     cursor.execute(
         f"""
         SELECT d.idx, c.id_ass_canalisation, d.id_noeudinitial, d.id_noeudterminal
-        FROM "{plugin_schema_name}".ass_upstream('{nodes['ass_rega_0029618'][1]}') d
+        FROM "{plugin_schema_name}".ass_upstream('{nodes["ass_rega_0029618"][1]}') d
         JOIN "{plugin_schema_name}_ass".ass_canalisation c ON d.fid_canalisation = c.fid;
         """
     )
@@ -1105,19 +1105,19 @@ def test_processing_upstream(
     count_checking = 0
     for record in records:
         if record[0] == 1:
-            case.assertEqual(record[2], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0029618'][1])
-            case.assertEqual(record[1], 'ass_cana_0001776_v')
+            case.assertEqual(record[2], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0029618"][1])
+            case.assertEqual(record[1], "ass_cana_0001776_v")
             count_checking += 1
         elif record[0] == 2:
-            case.assertEqual(record[2], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[1], 'ass_cana_0001775_v')
+            case.assertEqual(record[2], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[1], "ass_cana_0001775_v")
             count_checking += 1
         elif record[0] == 3:
-            case.assertEqual(record[2], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[1], 'ass_cana_0001774')
+            case.assertEqual(record[2], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[1], "ass_cana_0001774")
             count_checking += 1
         count_records += 1
     case.assertEqual(count_checking, 3)
@@ -1127,7 +1127,7 @@ def test_processing_upstream(
     cursor.execute(
         f"""
         SELECT d.idx, c.id_ass_canalisation, d.id_noeudinitial, d.id_noeudterminal
-        FROM "{plugin_schema_name}".ass_upstream('{nodes['ass_rega_0077750'][1]}') d
+        FROM "{plugin_schema_name}".ass_upstream('{nodes["ass_rega_0077750"][1]}') d
         JOIN "{plugin_schema_name}_ass".ass_canalisation c ON d.fid_canalisation = c.fid;
         """
     )
@@ -1136,14 +1136,14 @@ def test_processing_upstream(
     count_checking = 0
     for record in records:
         if record[0] == 1:
-            case.assertEqual(record[2], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0077750'][1])
-            case.assertEqual(record[1], 'ass_cana_0001775_v')
+            case.assertEqual(record[2], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[1], "ass_cana_0001775_v")
             count_checking += 1
         elif record[0] == 2:
-            case.assertEqual(record[2], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[1], 'ass_cana_0001774')
+            case.assertEqual(record[2], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[1], "ass_cana_0001774")
             count_checking += 1
         count_records += 1
     case.assertEqual(count_checking, 2)
@@ -1225,10 +1225,7 @@ def test_upgrade_from(
     # Since the structure has been created with db_install_version above
     # The expected list of tables
     feedback.pushDebugInfo("Update the database")
-    params = {
-        "CONNECTION_NAME": "test",
-        "RUN_MIGRATIONS": True
-    }
+    params = {"CONNECTION_NAME": "test", "RUN_MIGRATIONS": True}
     alg = f"{provider_id}:upgrade_database_structure"
     results = processing.run(alg, params, feedback=feedback)
 
@@ -1269,16 +1266,13 @@ def test_upgrade_from(
     # This will delete and recreate the structure for the last version
     feedback.pushDebugInfo("Relaunch the algorithm without override")
     params = {
-        'CONNECTION_NAME': 'test',
+        "CONNECTION_NAME": "test",
         "OVERRIDE": True,
     }
 
     # Check we need to run upgrade or not
     feedback.pushDebugInfo("Update the database")
-    params = {
-        "CONNECTION_NAME": "test",
-        "RUN_MIGRATIONS": True
-    }
+    params = {"CONNECTION_NAME": "test", "RUN_MIGRATIONS": True}
     alg = f"{provider_id}:upgrade_database_structure"
     results = processing.run(alg, params, feedback=feedback)
     assert results["OUTPUT_STATUS"] == 1

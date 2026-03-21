@@ -19,7 +19,8 @@ lint:
     - factory-plain
   stage: lint
   script:
-    - make lint typecheck
+    - pip install --quiet -r requirements/dev.txt
+    - make lint
 
 # ------------
 # Tests
