@@ -161,7 +161,7 @@ CREATE INDEX sidx_canalisation_geom ON stareau_principale.canalisation USING gis
 CREATE INDEX idx_canalisation_type_reseau ON stareau_principale.canalisation (type_reseau); --- btree indexation
 CREATE INDEX idx_canalisation_noeudterminal ON stareau_principale.canalisation (noeudterminal); --- btree indexation
 CREATE INDEX idx_canalisation_noeudinitial ON stareau_principale.canalisation (noeudinitial); --- btree indexation
-CREATE INDEX idx_canalisation_id ON stareau_principale.canalisation (id_canalisation); --- btree indexation
+CREATE INDEX idx_canalisation_id ON stareau_principale.canali sation (id_canalisation); --- btree indexation
 
 COMMENT ON TABLE "stareau_principale".canalisation IS 'table mère des éléments linéaire';
 COMMENT ON COLUMN "stareau_principale".canalisation.fid IS 'identifiant SIG';
