@@ -1038,6 +1038,7 @@ def test_upgrade_from(
     CreateDatabaseStructure.create_database(
         "test",
         db_schema,
+        2154,
         version=db_install_version,
         override=True,
         install_dir=install_dir,
