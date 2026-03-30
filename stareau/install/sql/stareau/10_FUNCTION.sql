@@ -110,7 +110,7 @@ BEGIN
     raise_notice = stareau.get_current_setting('stareau.graph.raise.notice', '0', 'boolean');
 
     -- Do nothing if geometry has not changed
-    IF TG_OP = 'UPDATE' AND ST_Equals(NEW.geom, OLD.geom) THEN
+    IF TG_OP = 'UPDATE' AND ST_OrderingEquals(NEW.geom, OLD.geom) THEN
         IF raise_notice IN ('info', 'debug') THEN
             RAISE NOTICE '% BEFORE canalisation % n° %, NEW and OLD geom are equal',
                 repeat('    ', pg_trigger_depth()::integer), TG_OP, NEW.fid
