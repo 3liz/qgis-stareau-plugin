@@ -507,6 +507,69 @@ COMMENT ON FUNCTION stareau.ass_upstream(id_noeud_reseau text) IS
 Retourne les canalisations et les noeuds de réseau en amont du noeud de réseau passé en paramètre.
 ';
 
+-- ass_noeud_manquant()
+CREATE FUNCTION stareau.ass_noeud_manquant()
+    RETURNS TABLE (
+        fid integer,
+        geom public.geometry(point, 2154),
+        id_canalisation_upstream text,
+        id_canalisation_downstream text
+    )
+    LANGUAGE plpgsql AS
+    $func$
+    BEGIN
+        RETURN QUERY
+            SELECT min(b.fid) as fid, b.geom, max(b.upstream_cana) AS id_canalisation_upstream, max(b.downstream_cana) AS id_canalisation_downstream
+            FROM (
+                SELECT dc.fid * 10 as fid, st_startpoint(dc.geom) AS geom, null as upstream_cana, dc.id_canalisation as downstream_cana
+                FROM stareau_principale.canalisation dc
+                WHERE dc.type_reseau <> 'aep' AND dc.noeudinitial = 'non_renseigne'
+                UNION ALL
+                SELECT uc.fid * 10 + 1 as fid, st_endpoint(uc.geom) AS geom, uc.id_canalisation as upstream_cana, null as downstream_cana
+                FROM stareau_principale.canalisation uc
+                WHERE uc.type_reseau <> 'aep' AND uc.noeudterminal = 'non_renseigne'
+            ) b
+            GROUP BY b.geom;
+    END
+    $func$;
+
+-- FUNCTION ass_noeud_manquant()
+COMMENT ON FUNCTION stareau.ass_noeud_manquant() IS
+'Fonction de création d''une table des noeuds manquants du réseau ASS.
+';
+
+
+-- aep_noeud_manquant()
+CREATE FUNCTION stareau.aep_noeud_manquant()
+    RETURNS TABLE (
+        fid integer,
+        geom public.geometry(point, 2154),
+        id_canalisation_upstream text,
+        id_canalisation_downstream text
+    )
+    LANGUAGE plpgsql AS
+    $func$
+    BEGIN
+        RETURN QUERY
+            SELECT min(b.fid) as fid, b.geom, max(b.upstream_cana) AS id_canalisation_upstream, max(b.downstream_cana) AS id_canalisation_downstream
+            FROM (
+                SELECT dc.fid * 10 as fid, st_startpoint(dc.geom) AS geom, null as upstream_cana, dc.id_canalisation as downstream_cana
+                FROM stareau_principale.canalisation dc
+                WHERE dc.type_reseau = 'aep' AND dc.noeudinitial = 'non_renseigne'
+                UNION ALL
+                SELECT uc.fid * 10 + 1 as fid, st_endpoint(uc.geom) AS geom, uc.id_canalisation as upstream_cana, null as downstream_cana
+                FROM stareau_principale.canalisation uc
+                WHERE uc.type_reseau = 'aep' AND uc.noeudterminal = 'non_renseigne'
+            ) b
+            GROUP BY b.geom;
+    END
+    $func$;
+
+-- FUNCTION aep_noeud_manquant()
+COMMENT ON FUNCTION stareau.aep_noeud_manquant() IS
+'Fonction de création d''une table des noeuds manquants du réseau AEP.
+';
+
 --
 -- PostgreSQL database dump complete
 --

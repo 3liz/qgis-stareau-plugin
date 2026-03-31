@@ -775,6 +775,121 @@ def test_processing_trigger_with_reverse(
     db_connection.close()
 
 
+def test_processing_noeud_manquant(
+    db_connection: psycopg.Connection,
+    processing_provider: Provider,
+):
+    params = {
+        "CONNECTION_NAME": "test",
+        "OVERRIDE": True,
+    }
+
+    feedback = LoggerProcessingFeedBack()
+
+    # Run create database structure alg
+    alg = f"{processing_provider.id()}:create_database_structure"
+    processing_output = processing.run(alg, params, feedback=feedback)
+
+    assert processing_output["OUTPUT_STATUS"] == 1
+    assert processing_output["OUTPUT_VERSION"] == schema_version()
+
+    cursor = db_connection.cursor()
+    case = unittest.TestCase()
+
+    plugin_schema_name = schema_name()
+
+    # INSERT canalisation
+    cursor.execute(
+        f"""
+        INSERT INTO "{plugin_schema_name}_ass".ass_canalisation (
+            type_reseau, etat_service, insee_commune, maitre_ouvrage, exploitant,
+            precision_xy, precision_z, an_pose_sup, date_creation, origine_creation, date_maj,
+            geom,
+            mode_circulation, type_pose, raison_pose, materiau, revetement_interieur, diametre_equivalent,
+            forme, id_ass_canalisation, fonction_canalisation, contenu_canalisation, visitable
+        ) VALUES (
+            'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            ST_GeomFromText('LINESTRING(770192.9 6280461.4, 770200.0 6280431.9)', 2154),
+            'gravitaire', 'non_renseigne', 'non_renseigne', 'beton', 'non_renseigne', 1800,
+            'non_renseigne', 'ass_cana_0001774', 'non_renseigne', 'non_renseigne', 'non_renseigne'
+        ), (
+            'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            ST_GeomFromText('LINESTRING(770200.0 6280431.9, 770223.974 6280429.045)', 2154),
+            'gravitaire', 'non_renseigne', 'non_renseigne', 'beton', 'non_renseigne', 1800,
+            'non_renseigne', 'ass_cana_0001775_v', 'non_renseigne', 'non_renseigne', 'non_renseigne'
+        );
+        """
+    )
+
+    # check canas without nodes
+    cursor.execute(
+        f"""
+        SELECT fid, id_canalisation, id_ass_canalisation, noeudinitial, noeudterminal,
+            ST_X(ST_StartPoint(geom)) AS start_x, ST_Y(ST_StartPoint(geom)) AS start_y,
+            ST_X(ST_EndPoint(geom)) AS end_x, ST_Y(ST_EndPoint(geom)) AS end_y
+        FROM "{plugin_schema_name}_ass".ass_canalisation;
+        """
+    )
+    records = cursor.fetchall()
+    canas = {}
+    count_records = 0
+    count_checking = 0
+    for record in records:
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], "non_renseigne")
+            case.assertEqual(record[5], 770192.9)
+            case.assertEqual(record[6], 6280461.4)
+            case.assertEqual(record[4], "non_renseigne")
+            case.assertEqual(record[7], 770200.0)
+            case.assertEqual(record[8], 6280431.9)
+            canas[record[2]] = record
+            count_checking += 1
+        if record[2] == "ass_cana_0001775_v":
+            case.assertEqual(record[3], "non_renseigne")
+            case.assertEqual(record[5], 770200.0)
+            case.assertEqual(record[6], 6280431.9)
+            case.assertEqual(record[4], "non_renseigne")
+            case.assertEqual(record[7], 770223.95)
+            case.assertEqual(record[8], 6280429.05)
+            canas[record[2]] = record
+            count_checking += 1
+        count_records += 1
+    case.assertEqual(count_checking, 2)
+    case.assertEqual(count_records, 2)
+
+    # check noeud_manquant
+    cursor.execute(
+        f"""
+        SELECT fid, id_canalisation_upstream, id_canalisation_downstream
+        FROM "{plugin_schema_name}".ass_noeud_manquant();
+        """
+    )
+    records = cursor.fetchall()
+    count_records = 0
+    count_checking = 0
+    for record in records:
+        if record[0] == 10:
+            case.assertEqual(record[1], None)
+            case.assertEqual(record[2], canas["ass_cana_0001774"][1])
+            count_checking += 1
+        if record[0] == 11:
+            case.assertEqual(record[1], canas["ass_cana_0001774"][1])
+            case.assertEqual(record[2], canas["ass_cana_0001775_v"][1])
+            count_checking += 1
+        if record[0] == 21:
+            case.assertEqual(record[1], canas["ass_cana_0001775_v"][1])
+            case.assertEqual(record[2], None)
+            count_checking += 1
+        count_records += 1
+    case.assertEqual(count_checking, 3)
+    case.assertEqual(count_records, 3)
+
+    # Close connection
+    db_connection.close()
+
+
 @unittest.skip("not yet ready")
 def test_processing_downstream(
     db_connection: psycopg.Connection,
