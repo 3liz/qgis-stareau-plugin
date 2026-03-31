@@ -8,19 +8,21 @@ stages:
 - deploy
 - release
 
-
-
 # ------------
 # Lint
 # ------------
 lint:
-  image: ${REGISTRY_URL}/factory-ci-runner:qgis-release
+  image: ${REGISTRY_URL}/factory-ci-runner:qgis-${QGIS_VERSION}
   tags:
     - factory-plain
   stage: lint
   script:
     - pip install --quiet -r requirements/dev.txt
     - make lint
+  parallel:
+    matrix:
+      - QGIS_VERSION: ["ltr", "release"]
+ 
 
 # ------------
 # Tests
@@ -42,7 +44,7 @@ qgis-tests:
         "3.34",
         "3.40",
         "3.44",
-        "nightly-release",
+        "4.0",
       ]
 
 

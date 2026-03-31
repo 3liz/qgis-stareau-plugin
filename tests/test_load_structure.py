@@ -7,7 +7,6 @@ from pathlib import Path
 import psycopg
 
 from qgis import processing
-from qgis.core import QgsProcessingException
 
 from stareau.plugin_tools.feedback import LoggerProcessingFeedBack
 from stareau.plugin_tools.resources import (

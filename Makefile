@@ -16,7 +16,7 @@ ifdef VIRTUAL_ENV
 # Always prefer active environment
 ACTIVE_VENV=--active
 endif
-RUN=uv run $(ACTIVE_VENV)
+UV=uv run $(ACTIVE_VENV)
 else
 ifndef VIRTUAL_ENV
 $(error "You must install uv \(https://docs.astral.sh/uv/\) or install requirements in a virtual env")
@@ -54,21 +54,27 @@ requirements/%.txt: uv.lock
 LINT_TARGETS=$(MODULE_NAME) tests $(EXTRA_LINT_TARGETS)
 
 lint:: 
-	@ $(UV_RUN) ruff check --output-format=concise $(LINT_TARGETS)
+	@ $(UV) ruff check --output-format=concise $(LINT_TARGETS)
 
 lint:: typecheck
 
+lint-preview: 
+	@ $(UV) ruff check \
+	  --output-format=concise \
+	  --preview \
+	  $(LINT_TARGETS)
+
 lint-fix:
-	@ $(UV_RUN) ruff check --fix $(LINT_TARGETS)
+	@ $(UV) ruff check --fix $(LINT_TARGETS)
 
 format:
-	@ $(UV_RUN) ruff format $(LINT_TARGETS) 
+	@ $(UV) ruff format $(LINT_TARGETS) 
 
 typecheck:
-	@ $(UV_RUN) mypy $(LINT_TARGETS)
+	@ $(UV) mypy $(LINT_TARGETS)
 
 scan:
-	@ $(UV_RUN) bandit -r $(MODULE_NAME) $(SCAN_OPTS)
+	@ $(UV) bandit -r $(MODULE_NAME) $(SCAN_OPTS)
 
 
 # Database rules
@@ -79,7 +85,7 @@ scan:
 #
 
 test::
-	$(UV_RUN) pytest -v tests
+	$(UV) pytest -v tests
 
 #
 # Test using docker image
@@ -91,10 +97,9 @@ else
 REGISTRY_PREFIX=3liz
 endif
 
-QGIS_VERSION ?= 3.40
+QGIS_VERSION ?= 3.44
 QGIS_IMAGE_REPOSITORY ?= ${REGISTRY_PREFIX}qgis-platform
 QGIS_IMAGE_TAG ?= $(QGIS_IMAGE_REPOSITORY):$(QGIS_VERSION)
-
 
 # Overridable in .localconfig.mk
 export QGIS_VERSION
@@ -110,7 +115,7 @@ docker-test:
 		--quiet-pull \
 		--abort-on-container-exit \
 		--exit-code-from qgis; \
-		docker compose --profile=qgis  down -v; \
+		docker compose --profile=qgis  down -v;
 
 #
 # Doc
@@ -140,11 +145,11 @@ install-dev:: sync
 # Run tests coverage
 covtests:
 	@echo "Running coverage tests"
-	@ $(RUN) coverage run -m pytest tests/
+	@ $(UV) coverage run -m pytest tests/
 
 coverage: covtests
 	@echo "Building coverage html"
-	@ $(RUN) coverage html
+	@ $(UV) coverage html
 
 
 #

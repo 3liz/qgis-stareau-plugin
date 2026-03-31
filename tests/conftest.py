@@ -5,9 +5,8 @@ from typing import Any
 
 import pytest
 
-from qgis.core import Qgis
 from qgis.gui import QgisInterface
-from qgis.PyQt import Qt
+from qgis.PyQt.QtCore import QT_VERSION_STR
 
 # NOTE Remove if not using database
 from .conftest_database import (  # noqa F401
@@ -16,23 +15,23 @@ from .conftest_database import (  # noqa F401
     db_schema,
     processing_provider,
 )
-from .qgis_testing import install_logger_hook, load_plugin
+from .qgis_testing import QGIS_VERSION_INT, install_logger_hook, load_plugin
 
 # with warnings.catch_warnings():
 #    warnings.filterwarnings("ignore", category=DeprecationWarning)
 #    from osgeo import gdal
 
-PLUGIN_SOURCE = "lizexample"
+PLUGIN_SOURCE = "stareau"
 
 
 def pytest_report_header(config):
     from osgeo import gdal
 
     return (
-        f"QGIS : {Qgis.QGIS_VERSION_INT}\n"
+        f"QGIS : {QGIS_VERSION_INT}\n"
         f"Python GDAL : {gdal.VersionInfo('VERSION_NUM')}\n"
         f"Python : {sys.version}\n"
-        f"QT : {Qt.QT_VERSION_STR}"
+        f"QT : {QT_VERSION_STR}"
     )
 
 

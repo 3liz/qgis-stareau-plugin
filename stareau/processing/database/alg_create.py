@@ -1,6 +1,7 @@
 import csv
 
 from pathlib import Path
+from typing import List
 
 from qgis.core import (
     QgsProcessingException,
@@ -44,7 +45,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         return tr("Create database structure")
 
     def shortHelpString(self):
-        short_help = tr(
+        return tr(
             "Install the plugin database structure with tables and function on "
             "the chosen database."
             "\n"
@@ -59,7 +60,6 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
             'Beware ! If you check the "override" checkboxes, you will loose '
             "all existing data in the existing schema !"
         )
-        return short_help
 
     def initAlgorithm(self, config):
         project = QgsProject.instance()
@@ -229,7 +229,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         for file in install_dir.joinpath("csv", "StaR-Eau").glob("*.csv"):
             feedback.pushInfo(file.name)
             table_name = file.stem
-            table_values = []
+            table_values: List[str] = []
             with open(file) as f:
                 cf = csv.reader(f)
                 table_values.extend(
