@@ -43,7 +43,7 @@ class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
         return f"{plugin_name_normalized()}_administration"
 
     def shortHelpString(self):
-        short_help = tr(
+        return  tr(
             "This algorithm will create a new QGIS project file for "
             "administration purpose."
             "\n"
@@ -57,7 +57,6 @@ class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
             "\n"
             "* QGIS project file to create: choose the output file destination."
         )
-        return short_help
 
     def initAlgorithm(self, config):
         _ = config

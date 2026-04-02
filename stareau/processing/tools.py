@@ -13,6 +13,7 @@ from qgis.core import (
 )
 
 from ..plugin_tools import resources
+
 # shorcut exposed
 plugin_name_normalized = resources.plugin_name_normalized
 
@@ -39,8 +40,7 @@ def get_postgis_connection_list():
     """Get a list of the PostGIS connection names"""
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     postgres_connections = metadata.connections()
-    connections = postgres_connections.keys()
-    return connections
+    return postgres_connections.keys()
 
 
 def get_postgis_connection_uri_from_name(connection_name: str) -> Optional[QgsDataSourceUri]:
@@ -119,11 +119,26 @@ def createAdministrationProjectFromTemplate(
     # Replace the CRS
     if crs.postgisSrid() != plugin_srid:
         default_crs = QgsCoordinateReferenceSystem(f"EPSG:{plugin_srid}")
-        filedata = filedata.replace(f"<wkt>{default_crs.toWkt()}</wkt>", f"<wkt>{default_crs.toWkt()}</wkt>")
-        filedata = filedata.replace(f"<proj4>{default_crs.toProj4()}</proj4>", f"<proj4>{crs.toProj4()}</proj4>")
-        filedata = filedata.replace(f"<srsid>{default_crs.srsid()}</srsid>", f"<srsid>{crs.srsid()}</srsid>")
-        filedata = filedata.replace(f"<srid>{default_crs.postgisSrid()}</srid>", f"<srid>{crs.postgisSrid()}</srid>")
-        filedata = filedata.replace(f"<authid>{default_crs.authid()}</authid>", f"<authid>{crs.authid()}</authid>")
+        filedata = filedata.replace(
+            f"<wkt>{default_crs.toWkt()}</wkt>",
+            f"<wkt>{default_crs.toWkt()}</wkt>",
+        )
+        filedata = filedata.replace(
+            f"<proj4>{default_crs.toProj4()}</proj4>",
+            f"<proj4>{crs.toProj4()}</proj4>",
+        )
+        filedata = filedata.replace(
+            f"<srsid>{default_crs.srsid()}</srsid>",
+            f"<srsid>{crs.srsid()}</srsid>",
+        )
+        filedata = filedata.replace(
+            f"<srid>{default_crs.postgisSrid()}</srid>",
+            f"<srid>{crs.postgisSrid()}</srid>",
+        )
+        filedata = filedata.replace(
+            f"<authid>{default_crs.authid()}</authid>",
+            f"<authid>{crs.authid()}</authid>",
+        )
         filedata = filedata.replace(
             f"<description>{default_crs.description()}</description>",
             f"<description>{crs.description()}</description>",
@@ -140,8 +155,8 @@ def createAdministrationProjectFromTemplate(
             # ESPG:2154 is not geographic
             # but the project contains an EPSG:4326 definition for CoordinateCustomCrs
             filedata = filedata.replace(
-                f"<geographicflag>false</geographicflag>",
-                f"<geographicflag>true</geographicflag>",
+                "<geographicflag>false</geographicflag>",
+                "<geographicflag>true</geographicflag>",
             )
         filedata = filedata.replace(f" crs=\"{default_crs.authid()}\"", f" crs=\"{crs.authid()}\"")
 

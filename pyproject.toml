@@ -3,7 +3,7 @@
 # should be the same as the plugin's metatada.txt
 [project]
 name = "stareau"
-version = "0.1.0a1"
+version = "0.1.0-alpha.1"
 description = "An exemple of plugin development setup"
 authors = [
     { name = "3Liz", email = "info@3liz.com" }
@@ -33,12 +33,14 @@ homepage = "https://github.com/3liz/qgis-qgis-stareau-plugin-plugin"
 # requirement files for CI
 [dependency-groups]
 dev = [
-    "pre-commit",
+    "coverage[toml]",
     {include-group = "tests"},
     {include-group = "lint"},
 ]
 tests = [
-    "pytest >= 5.3",
+    "semver",
+    "pytest",
+    "pytest-qgis",
     "psycopg[binary]",
 ]
 lint = [
@@ -47,29 +49,27 @@ lint = [
     "bandit",    
     "vulture",
 ]
-packaging = [
-    "qgis-plugin-ci>= 2.7.0",
+transifex = [
+    "qt-transifex; python_full_version >= '3.12'",
 ]
 doc = [
     "mkdocs-material>=7.0.0,<10.0.0",
     "mkdocs-git-revision-date-localized-plugin",
 ]
 
-#
-# Qgis plugin ci
-#
-# https://opengisch.github.io/qgis-plugin-ci/index.html
-#
+[tool.uv.sources]
+qt-transifex = { git = "https://github.com/3liz/qt-transifex" }
+pytest-qgis = { git = "https://github.com/3liz/pytest-qgis.git" }
 
-[qgis-plugin-ci]
-plugin_path = "stareau"
-github_organization_slug = "3liz"
-project_slug = "qgis-qgis-stareau-plugin-plugin"
-transifex_organization = "3liz-1"
-transifex_project = "qgis-stareau-plugin"
-transifex_resource = "qgis-stareau-plugin"
-transifex_coordinator = "mdouchin"
-changelog_include = true
+[tool.yapt]
+plugin_source = "stareau"
+
+[tool.qt-transifex]
+plugin_source = "stareau"
+organization = "3liz-1"
+project = "qgis-stareau-plugin"
+# The minimun accepted translation percent
+#minimum_translation = 25.0
 
 #
 # Ruff
@@ -89,13 +89,18 @@ exclude = [
 indent-style = "space"
 
 [tool.ruff.lint]
-extend-select = ["E", "F", "I", "ANN", "W", "T", "COM", "RUF"]
+extend-select = [
+    "E", "F", "I", "ANN", "W", "T", "COM", "RUF",
+    "C4", "SIM", "TC", "RET",
+]
 # COM812 conflict with formatter
 ignore = [
     "ANN002",
     "ANN003",
+    "ANN401", # Dynamically typed expressions (Any)
     "T201",
     "COM812",
+    "RUF067", # module should only contain docstrings and re-exports
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -128,13 +133,25 @@ suppress-dummy-args = true
 python_version = "3.10"
 
 [[tool.mypy.overrides]]
-module = "qgis.*"
+module = [
+    "qgis.*",
+    "osgeo.*",
+    "processing.*",
+]
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = "osgeo.*"
-ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = "processing.*"
-ignore_missing_imports = true
+#
+# Coverage
+#
+[tool.coverage.run]
+source = ["stareau"]
+branch = true
+relative_files = true
+
+[tool.coverage.report]
+precision = 2
+exclude_lines = [
+ "if TYPE_CHECKING",
+ '\(Protocol\):$',
+]

@@ -1,6 +1,7 @@
-
 import csv
+
 from pathlib import Path
+from typing import List
 
 from qgis.core import (
     QgsProcessingException,
@@ -44,7 +45,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         return tr("Create database structure")
 
     def shortHelpString(self):
-        short_help = tr(
+        return tr(
             "Install the plugin database structure with tables and function on "
             "the chosen database."
             "\n"
@@ -59,7 +60,6 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
             'Beware ! If you check the "override" checkboxes, you will loose '
             "all existing data in the existing schema !"
         )
-        return short_help
 
     def initAlgorithm(self, config):
         project = QgsProject.instance()
@@ -95,7 +95,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         self.addParameter(
             QgsProcessingParameterCrs(
                 self.CRS,
-                tr('Geometry CRS'),
+                tr("Geometry CRS"),
                 defaultValue=f"EPSG:{resources.srid_value()}",
                 optional=False,
             )
@@ -229,37 +229,47 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         for file in install_dir.joinpath("csv", "StaR-Eau").glob("*.csv"):
             feedback.pushInfo(file.name)
             table_name = file.stem
-            values = []
+            table_values: List[str] = []
             with open(file) as f:
                 cf = csv.reader(f)
-                for row in cf:
-                    values.append(
-                        f"("
-                        f""+("'"+row[0].replace("'", "''")+"'" if row[0] else "NULL")+", "
-                        f""+("'"+row[1].replace("'", "''")+"'" if row[0] else "NULL")+", "
-                        f""+("'"+row[2].replace("'", "''")+"'" if row[0] else "NULL")+""
-                        f")"
-                    )
-            additional_values = [
-                ('non_renseigne', 'Non renseigné(e)', 'information en recherche ou disponible mais non saisie'),
-                ('non_concerne', 'Non concerné(e)', 'information non possible ou non pertinente pour l\'élément décrit'),
-                ('non_valide', 'Non validé(e)', 'information existe mais n\'est pas officiellement validée'),
-                ('non_determine', 'Non déterminé(e)', 'information inconnue ou non disponible et ne peut pas l\'être'),
-                ('autre', 'Autre', 'ne figure pas dans la liste ci-dessus. cf. commentaire')
-            ]
-            if table_name == 'com_precision':
-                additional_values = [
-                    ('N', 'Non renseigné(e)', 'information en recherche ou disponible mais non saisie'),
-                ]
-            for row in additional_values:
-                values.append(
-                    f"("
-                    f""+("'"+row[0].replace("'", "''")+"'" if row[0] else "NULL")+", "
-                    f""+("'"+row[1].replace("'", "''")+"'" if row[0] else "NULL")+", "
-                    f""+("'"+row[2].replace("'", "''")+"'" if row[0] else "NULL")+""
-                    f")"
+                table_values.extend(
+                    "("
+                    "" + ("'" + row[0].replace("'", "''") + "'" if row[0] else "NULL") + ", "
+                    "" + ("'" + row[1].replace("'", "''") + "'" if row[0] else "NULL") + ", "
+                    "" + ("'" + row[2].replace("'", "''") + "'" if row[0] else "NULL") + ""
+                    ")" for row in cf
                 )
-            values = ',\n'.join(values)
+            additional_values = [
+                (
+                    "non_renseigne",
+                    "Non renseigné(e)",
+                    "information en recherche ou disponible mais non saisie",
+                ),
+                (
+                    "non_concerne",
+                    "Non concerné(e)",
+                    "information non possible ou non pertinente pour l'élément décrit",
+                ),
+                ("non_valide", "Non validé(e)", "information existe mais n'est pas officiellement validée"),
+                (
+                    "non_determine",
+                    "Non déterminé(e)",
+                    "information inconnue ou non disponible et ne peut pas l'être",
+                ),
+                ("autre", "Autre", "ne figure pas dans la liste ci-dessus. cf. commentaire"),
+            ]
+            if table_name == "com_precision":
+                additional_values = [
+                    ("N", "Non renseigné(e)", "information en recherche ou disponible mais non saisie"),
+                ]
+            table_values.extend(
+                "("
+                "" + ("'" + row[0].replace("'", "''") + "'" if row[0] else "NULL") + ", "
+                "" + ("'" + row[1].replace("'", "''") + "'" if row[0] else "NULL") + ", "
+                "" + ("'" + row[2].replace("'", "''") + "'" if row[0] else "NULL") + ""
+                ")" for row in additional_values
+            )
+            values = ",\n".join(table_values)
             sql = (
                 f"INSERT INTO {schema}_valeur.{table_name} (code, valeur, description) VALUES\n"
                 f"{values}\n"
@@ -292,7 +302,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         override = self.parameterAsBool(parameters, self.OVERRIDE, context)
         install_dir = resources.plugin_path().joinpath("install")
         version = resources.schema_version()
-        srid = int(self.parameterAsCrs(parameters, self.CRS, context).authid().replace('EPSG:', ''))
+        srid = int(self.parameterAsCrs(parameters, self.CRS, context).authid().replace("EPSG:", ""))
 
         self.create_database(
             connection_name,
