@@ -890,6 +890,173 @@ def test_processing_noeud_manquant(
     db_connection.close()
 
 
+def test_processing_noeud_orphelin(
+    db_connection: psycopg.Connection,
+    processing_provider: Provider,
+):
+    params = {
+        "CONNECTION_NAME": "test",
+        "OVERRIDE": True,
+    }
+
+    feedback = LoggerProcessingFeedBack()
+
+    # Run create database structure alg
+    alg = f"{processing_provider.id()}:create_database_structure"
+    processing_output = processing.run(alg, params, feedback=feedback)
+
+    assert processing_output["OUTPUT_STATUS"] == 1
+    assert processing_output["OUTPUT_VERSION"] == schema_version()
+
+    cursor = db_connection.cursor()
+    case = unittest.TestCase()
+
+    plugin_schema_name = schema_name()
+
+    # INSERT noeud_reseau / ass_regard
+    cursor.execute(
+        f"""
+        INSERT INTO "{plugin_schema_name}_ass".ass_regard (
+            type_reseau, etat_service, insee_commune, maitre_ouvrage, exploitant,
+            precision_xy, precision_z, an_pose_sup, date_creation, origine_creation, date_maj,
+            geom,
+            forme, id_ass_regard, type_regard, materiau, position, type_descente
+        ) VALUES (
+            'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            St_SetSRID(ST_MakePoint(770192.899, 6280461.411), 2154),
+            'non_renseigne', 'ass_rega_0034073', 'non_renseigne', 'nr', 'non_renseigne', 'non_renseigne'
+        ), (
+            'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            St_SetSRID(ST_MakePoint(770200.024, 6280431.888), 2154),
+            'non_renseigne', 'ass_rega_0030456', 'non_renseigne', 'nr', 'non_renseigne', 'non_renseigne'
+        ), (
+            'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            St_SetSRID(ST_MakePoint(770223.9, 6280429.0), 2154),
+            'non_renseigne', 'ass_rega_0077750', 'non_renseigne', 'nr', 'non_renseigne', 'non_renseigne'
+        );
+        """
+    )
+
+    # Get nodes
+    cursor.execute(
+        f"""
+        SELECT fid, id_noeud_reseau, id_ass_regard, ST_X(geom) AS x, ST_Y(geom) AS y
+        FROM "{plugin_schema_name}_ass".ass_regard;
+        """
+    )
+    nodes = {}
+    records = cursor.fetchall()
+    count_records = 0
+    for record in records:
+        nodes[record[2]] = record
+        count_records += 1
+    case.assertEqual(count_records, 3)
+
+
+    # Get orphelins
+    cursor.execute(
+        f"""
+        SELECT fid, id_noeud_reseau, ST_X(geom) AS x, ST_Y(geom) AS y
+        FROM "{plugin_schema_name}".ass_noeud_orphelin();
+        """
+    )
+    records = cursor.fetchall()
+    count_records = 0
+    count_checking = 0
+    for record in records:
+        if record[1] == nodes["ass_rega_0034073"][1]:
+            case.assertEqual(record[0], nodes["ass_rega_0034073"][0])
+            case.assertEqual(record[2], nodes["ass_rega_0034073"][3])
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][4])
+            count_checking += 1
+        if record[1] == nodes["ass_rega_0030456"][1]:
+            case.assertEqual(record[0], nodes["ass_rega_0030456"][0])
+            case.assertEqual(record[2], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][4])
+            count_checking += 1
+        if record[1] == nodes["ass_rega_0077750"][1]:
+            case.assertEqual(record[0], nodes["ass_rega_0077750"][0])
+            case.assertEqual(record[2], nodes["ass_rega_0077750"][3])
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][4])
+            count_checking += 1
+        count_records += 1
+    case.assertEqual(count_records, 3)
+    case.assertEqual(count_checking, 3)
+
+    # INSERT canalisation
+    cursor.execute(
+        f"""
+        INSERT INTO "{plugin_schema_name}_ass".ass_canalisation (
+            type_reseau, etat_service, insee_commune, maitre_ouvrage, exploitant,
+            precision_xy, precision_z, an_pose_sup, date_creation, origine_creation, date_maj,
+            geom,
+            mode_circulation, type_pose, raison_pose, materiau, revetement_interieur, diametre_equivalent,
+            forme, id_ass_canalisation, fonction_canalisation, contenu_canalisation, visitable
+        ) VALUES (
+            'assaru', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            ST_GeomFromText('LINESTRING(770192.9 6280461.4, 770200.0 6280431.9)', 2154),
+            'gravitaire', 'non_renseigne', 'non_renseigne', 'beton', 'non_renseigne', 1800,
+            'non_renseigne', 'ass_cana_0001774', 'non_renseigne', 'non_renseigne', 'non_renseigne'
+        );
+        """
+    )
+
+    # check canas without nodes
+    cursor.execute(
+        f"""
+        SELECT fid, id_canalisation, id_ass_canalisation, noeudinitial, noeudterminal,
+            ST_X(ST_StartPoint(geom)) AS start_x, ST_Y(ST_StartPoint(geom)) AS start_y,
+            ST_X(ST_EndPoint(geom)) AS end_x, ST_Y(ST_EndPoint(geom)) AS end_y
+        FROM "{plugin_schema_name}_ass".ass_canalisation;
+        """
+    )
+    records = cursor.fetchall()
+    canas = {}
+    count_records = 0
+    count_checking = 0
+    for record in records:
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0034073"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0034073"][4])
+            case.assertEqual(record[4], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[7], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0030456"][4])
+            canas[record[2]] = record
+            count_checking += 1
+        count_records += 1
+    case.assertEqual(count_records, 1)
+    case.assertEqual(count_checking, 1)
+
+
+    # Get orphelins
+    cursor.execute(
+        f"""
+        SELECT fid, id_noeud_reseau, ST_X(geom) AS x, ST_Y(geom) AS y
+        FROM "{plugin_schema_name}".ass_noeud_orphelin();
+        """
+    )
+    records = cursor.fetchall()
+    count_records = 0
+    count_checking = 0
+    for record in records:
+        if record[1] == nodes["ass_rega_0077750"][1]:
+            case.assertEqual(record[0], nodes["ass_rega_0077750"][0])
+            case.assertEqual(record[2], nodes["ass_rega_0077750"][3])
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][4])
+            count_checking += 1
+        count_records += 1
+    case.assertEqual(count_records, 1)
+    case.assertEqual(count_checking, 1)
+
+    # Close connection
+    db_connection.close()
+
+
 @unittest.skip("not yet ready")
 def test_processing_downstream(
     db_connection: psycopg.Connection,

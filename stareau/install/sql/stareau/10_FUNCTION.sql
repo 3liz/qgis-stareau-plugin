@@ -570,6 +570,38 @@ COMMENT ON FUNCTION stareau.aep_noeud_manquant() IS
 'Fonction de création d''une table des noeuds manquants du réseau AEP.
 ';
 
+
+-- ass_noeud_orphelin()
+CREATE FUNCTION stareau.ass_noeud_orphelin()
+    RETURNS SETOF stareau_principale.noeud_reseau AS $$
+        SELECT nr.*
+        FROM stareau_principale.noeud_reseau nr
+            LEFT JOIN stareau_principale.canalisation downstream_cana ON nr.id_noeud_reseau = downstream_cana.noeudinitial
+            LEFT JOIN stareau_principale.canalisation upstream_cana ON nr.id_noeud_reseau = upstream_cana.noeudterminal
+        WHERE nr.type_reseau <> 'aep' AND upstream_cana.noeudterminal IS NULL AND downstream_cana.noeudterminal IS NULL;
+    $$ LANGUAGE SQL;
+
+-- FUNCTION ass_noeud_orphelin()
+COMMENT ON FUNCTION stareau.ass_noeud_orphelin() IS
+'Fonction de récupération des noeuds orphelins (sans lien avec une canalisation) du réseau ASS.
+';
+
+
+-- aep_noeud_orphelin()
+CREATE FUNCTION stareau.aep_noeud_orphelin()
+    RETURNS SETOF stareau_principale.noeud_reseau AS $$
+        SELECT nr.*
+        FROM stareau_principale.noeud_reseau nr
+            LEFT JOIN stareau_principale.canalisation downstream_cana ON nr.id_noeud_reseau = downstream_cana.noeudinitial
+            LEFT JOIN stareau_principale.canalisation upstream_cana ON nr.id_noeud_reseau = upstream_cana.noeudterminal
+        WHERE nr.type_reseau = 'aep' AND upstream_cana.noeudterminal IS NULL AND downstream_cana.noeudterminal IS NULL;
+    $$ LANGUAGE SQL;
+
+-- FUNCTION aep_noeud_orphelin()
+COMMENT ON FUNCTION stareau.aep_noeud_orphelin() IS
+'Fonction de récupération des noeuds orphelins (sans lien avec une canalisation) du réseau AEP.
+';
+
 --
 -- PostgreSQL database dump complete
 --
