@@ -32,7 +32,7 @@ REQUIREMENT_GROUPS= \
 
 .PHONY: update-requirements
 
-REQUIREMENTS=$(patsubst %, requirements/%.txt, $(REQUIREMENT_GROUPS)) 
+REQUIREMENTS=$(patsubst %, requirements/%.txt, $(REQUIREMENT_GROUPS))
 
 update-requirements: $(REQUIREMENTS)
 
@@ -53,12 +53,12 @@ requirements/%.txt: uv.lock
 
 LINT_TARGETS=$(MODULE_NAME) tests $(EXTRA_LINT_TARGETS)
 
-lint:: 
+lint::
 	@ $(UV) ruff check --output-format=concise $(LINT_TARGETS)
 
 lint:: typecheck
 
-lint-preview: 
+lint-preview:
 	@ $(UV) ruff check \
 	  --output-format=concise \
 	  --preview \
@@ -68,7 +68,7 @@ lint-fix:
 	@ $(UV) ruff check --fix $(LINT_TARGETS)
 
 format:
-	@ $(UV) ruff format $(LINT_TARGETS) 
+	@ $(UV) ruff format $(LINT_TARGETS)
 
 typecheck:
 	@ $(UV) mypy $(LINT_TARGETS)
@@ -94,7 +94,7 @@ test::
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/
 else
-REGISTRY_PREFIX=3liz
+REGISTRY_PREFIX=3liz/
 endif
 
 QGIS_VERSION ?= 3.44
@@ -131,7 +131,7 @@ docker-test:
 #
 sync:
 	@echo "Synchronizing python's environment with frozen dependencies"
-	@uv sync --all-groups --frozen $(ACTIVE_VENV) 
+	@uv sync --all-groups --frozen $(ACTIVE_VENV)
 
 install-dev::
 	uv venv --system-site-packages --no-managed-python
