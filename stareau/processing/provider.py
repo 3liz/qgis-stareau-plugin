@@ -11,6 +11,9 @@ from .database import (
     CreateDatabaseStructure,
     UpgradeDatabaseStructure,
 )
+from .tools_algs import (
+    NoeudManquant,
+)
 from .tools import provider_id
 
 
@@ -28,6 +31,9 @@ class Provider(QgsProcessingProvider):
         # Database
         self.addAlgorithm(CreateDatabaseStructure())
         self.addAlgorithm(UpgradeDatabaseStructure())
+
+        # Tools
+        self.addAlgorithm(NoeudManquant())
 
         self.addAlgorithm(CreateDatabaseLocalInterface())
 
