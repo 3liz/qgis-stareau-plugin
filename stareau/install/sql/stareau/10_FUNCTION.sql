@@ -602,6 +602,33 @@ COMMENT ON FUNCTION stareau.aep_noeud_orphelin() IS
 'Fonction de récupération des noeuds orphelins (sans lien avec une canalisation) du réseau AEP.
 ';
 
+-- ass_noeud_doublon()
+CREATE FUNCTION stareau.ass_noeud_doublon()
+    RETURNS SETOF stareau_principale.noeud_reseau AS $$
+        SELECT nro.*
+        FROM stareau.ass_noeud_orphelin() nro
+            JOIN stareau_principale.noeud_reseau nr ON ST_DWithin(nro.geom, nr.geom, 0.05) AND ST_Equals(nro.geom, nr.geom) AND nro.fid <> nr.fid
+        WHERE nro.type_reseau <> 'aep' AND nr.fid IS NOT NULL;
+    $$ LANGUAGE SQL;
+
+-- FUNCTION ass_noeud_doublon()
+COMMENT ON FUNCTION stareau.ass_noeud_doublon() IS
+'Fonction de récupération des noeuds en doublon (sans lien avec une canalisation et situé au même endroit qu''un autre noeud) du réseau ASS.
+';
+
+-- aep_noeud_doublon()
+CREATE FUNCTION stareau.aep_noeud_doublon()
+    RETURNS SETOF stareau_principale.noeud_reseau AS $$
+        SELECT nro.*
+        FROM stareau.ass_noeud_orphelin() nro
+            JOIN stareau_principale.noeud_reseau nr ON ST_DWithin(nro.geom, nr.geom, 0.05) AND ST_Equals(nro.geom, nr.geom) AND nro.fid <> nr.fid
+        WHERE nro.type_reseau = 'aep' AND nr.fid IS NOT NULL;
+    $$ LANGUAGE SQL;
+
+-- FUNCTION aep_noeud_doublon()
+COMMENT ON FUNCTION stareau.aep_noeud_doublon() IS
+'Fonction de récupération des noeuds en doublon (sans lien avec une canalisation et situé au même endroit qu''un autre noeud) du réseau AEP.
+';
 --
 -- PostgreSQL database dump complete
 --

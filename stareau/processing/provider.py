@@ -15,6 +15,7 @@ from .tools import provider_id
 from .tools_algs import (
     NoeudManquant,
     NoeudOrphelin,
+    NoeudDoublon,
 )
 
 
@@ -36,6 +37,7 @@ class Provider(QgsProcessingProvider):
         # Tools
         self.addAlgorithm(NoeudManquant())
         self.addAlgorithm(NoeudOrphelin())
+        self.addAlgorithm(NoeudDoublon())
 
         self.addAlgorithm(CreateDatabaseLocalInterface())
 

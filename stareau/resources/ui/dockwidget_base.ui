@@ -184,6 +184,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="button_noeud_orphelin">
+             <property name="text">
+              <string>Récupérer les noeuds en doublon</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
