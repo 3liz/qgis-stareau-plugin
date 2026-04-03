@@ -1,6 +1,5 @@
 
 from qgis.core import (
-    Qgis,
     QgsDataSourceUri,
     QgsFeatureRequest,
     QgsFeatureSink,
@@ -16,8 +15,8 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
-from ..tools import get_connection_name
 from ..database.base import BaseDatabaseAlgorithm, i18n, resources
+from ..tools import get_connection_name
 
 # Shorcut
 tr = i18n.tr

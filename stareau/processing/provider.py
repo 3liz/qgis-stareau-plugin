@@ -11,10 +11,10 @@ from .database import (
     CreateDatabaseStructure,
     UpgradeDatabaseStructure,
 )
+from .tools import provider_id
 from .tools_algs import (
     NoeudManquant,
 )
-from .tools import provider_id
 
 
 class Provider(QgsProcessingProvider):
