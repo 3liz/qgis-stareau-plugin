@@ -13,9 +13,9 @@ from .database import (
 )
 from .tools import provider_id
 from .tools_algs import (
+    NoeudDoublon,
     NoeudManquant,
     NoeudOrphelin,
-    NoeudDoublon,
 )
 
 
