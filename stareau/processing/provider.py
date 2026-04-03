@@ -14,6 +14,7 @@ from .database import (
 from .tools import provider_id
 from .tools_algs import (
     NoeudManquant,
+    NoeudOrphelin,
 )
 
 
@@ -34,6 +35,7 @@ class Provider(QgsProcessingProvider):
 
         # Tools
         self.addAlgorithm(NoeudManquant())
+        self.addAlgorithm(NoeudOrphelin())
 
         self.addAlgorithm(CreateDatabaseLocalInterface())
 

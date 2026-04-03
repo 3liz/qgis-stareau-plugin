@@ -23,9 +23,9 @@ from .base import NETWORK_TYPES
 tr = i18n.tr
 
 
-class NoeudManquant(BaseDatabaseAlgorithm):
+class NoeudOrphelin(BaseDatabaseAlgorithm):
     """
-    Get noeud manquant
+    Get noeud orphelin
     """
 
     CONNECTION_NAME = "CONNECTION_NAME"
@@ -35,14 +35,14 @@ class NoeudManquant(BaseDatabaseAlgorithm):
     DESTINATION = "DESTINATION"
 
     def name(self):
-        return "noeud_manquant"
+        return "noeud_orphelin"
 
     def displayName(self):
-        return tr("Noeuds manquants")
+        return tr("Noeuds orphelins")
 
     def shortHelpString(self):
         return tr(
-            "Récuparation des noeuds manquants du réseau d'eau!"
+            "Récuparation des noeuds orphelins du réseau d'eau!"
         )
 
     def initAlgorithm(self, config):
@@ -99,7 +99,7 @@ class NoeudManquant(BaseDatabaseAlgorithm):
             )
             return False, msg
 
-        return super(NoeudManquant, self).checkParameterValues(parameters, context)
+        return super(NoeudOrphelin, self).checkParameterValues(parameters, context)
 
     def processAlgorithm(self, parameters, context, feedback):
         metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
@@ -110,9 +110,9 @@ class NoeudManquant(BaseDatabaseAlgorithm):
 
         uri = QgsDataSourceUri(connection.uri())
         if NETWORK_TYPES[n_type] == 'ASS':
-            uri.setDataSource("", f"( SELECT * FROM \"{schema}\".ass_noeud_manquant() )", "geom", "", "fid")
+            uri.setDataSource("", f"( SELECT * FROM \"{schema}\".ass_noeud_orphelin() )", "geom", "", "fid")
         elif NETWORK_TYPES[n_type] == 'AEP':
-            uri.setDataSource("", f"( SELECT * FROM \"{schema}\".aep_noeud_manquant() )", "geom", "", "fid")
+            uri.setDataSource("", f"( SELECT * FROM \"{schema}\".aep_noeud_orphelin() )", "geom", "", "fid")
         else:
             raise QgsProcessingException(tr("Network type not supported!"))
 
@@ -129,7 +129,7 @@ class NoeudManquant(BaseDatabaseAlgorithm):
         for key, details in context.layersToLoadOnCompletion().items():
             if details.outputName != self.DESTINATION:
                 continue
-            details.name = 'Noeuds manquants'
+            details.name = 'Noeuds orphelins'
             details.forceName = True
             context.addLayerToLoadOnCompletion(key, details)
 
