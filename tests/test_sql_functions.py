@@ -2,20 +2,15 @@
 
 import unittest
 
-from pathlib import Path
-
 import psycopg
 
 from qgis import processing
 
 from stareau.plugin_tools.feedback import LoggerProcessingFeedBack
 from stareau.plugin_tools.resources import (
-    available_migrations,
     schema_name,
     schema_version,
-    srid_value,
 )
-from stareau.processing.database import CreateDatabaseStructure
 from stareau.processing.provider import Provider
 
 
