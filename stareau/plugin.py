@@ -5,6 +5,7 @@ from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
 from qgis.PyQt.QtWidgets import QAction
 
+from .actions import action_runner
 from .dockwidget import PluginDockWidget
 from .plugin_tools.resources import plugin_path, resources_path
 from .processing.provider import Provider
@@ -62,3 +63,16 @@ class Plugin:
     def open_help():
         """Open the online help."""
         QDesktopServices.openUrl(QUrl("https://docs.3liz.org/qgis-stareau-plugin/"))
+
+    @staticmethod
+    def run_action(name, *args):
+        """Run a specific action.
+
+        Do not rename this function, it's part of the public API of the plugin.
+
+        These lines are included in the QGIS project.
+
+        from qgis.utils import plugins
+        plugins['raepa'].run_action('action_name', params)
+        """
+        action_runner(name, *args)
