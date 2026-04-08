@@ -845,6 +845,35 @@ def test_processing_downstream(
     case.assertEqual(count_checking, 2)
     case.assertEqual(count_records, 2)
 
+    # Remove ass_rega_0077750
+    cursor.execute(
+        f"""
+        DELETE FROM "{plugin_schema_name}_ass".ass_regard
+        WHERE id_ass_regard = 'ass_rega_0077750';
+        """
+    )
+
+    # Downstream
+    cursor.execute(
+        f"""
+        SELECT d.idx, c.id_ass_canalisation, d.id_noeudinitial, d.id_noeudterminal
+        FROM "{plugin_schema_name}".ass_downstream('{nodes["ass_rega_0030456"][1]}') d
+        JOIN "{plugin_schema_name}_ass".ass_canalisation c ON d.fid_canalisation = c.fid;
+        """
+    )
+    records = cursor.fetchall()
+    count_records = 0
+    count_checking = 0
+    for record in records:
+        if record[0] == 1:
+            case.assertEqual(record[2], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[3], 'non_renseigne')
+            case.assertEqual(record[1], "ass_cana_0001775_v")
+            count_checking += 1
+        count_records += 1
+    case.assertEqual(count_checking, 1)
+    case.assertEqual(count_records, 1)
+
     # Close connection
     db_connection.close()
 
@@ -1032,6 +1061,35 @@ def test_processing_upstream(
         count_records += 1
     case.assertEqual(count_checking, 2)
     case.assertEqual(count_records, 2)
+
+    # Remove ass_rega_0030456
+    cursor.execute(
+        f"""
+        DELETE FROM "{plugin_schema_name}_ass".ass_regard
+        WHERE id_ass_regard = 'ass_rega_0030456';
+        """
+    )
+
+    # Downstream
+    cursor.execute(
+        f"""
+        SELECT d.idx, c.id_ass_canalisation, d.id_noeudinitial, d.id_noeudterminal
+        FROM "{plugin_schema_name}".ass_upstream('{nodes["ass_rega_0077750"][1]}') d
+        JOIN "{plugin_schema_name}_ass".ass_canalisation c ON d.fid_canalisation = c.fid;
+        """
+    )
+    records = cursor.fetchall()
+    count_records = 0
+    count_checking = 0
+    for record in records:
+        if record[0] == 1:
+            case.assertEqual(record[2], 'non_renseigne')
+            case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
+            case.assertEqual(record[1], "ass_cana_0001775_v")
+            count_checking += 1
+        count_records += 1
+    case.assertEqual(count_checking, 1)
+    case.assertEqual(count_records, 1)
 
     # Close connection
     db_connection.close()
