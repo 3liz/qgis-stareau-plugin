@@ -190,6 +190,23 @@ TABLES_FOR_FIRST_VERSION["stareau_defense_incendie"] = [
     "pei_type",
 ]
 
+FUNCTIONS_FOR_FIRST_VERSION = {}
+FUNCTIONS_FOR_FIRST_VERSION["stareau"] = [
+    "aa_before_geometry_insert_or_update_reduce_precision",
+    "after_noeud_reseau_delete",
+    "after_noeud_reseau_insert_or_update",
+    "aep_noeud_doublon",
+    "aep_noeud_manquant",
+    "aep_noeud_orphelin",
+    "ass_downstream",
+    "ass_noeud_doublon",
+    "ass_noeud_manquant",
+    "ass_noeud_orphelin",
+    "ass_upstream",
+    "before_canalisation_insert_or_update",
+    "get_current_setting",
+]
+
 # Expected list of tables for current version
 # Must be changed any time the SQL structure is changed
 TABLES_FOR_CURRENT_VERSION = [
@@ -252,20 +269,53 @@ def test_processing_create(
             f"La liste des tables du schéma `{db_schema}` n'est pas celle attendue",
         )
 
-    for table in TABLES_FOR_FIRST_VERSION["stareau_valeur"]:
+    db_schema = "stareau_valeur"
+    for table in TABLES_FOR_FIRST_VERSION[db_schema]:
         # Check the number of rows in each table
         cursor.execute(
             f"""
             SELECT count(*)
-            FROM stareau_valeur.{table}
+            FROM {db_schema}.{table}
             """
         )
         records = cursor.fetchall()
         case.assertGreaterEqual(
             records[0][0],
             4,
-            f"Le nombre de lignes de la table `stareau_valeur.{table}` n'est pas au moins égal à 4.",
+            f"Le nombre de lignes de la table `{db_schema}.{table}` n'est pas au moins égal à 4.",
         )
+
+    db_schema = "stareau"
+    # Check the number of functions
+    cursor.execute(
+        f"""
+        SELECT count(routine_name)
+        FROM information_schema.routines
+        WHERE routine_schema = '{db_schema}'
+        """
+    )
+    records = cursor.fetchall()
+    case.assertEqual(
+        len(FUNCTIONS_FOR_FIRST_VERSION[db_schema]),
+        records[0][0],
+        f"Le nombre de fonctions du schéma `{db_schema}` n'est pas celui attendu",
+    )
+    # Check the list of functions
+    cursor.execute(
+        f"""
+        SELECT routine_name
+        FROM information_schema.routines
+        WHERE routine_schema = '{db_schema}'
+        ORDER BY routine_name
+        """
+    )
+    records = cursor.fetchall()
+    result = [r[0] for r in records]
+    case.assertCountEqual(
+        FUNCTIONS_FOR_FIRST_VERSION[db_schema],
+        result,
+        f"La liste des tables du schéma `{db_schema}` n'est pas celle attendue",
+    )
 
     # Close connection
     db_connection.close()
@@ -328,20 +378,55 @@ def test_processing_create_with_schema_name(
             f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue",
         )
 
-    for table in TABLES_FOR_FIRST_VERSION["stareau_valeur"]:
+    db_schema = "stareau_valeur"
+    db_new_schema = db_schema.replace(f"{plugin_schema_name}", f"{schema}")
+    for table in TABLES_FOR_FIRST_VERSION[db_schema]:
         # Check the number of rows in each table
         cursor.execute(
             f"""
             SELECT count(*)
-            FROM {schema}_valeur.{table}
+            FROM {db_new_schema}.{table}
             """
         )
         records = cursor.fetchall()
         case.assertGreaterEqual(
             records[0][0],
             4,
-            f"Le nombre de lignes de la table `{schema}_valeur.{table}` n'est pas au moins égal à 4.",
+            f"Le nombre de lignes de la table `{db_new_schema}.{table}` n'est pas au moins égal à 4.",
         )
+
+    db_schema = "stareau"
+    db_new_schema = db_schema.replace(f"{plugin_schema_name}", f"{schema}")
+    # Check the number of functions
+    cursor.execute(
+        f"""
+        SELECT count(routine_name)
+        FROM information_schema.routines
+        WHERE routine_schema = '{db_new_schema}'
+        """
+    )
+    records = cursor.fetchall()
+    case.assertEqual(
+        len(FUNCTIONS_FOR_FIRST_VERSION[db_schema]),
+        records[0][0],
+        f"Le nombre de fonctions du schéma `{db_new_schema}` n'est pas celui attendu",
+    )
+    # Check the list of functions
+    cursor.execute(
+        f"""
+        SELECT routine_name
+        FROM information_schema.routines
+        WHERE routine_schema = '{db_new_schema}'
+        ORDER BY routine_name
+        """
+    )
+    records = cursor.fetchall()
+    result = [r[0] for r in records]
+    case.assertCountEqual(
+        FUNCTIONS_FOR_FIRST_VERSION[db_schema],
+        result,
+        f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue",
+    )
 
     # clear
     cursor.execute(
