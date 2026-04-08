@@ -1,5 +1,7 @@
 import os
 
+from typing import Any
+
 from qgis.core import QgsApplication, QgsSettings
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QTranslator, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon
@@ -65,7 +67,7 @@ class Plugin:
         QDesktopServices.openUrl(QUrl("https://docs.3liz.org/qgis-stareau-plugin/"))
 
     @staticmethod
-    def run_action(name, *args):
+    def run_action(name: str, **kwargs: Any):
         """Run a specific action.
 
         Do not rename this function, it's part of the public API of the plugin.
@@ -75,4 +77,4 @@ class Plugin:
         from qgis.utils import plugins
         plugins['raepa'].run_action('action_name', params)
         """
-        action_runner(name, *args)
+        action_runner(name, **kwargs)

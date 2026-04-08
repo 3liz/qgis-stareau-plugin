@@ -15,7 +15,7 @@ subparsers = cli.add_subparsers(
 )
 
 
-def command(name: str, **kwargs) -> Callable:
+def command(name: str, **kwargs) -> Callable:  # noqa ANN003
     """Wrap subcommand function"""
 
     def decorator(fun):

@@ -17,10 +17,6 @@ ifdef VIRTUAL_ENV
 ACTIVE_VENV=--active
 endif
 UV=uv run $(ACTIVE_VENV)
-else
-ifndef VIRTUAL_ENV
-$(error "You must install uv \(https://docs.astral.sh/uv/\) or install requirements in a virtual env")
-endif
 endif
 
 REQUIREMENT_GROUPS= \
