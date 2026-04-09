@@ -66,7 +66,7 @@ def db_connection() -> Generator[psycopg.Connection, None, None]:
     if os.getenv("TEST_RUNTYPE") == "docker":
         connection =  psycopg.connect(
             user="docker",
-            password="docker",
+            password="docker",  # noqa S106
             host="db",
             port="5432",
             dbname="gis"
@@ -74,7 +74,7 @@ def db_connection() -> Generator[psycopg.Connection, None, None]:
     else:
         connection = psycopg.connect(
             user="docker",
-            password="docker",
+            password="docker",  # noqa S106
             host="localhost",
             port="35432",
             dbname="gis"

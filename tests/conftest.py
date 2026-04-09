@@ -42,7 +42,7 @@ def pytest_report_header(config):
 
 def pytest_sessionstart(session: pytest.Session):
     """Start qgis application"""
-    install_logger_hook
+    install_logger_hook()
 
 
 @pytest.fixture(scope="session")

@@ -10,7 +10,7 @@ from ..plugin_tools.resources import resources_path
 
 class BaseProcessingAlgorithm(QgsProcessingAlgorithm):
 
-    def createInstance(self, config={}):
+    def createInstance(self, config=None):
         """ Virtual override
 
         see https://qgis.org/api/classQgsProcessingAlgorithm.html

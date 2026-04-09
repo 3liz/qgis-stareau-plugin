@@ -132,7 +132,7 @@ class UpgradeDatabaseStructure(BaseDatabaseAlgorithm):
         try:
             data = connection.executeSql(sql)
         except QgsProviderConnectionException as e:
-            raise QgsProcessingException(str(e))
+            raise QgsProcessingException(str(e)) from None
 
         db_version = None
         for a in data:
@@ -160,35 +160,34 @@ class UpgradeDatabaseStructure(BaseDatabaseAlgorithm):
 
         # Loop sql files and run SQL code
         for new_db_version, sql_file in migrations:
-            with sql_file.open() as f:
-                sql = f.read()
-                if len(sql.strip()) == 0:
-                    feedback.pushInfo(f"* {sql_file.name}  -- SKIPPED (EMPTY FILE)")
-                    continue
+            sql = sql_file.read_text()
+            if len(sql.strip()) == 0:
+                feedback.pushInfo(f"* {sql_file.name}  -- SKIPPED (EMPTY FILE)")
+                continue
 
-                # Replace default SCHEMA by user defined one
-                # Useful when the SQL calls functions or objects
-                # prefixed by the schema
-                if schema != resources.schema_name():
-                    sql = sql.replace(f"{resources.schema_name()}.", f"{schema}.")
-                    sql = sql.replace(f" {resources.schema_name()};", f" {schema};")
+            # Replace default SCHEMA by user defined one
+            # Useful when the SQL calls functions or objects
+            # prefixed by the schema
+            if schema != resources.schema_name():
+                sql = sql.replace(f"{resources.schema_name()}.", f"{schema}.")
+                sql = sql.replace(f" {resources.schema_name()};", f" {schema};")
 
-                # Add SQL database version in adresse.metadata
-                feedback.pushInfo(tr("* NEW DB VERSION ") + str(new_db_version))
-                sql += f"""
-                    UPDATE {schema}.metadata
-                    SET (me_version, me_version_date)
-                    = ( '{new_db_version}', now()::timestamp(0) );
-                """
+            # Add SQL database version in adresse.metadata
+            feedback.pushInfo(tr("* NEW DB VERSION ") + str(new_db_version))
+            sql += f"""
+                UPDATE {schema}.metadata
+                SET (me_version, me_version_date)
+                = ( '{new_db_version}', now()::timestamp(0) );
+            """
 
-                try:
-                    connection.executeSql(sql)
-                except QgsProviderConnectionException as e:
-                    feedback.reportError("Error when executing file {}".format(sql_file.name))
-                    connection.executeSql("ROLLBACK;")
-                    raise QgsProcessingException(str(e))
+            try:
+                connection.executeSql(sql)
+            except QgsProviderConnectionException as e:
+                feedback.reportError("Error when executing file {}".format(sql_file.name))
+                connection.executeSql("ROLLBACK;")
+                raise QgsProcessingException(str(e)) from None
 
-                feedback.pushInfo(f"* {sql_file} -- OK !")
+            feedback.pushInfo(f"* {sql_file} -- OK !")
 
         # Everything is fine, we now update to the plugin version
         sql = f"""
@@ -200,7 +199,7 @@ class UpgradeDatabaseStructure(BaseDatabaseAlgorithm):
         try:
             connection.executeSql(sql)
         except QgsProviderConnectionException as e:
-            raise QgsProcessingException(str(e))
+            raise QgsProcessingException(str(e)) from None
 
         msg = tr("*** THE DATABASE STRUCTURE HAS BEEN UPDATED ***")
         feedback.pushInfo(msg)

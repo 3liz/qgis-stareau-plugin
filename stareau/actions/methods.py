@@ -1,4 +1,3 @@
-from os import path
 
 from qgis.core import (
     QgsDataSourceUri,
@@ -9,6 +8,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 
+from ..plugin_tools.resources import plugin_path
 from .tools import display_error_message, get_postgres_layers
 
 # NOTE: Supported parameter types are (str, int, bool, float)
@@ -178,9 +178,7 @@ def ass_downstream(id_noeud: str, id_layer: str):
     records = connection.execSql(
         f"SELECT d.idx, d.fid_canalisation FROM \"{schema}\".ass_downstream('{id_noeud}') d "
     )
-    fids = []
-    for record in records:
-        fids.append(record[1])
+    fids = [record[1] for record in records]
 
     uri = QgsDataSourceUri(layer.dataProvider().uri())
     uri.setWkbType(QgsWkbTypes.LineString)
@@ -195,7 +193,7 @@ def ass_downstream(id_noeud: str, id_layer: str):
     source = QgsVectorLayer(uri.uri(), "Downstream", "postgres")
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
-        path.join(path.dirname(__file__), "styles", "downstream_symbology.qml"),
+        plugin_path("actions", "styles", "downstream_symbology.qml"),
         categories = QgsMapLayer.Symbology,
     )
 
@@ -242,9 +240,7 @@ def ass_upstream(id_noeud: str, id_layer: str):
     records = connection.execSql(
         f"SELECT d.idx, d.fid_canalisation FROM \"{schema}\".ass_upstream('{id_noeud}') d "
     )
-    fids = []
-    for record in records:
-        fids.append(record[1])
+    fids = [record[1] for record in records]
 
     uri = QgsDataSourceUri(layer.dataProvider().uri())
     uri.setWkbType(QgsWkbTypes.LineString)
@@ -259,6 +255,6 @@ def ass_upstream(id_noeud: str, id_layer: str):
     source = QgsVectorLayer(uri.uri(), "Upstream", "postgres")
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
-        path.join(path.dirname(__file__), "styles", "upstream_symbology.qml"),
+        plugin_path("actions", "styles", "upstream_symbology.qml"),
         categories = QgsMapLayer.Symbology,
     )
