@@ -22,7 +22,7 @@ def plugin_path(*args: str | Path) -> Path:
     return cast("Path", resources.files(PACKAGE_NAME)).joinpath(*args)
 
 
-def resources_path(*args) -> Path:
+def resources_path(*args: str) -> Path:
     """Return the path to the plugin resources folder."""
     return plugin_path("resources", *args)
 

@@ -11,29 +11,22 @@ from qgis.core import (
 
 from .tools import display_error_message, get_postgres_layers
 
+# NOTE: Supported parameter types are (str, int, bool, float)
 
-def inverser_canalisation(*args):
+def inverser_canalisation(fid_canalisation: int, id_layer: str):
     """
     Inverser la canalisation sélectionnée.
-
-    :param *args: [fid_canalisation: int, id_layer: str]
 
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('inverser_canalisation', '[% fid %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'inverser_canalisation',
+            fid_canalisation = [% fid %],
+            id_layer = '[% @layer_id %]',
+        )
     """
     action_name = "Inverser la canalisation"
-    if len(args) != 2:
-        display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
-            "Mauvais nombre d'arguments ! "
-            f"2 attendus et {len(args)} fournis."
-        )
-        return
-
-    fid_canalisation = int(args[0])
-    id_layer = args[1]
 
     layer = get_postgres_layers(id_layer, action_name)
     if layer is None:
@@ -57,28 +50,20 @@ def inverser_canalisation(*args):
     layer.triggerRepaint()
 
 
-def fermer_vanne(*args):
+def fermer_vanne(fid_vanne: int, id_layer: str):
     """
     Fermer la vanne sélectionnée.
-
-    :param *args: [fid_vanne: int, id_layer: str]
 
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('fermer_vanne', '[% fid %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'fermer_vanne',
+            fid_vanne = [% fid %],
+            id_layer='[% @layer_id %]',
+        )
     """
     action_name = "Fermer la vanne"
-    if len(args) != 2:
-        display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
-            "Mauvais nombre d'arguments ! "
-            f"2 attendus et {len(args)} fournis."
-        )
-        return
-
-    fid_vanne = int(args[0])
-    id_layer = args[1]
 
     layer = get_postgres_layers(id_layer, action_name)
     if layer is None:
@@ -108,28 +93,20 @@ def fermer_vanne(*args):
     layer.triggerRepaint()
 
 
-def ouvrir_vanne(*args):
+def ouvrir_vanne(fid_vanne: int, id_layer: str):
     """
     Ouvrir la vanne sélectionnée.
-
-    :param *args: [fid_vanne: int, id_layer: str]
 
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('ouvrir_vanne', '[% fid %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'ouvrir_vanne',
+            fid_vanne = [% fid %],
+            id_layer='[% @layer_id %]',
+        )
     """
     action_name = "Ouvrir la vanne"
-    if len(args) != 2:
-        display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
-            "Mauvais nombre d'arguments ! "
-            f"2 attendus et {len(args)} fournis."
-        )
-        return
-
-    fid_vanne = int(args[0])
-    id_layer = args[1]
 
     layer = get_postgres_layers(id_layer, action_name)
     if layer is None:
@@ -159,29 +136,21 @@ def ouvrir_vanne(*args):
     layer.triggerRepaint()
 
 
-def ass_downstream(*args):
+def ass_downstream(id_noeud: str, id_layer: str):
     """
     Descendre le réseau de canalisations ASS à partir du noeud sélectionné
     et afficher les canalisations en aval du noeud sélectionnné.
 
-    :param *args: [id_noeud: str, id_layer: str]
-
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('ass_downstream', '[% id_noeud_reseau %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'ass_downstream',
+            id_noeud = '[% id_noeud_reseau %]',
+            id_layer = '[% @layer_id %]',
+        )
     """
     action_name = "Downstream"
-    if len(args) != 2:
-        display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
-            "Mauvais nombre d'arguments ! "
-            f"2 attendus et {len(args)} fournis."
-        )
-        return
-
-    id_noeud = args[0]
-    id_layer = args[1]
 
     layer = get_postgres_layers(id_layer, action_name)
     if layer is None:
@@ -231,29 +200,21 @@ def ass_downstream(*args):
     )
 
 
-def ass_upstream(*args):
+def ass_upstream(id_noeud: str, id_layer: str):
     """
     Remonter le réseau de canalisations ASS à partir du noeud sélectionné
     et afficher les canalisations en amont du noeud sélectionnné.
 
-    :param *args: [id_noeud: str, id_layer: str]
-
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('ass_upstream', '[% id_noeud_reseau %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'ass_upstream',
+            id_noeud = '[% id_noeud_reseau %]',
+            id_layer = '[% @layer_id %]',
+        )
     """
     action_name = "Upstream"
-    if len(args) != 2:
-        display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
-            "Mauvais nombre d'arguments ! "
-            f"2 attendus et {len(args)} fournis."
-        )
-        return
-
-    id_noeud = args[0]
-    id_layer = args[1]
 
     layer = get_postgres_layers(id_layer, action_name)
     if layer is None:

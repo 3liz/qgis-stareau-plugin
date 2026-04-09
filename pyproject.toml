@@ -95,8 +95,6 @@ extend-select = [
 ]
 # COM812 conflict with formatter
 ignore = [
-    "ANN002",
-    "ANN003",
     "ANN401", # Dynamically typed expressions (Any)
     "T201",
     "COM812",
