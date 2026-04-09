@@ -22,6 +22,7 @@ repository=https://github.com/3liz/qgis-stareau-plugin
 homepage=https://github.com/3liz/qgis-stareau-plugin
 experimental=True
 deprecated=False
+supportQt6=True
 
 hasProcessingProvider=True
 
