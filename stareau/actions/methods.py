@@ -20,7 +20,11 @@ def inverser_canalisation(fid_canalisation: int, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('inverser_canalisation', '[% fid %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'inverser_canalisation',
+            fid_canalisation = [% fid %],
+            id_layer = '[% @layer_id %]',
+        )
     """
     action_name = "Inverser la canalisation"
 
@@ -53,7 +57,11 @@ def fermer_vanne(fid_vanne: int, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('fermer_vanne', '[% fid %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'fermer_vanne',
+            fid_vanne = [% fid %],
+            id_layer='[% @layer_id %]',
+        )
     """
     action_name = "Fermer la vanne"
 
@@ -92,7 +100,11 @@ def ouvrir_vanne(fid_vanne: int, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('ouvrir_vanne', '[% fid %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'ouvrir_vanne',
+            fid_vanne = [% fid %],
+            id_layer='[% @layer_id %]',
+        )
     """
     action_name = "Ouvrir la vanne"
 
@@ -132,7 +144,11 @@ def ass_downstream(id_noeud: str, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('ass_downstream', '[% id_noeud_reseau %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'ass_downstream',
+            id_noeud = '[% id_noeud_reseau %]',
+            id_layer = '[% @layer_id %]',
+        )
     """
     action_name = "Downstream"
 
@@ -192,7 +208,11 @@ def ass_upstream(id_noeud: str, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action('ass_upstream', '[% id_noeud_reseau %]', '[% @layer_id %]')
+        plugins['raepa'].run_action(
+            'ass_upstream',
+            id_noeud = '[% id_noeud_reseau %]',
+            id_layer = '[% @layer_id %]',
+        )
     """
     action_name = "Upstream"
 

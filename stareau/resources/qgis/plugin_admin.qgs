@@ -9780,7 +9780,7 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    '[% fid %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    fid_canalisation=[% fid %],&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
           <actionScope id="Field"/>
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
@@ -13932,7 +13932,7 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    '[% fid %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    fid_canalisation=[% fid %],&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
           <actionScope id="Field"/>
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
@@ -54906,12 +54906,12 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'fermer_vanne',&#xa;    '[% fid %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{c3173b4b-da76-4939-a966-e3ea927f3af2}" shortTitle="Fermer la vanne" type="1" icon="" name="Fermer la vanne" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'fermer_vanne',&#xa;    fid_vanne = [% fid %],&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{c3173b4b-da76-4939-a966-e3ea927f3af2}" shortTitle="Fermer la vanne" type="1" icon="" name="Fermer la vanne" notificationMessage="" capture="0">
           <actionScope id="Field"/>
           <actionScope id="Feature"/>
           <actionScope id="Canvas"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ouvrir_vanne',&#xa;    '[% fid %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{3fe74685-34f2-4fe2-b691-7c775a77dcfb}" shortTitle="Ouvrir la vanne" type="1" icon="" name="Ouvrir la vanne" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ouvrir_vanne',&#xa;    fid_vanne = [% fid %],&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{3fe74685-34f2-4fe2-b691-7c775a77dcfb}" shortTitle="Ouvrir la vanne" type="1" icon="" name="Ouvrir la vanne" notificationMessage="" capture="0">
           <actionScope id="Field"/>
           <actionScope id="Feature"/>
           <actionScope id="Canvas"/>
@@ -60972,11 +60972,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -65757,7 +65757,7 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    '[% fid %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    fid_canalisation=[% fid %],&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
           <actionScope id="Field"/>
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
@@ -69459,7 +69459,7 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    '[% fid %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    fid_canalisation=[% fid %],&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
           <actionScope id="Field"/>
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
@@ -71978,11 +71978,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -77792,11 +77792,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -84006,11 +84006,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -97276,11 +97276,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -103075,11 +103075,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -107736,11 +107736,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -111750,11 +111750,11 @@ On distingue habituellement plusieurs types :
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -114307,11 +114307,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -118312,11 +118312,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -120845,11 +120845,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -123425,11 +123425,11 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_downstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{88331b1a-50f6-458d-a43b-746f915985f4}" shortTitle="Downstream" type="1" icon="" name="Downstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    '[% id_noeud_reseau %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'ass_upstream',&#xa;    id_noeud = '[% id_noeud_reseau %]',&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{888cf3a2-bc92-42a9-9869-7d5eb8228ab8}" shortTitle="Upstream" type="1" icon="" name="Upstream" notificationMessage="" capture="0">
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
         </actionsetting>
@@ -128697,7 +128697,7 @@ def my_form_open(dialog, layer, feature):
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
-        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    '[% fid %]',&#xa;    '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
+        <actionsetting isEnabledOnlyWhenEditable="0" action="from qgis.utils import plugins&#xa;&#xa;plugins['stareau'].run_action(&#xa;    'inverser_canalisation',&#xa;    fid_canalisation=[% fid %],&#xa;    id_layer = '[% @layer_id %]',&#xa;)" id="{a1de2e8e-24c9-4e10-bc3a-cb40fa5c2f94}" shortTitle="Inverser la canalisation" type="1" icon="" name="Inverser la canalisation" notificationMessage="" capture="0">
           <actionScope id="Field"/>
           <actionScope id="Canvas"/>
           <actionScope id="Feature"/>
