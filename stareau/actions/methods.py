@@ -258,3 +258,15 @@ def ass_upstream(id_noeud: str, id_layer: str):
         plugin_path("actions", "styles", "upstream_symbology.qml"),
         categories = QgsMapLayer.Symbology,
     )
+
+
+def noop_action(a: str, b: int, c: bool):
+    """Test action
+
+    Permet de vérifier le passage de paramètre
+    """
+    assert isinstance(a, str)   # noqa S101
+    assert isinstance(b, int)   # noqa S101
+    assert isinstance(c, bool)  # noqa S101
+    pass
+

@@ -1,4 +1,4 @@
-from inspect import signature
+from inspect import Parameter, signature
 from typing import Any
 
 from .methods import (
@@ -6,6 +6,7 @@ from .methods import (
     ass_upstream,
     fermer_vanne,
     inverser_canalisation,
+    noop_action,
     ouvrir_vanne,
 )
 from .tools import display_error_message
@@ -16,13 +17,28 @@ ACTIONS = (
     ass_upstream,
     fermer_vanne,
     ouvrir_vanne,
+    noop_action,
 )
 
-class InvalidArgumentError(Exception):
+
+class RunActionError(Exception):
     pass
 
 
-def run(name: str, **kwargs: Any):
+class InvalidArgumentError(RunActionError):
+    pass
+
+
+class MissingParameterError(RunActionError):
+    pass
+
+
+class MethodNotFoundError(RunActionError):
+    pass
+
+
+
+def run(name: str, **kwargs: Any) -> RunActionError | None:
     """
     Run the action with the given name and arguments.
 
@@ -41,27 +57,34 @@ def run(name: str, **kwargs: Any):
         sig = signature(action)
         params = sig.parameters
 
-        def check(arg: str, value: Any) -> Any:
-            if arg in params:
-                anno = params[arg].annotation
-                if not isinstance(value, anno):
+        def check(param: Parameter) -> Any:
+            if param.name not in kwargs:
+                raise MissingParameterError(param.name)
+
+            anno = param.annotation
+            value = kwargs[param.name]
+            if not isinstance(value, anno):
+                try:
                     value = anno(value)
-                return value
-            raise InvalidArgumentError(arg)
+                except ValueError:
+                    raise InvalidArgumentError(param.name) from None
+            return value
 
         try:
-            if len(params) != len(kwargs):
-                raise InvalidArgumentError()
-            args = {arg: check(arg, value) for arg, value in kwargs.items()}
-        except InvalidArgumentError:
+            args = {arg: check(param) for arg, param in params.items()}
+        except RunActionError as err:
             display_error_message(
                 f"Arguments invalides for action \"{name}\", "
                 f"Attendus: {sig}, "
                 f"Reçus: {kwargs}"
             )
-            return
+            return err
+
         action(**args)
-    else:
-        display_error_message(
-            f"L'action \"{name}\" n'a pas été trouvée!"
-        )
+        return None
+
+    display_error_message(
+        f"L'action \"{name}\" n'a pas été trouvée!"
+    )
+
+    return MethodNotFoundError(name)
