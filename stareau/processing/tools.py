@@ -83,13 +83,15 @@ def createAdministrationProjectFromTemplate(
     connection_name: str,
     schema_name: str,
     crs: QgsCoordinateReferenceSystem,
-    project_file_path: str,
+    project_file_path: str | Path,
 ) -> bool:
     """
     Creates a new administration project from template
     for the given connection name
     to the given target path
     """
+    project_file_path = Path(project_file_path)
+
     # Get connection information
     uri = get_postgis_connection_uri_from_name(connection_name)
     if not uri:
@@ -103,8 +105,7 @@ def createAdministrationProjectFromTemplate(
 
     # Read in the template file
     template_file = resources.plugin_path("resources", "qgis", "plugin_admin.qgs")
-    with open(template_file, "r") as fin:
-        filedata = fin.read()
+    filedata = template_file.read_text()
 
     plugin_schema_name = resources.schema_name()
     plugin_srid = resources.srid_value()
@@ -162,8 +163,7 @@ def createAdministrationProjectFromTemplate(
 
     # Replace also the QGIS project variable
     filedata = filedata.replace("stareau_connection_name_value", connection_name)
-    with open(project_file_path, "w") as fout:
-        fout.write(filedata)
+    project_file_path.write_text(filedata)
 
     # Copy the Lizmap configuration
     config_file = resources.plugin_path("resources", "qgis", "plugin_admin.qgs.cfg")

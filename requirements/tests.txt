@@ -8,9 +8,9 @@ pluggy==1.6.0
 psycopg==3.3.3
 psycopg-binary==3.3.3 ; implementation_name != 'pypy'
 pygments==2.20.0
-pytest==9.0.2
-pytest-qgis @ git+https://github.com/3liz/pytest-qgis.git@1f18d2d183f1b61888304c3e1e28684355288919
+pytest==9.0.3
+pytest-qgis @ git+https://github.com/3liz/pytest-qgis.git@3dcc32859600c23a29155e8045d2b6c4c18b9ad5
 semver==3.0.4
 tomli==2.4.1 ; python_full_version < '3.11'
 typing-extensions==4.15.0 ; python_full_version < '3.13'
-tzdata==2025.3 ; sys_platform == 'win32'
+tzdata==2026.1 ; sys_platform == 'win32'

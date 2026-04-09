@@ -163,7 +163,8 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
             try:
                 connection.executeSql(sql)
             except QgsProviderConnectionException as e:
-                raise QgsProcessingException(str(e))
+                raise QgsProcessingException(str(e)) from None
+
             feedback.pushInfo("  Success !")
 
         # Create full structure
@@ -201,36 +202,35 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         for sf in sql_files:
             feedback.pushInfo(sf)
             sql_file = install_dir.joinpath("sql", sf)
-            with open(sql_file, "r") as f:
-                sql = f.read()
-                if len(sql.strip()) == 0:
-                    feedback.pushInfo("  Skipped (empty file)")
-                    continue
+            sql = sql_file.read_text()
+            if len(sql.strip()) == 0:
+                feedback.pushInfo("  Skipped (empty file)")
+                continue
 
-                # Replace default SCHEMA by user defined one
-                # Useful when the SQL calls functions or objects
-                # prefixed by the schema
-                if schema != plugin_schema_name:
-                    sql = sql.replace(f"{plugin_schema_name}_", f"{schema}_")
-                    sql = sql.replace(f"{plugin_schema_name}.", f"{schema}.")
-                    sql = sql.replace(f" {plugin_schema_name};", f" {schema};")
+            # Replace default SCHEMA by user defined one
+            # Useful when the SQL calls functions or objects
+            # prefixed by the schema
+            if schema != plugin_schema_name:
+                sql = sql.replace(f"{plugin_schema_name}_", f"{schema}_")
+                sql = sql.replace(f"{plugin_schema_name}.", f"{schema}.")
+                sql = sql.replace(f" {plugin_schema_name};", f" {schema};")
 
-                if srid != plugin_srid:
-                    sql = sql.replace(f", {plugin_srid})", f", {srid})")
+            if srid != plugin_srid:
+                sql = sql.replace(f", {plugin_srid})", f", {srid})")
 
-                try:
-                    connection.executeSql(sql)
-                except QgsProviderConnectionException as e:
-                    raise QgsProcessingException(str(e))
+            try:
+                connection.executeSql(sql)
+            except QgsProviderConnectionException as e:
+                raise QgsProcessingException(str(e)) from None
 
-                feedback.pushInfo("  Success !")
+            feedback.pushInfo("  Success !")
 
         # loop csv files and insert data
         for file in install_dir.joinpath("csv", "StaR-Eau").glob("*.csv"):
             feedback.pushInfo(file.name)
             table_name = file.stem
             table_values: List[str] = []
-            with open(file) as f:
+            with file.open() as f:
                 cf = csv.reader(f)
                 table_values.extend(
                     "("
@@ -279,7 +279,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
             try:
                 connection.executeSql(sql)
             except QgsProviderConnectionException as e:
-                raise QgsProcessingException(str(e))
+                raise QgsProcessingException(str(e)) from None
 
             feedback.pushInfo("  Success !")
 
@@ -294,7 +294,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         try:
             connection.executeSql(sql)
         except QgsProviderConnectionException as e:
-            raise QgsProcessingException(str(e))
+            raise QgsProcessingException(str(e)) from None
 
     def processAlgorithm(self, parameters, context, feedback):
         connection_name = self.parameterAsConnectionName(parameters, self.CONNECTION_NAME, context)
