@@ -128,9 +128,12 @@ CREATE TABLE "stareau_principale".noeud_reseau (
   CONSTRAINT pk_noeud_reseau PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".champ_commun);
-CREATE INDEX sidx_noeud_geom ON stareau_principale.noeud_reseau USING gist (geom);  ---indexation
+CREATE INDEX sidx_noeud_geom ON stareau_principale.noeud_reseau USING gist (geom); --- spatial indexation
 CREATE INDEX idx_noeud_type_reseau ON stareau_principale.noeud_reseau (type_reseau); --- btree indexation
 CREATE INDEX idx_noeud_id_noeud ON stareau_principale.noeud_reseau (id_noeud_reseau); --- btree indexation
+CREATE INDEX sidx_noeud_geom_type_aep ON stareau_principale.noeud_reseau USING gist (geom) WHERE type_reseau = 'aep'; ---partial spatial indexation
+CREATE INDEX sidx_noeud_geom_type_ass ON stareau_principale.noeud_reseau USING gist (geom) WHERE type_reseau <> 'aep'; ---partial spatial indexation
+CREATE INDEX idx_noeud_id_noeud_geom ON stareau_principale.noeud_reseau (id_noeud_reseau) INCLUDE (geom); --- btree indexation optimize type+geometry queries
 
 COMMENT ON TABLE "stareau_principale".noeud_reseau IS 'table mère des éléments ponctuels';
 COMMENT ON COLUMN "stareau_principale".noeud_reseau.fid IS 'identifiant SIG';
@@ -157,7 +160,7 @@ CREATE TABLE "stareau_principale".canalisation (
   CONSTRAINT pk_canalisation PRIMARY KEY (fid)
 )
 INHERITS ("stareau_principale".champ_commun);
-CREATE INDEX sidx_canalisation_geom ON stareau_principale.canalisation USING gist (geom); --- indexation
+CREATE INDEX sidx_canalisation_geom ON stareau_principale.canalisation USING gist (geom); --- spatial indexation
 CREATE INDEX idx_canalisation_type_reseau ON stareau_principale.canalisation (type_reseau); --- btree indexation
 CREATE INDEX idx_canalisation_noeudterminal ON stareau_principale.canalisation (noeudterminal); --- btree indexation
 CREATE INDEX idx_canalisation_noeudinitial ON stareau_principale.canalisation (noeudinitial); --- btree indexation
