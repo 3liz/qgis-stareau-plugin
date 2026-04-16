@@ -427,12 +427,11 @@ CREATE FUNCTION stareau.ass_downstream(id_noeud_reseau text)
                     ni.fid, c.noeudinitial,
                     nt.fid, c.noeudterminal,
                     w.all_parents || c.fid
-                FROM stareau_principale.canalisation AS c
-                INNER JOIN walk_network AS w ON c.noeudinitial = w.id_noeudterminal
+                FROM walk_network AS w
+                INNER JOIN stareau_principale.canalisation AS c ON c.noeudinitial = w.id_noeudterminal
                 JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
                 JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
-                WHERE TRUE
-                AND c.fid <> ALL (w.all_parents)
+                WHERE NOT c.fid = ANY(w.all_parents)
             )
             SELECT idx, fid_canalisation, fid_noeudinitial, id_noeudinitial, fid_noeudterminal, id_noeudterminal
             FROM walk_network
@@ -487,12 +486,11 @@ CREATE FUNCTION stareau.ass_upstream(id_noeud_reseau text)
                     ni.fid, c.noeudinitial,
                     nt.fid, c.noeudterminal,
                     w.all_parents || c.fid
-                FROM stareau_principale.canalisation AS c
-                INNER JOIN walk_network AS w ON c.noeudterminal = w.id_noeudinitial
+                FROM walk_network AS w
+                INNER JOIN stareau_principale.canalisation AS c ON c.noeudterminal = w.id_noeudinitial
                 JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
                 JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
-                WHERE TRUE
-                AND c.fid <> ALL (w.all_parents)
+                WHERE NOT c.fid = ANY(w.all_parents)
             )
             SELECT idx, fid_canalisation, fid_noeudinitial, id_noeudinitial, fid_noeudterminal, id_noeudterminal
             FROM walk_network
