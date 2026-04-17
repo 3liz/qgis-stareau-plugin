@@ -523,11 +523,11 @@ CREATE FUNCTION stareau.ass_noeud_manquant()
             FROM (
                 SELECT dc.fid * 10 as fid, st_startpoint(dc.geom) AS geom, null as upstream_cana, dc.id_canalisation as downstream_cana
                 FROM stareau_principale.canalisation dc
-                WHERE dc.type_reseau <> 'aep' AND dc.noeudinitial = 'non_renseigne'
+                WHERE dc.type_reseau <> 'aep' AND dc.noeudinitial = 'non_renseigne' AND NOT ST_IsEmpty(dc.geom)
                 UNION ALL
                 SELECT uc.fid * 10 + 1 as fid, st_endpoint(uc.geom) AS geom, uc.id_canalisation as upstream_cana, null as downstream_cana
                 FROM stareau_principale.canalisation uc
-                WHERE uc.type_reseau <> 'aep' AND uc.noeudterminal = 'non_renseigne'
+                WHERE uc.type_reseau <> 'aep' AND uc.noeudterminal = 'non_renseigne' AND NOT ST_IsEmpty(uc.geom)
             ) b
             GROUP BY b.geom;
     END
@@ -555,11 +555,11 @@ CREATE FUNCTION stareau.aep_noeud_manquant()
             FROM (
                 SELECT dc.fid * 10 as fid, st_startpoint(dc.geom) AS geom, null as upstream_cana, dc.id_canalisation as downstream_cana
                 FROM stareau_principale.canalisation dc
-                WHERE dc.type_reseau = 'aep' AND dc.noeudinitial = 'non_renseigne'
+                WHERE dc.type_reseau = 'aep' AND dc.noeudinitial = 'non_renseigne' AND NOT ST_IsEmpty(dc.geom)
                 UNION ALL
                 SELECT uc.fid * 10 + 1 as fid, st_endpoint(uc.geom) AS geom, uc.id_canalisation as upstream_cana, null as downstream_cana
                 FROM stareau_principale.canalisation uc
-                WHERE uc.type_reseau = 'aep' AND uc.noeudterminal = 'non_renseigne'
+                WHERE uc.type_reseau = 'aep' AND uc.noeudterminal = 'non_renseigne' AND NOT ST_IsEmpty(uc.geom)
             ) b
             GROUP BY b.geom;
     END
