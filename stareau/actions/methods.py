@@ -9,7 +9,7 @@ from qgis.core import (
 )
 
 from ..plugin_tools.resources import plugin_path
-from .tools import display_error_message, get_postgres_layers
+from .tools import display_error_message, display_info_message, get_postgres_layers
 
 # NOTE: Supported parameter types are (str, int, bool, float)
 
@@ -256,6 +256,83 @@ def ass_upstream(id_noeud: str, id_layer: str):
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
         str(plugin_path("actions", "styles", "upstream_symbology.qml")),
+        categories = QgsMapLayer.Symbology,
+    )
+
+
+def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: str):
+    """
+    Parcourir le réseau de canalisations AEP à partir du noeud sélectionné
+    et afficher les canalisations entre le noeud sélectionné et cible la plus proche.
+
+    These lines are included in the QGIS project.
+
+        from qgis.utils import plugins
+        plugins['raepa'].run_action(
+            'aep_pgr_path_to_nearest_target',
+            fid_noeud = [% fid %],
+            id_layer = '[% @layer_id %]',
+            target_table = 'target_table',
+        )
+    """
+    action_name = "aep_pgr_path_to_nearest_target"
+
+    layer = get_postgres_layers(id_layer, action_name)
+    if layer is None:
+        # Message d'erreur déjà affiché dans get_postgres_layers
+        return
+    if layer.wkbType() != QgsWkbTypes.Point:
+        display_error_message(
+            f"Erreur dans l'action \"{action_name}\", "
+            f"la couche {id_layer} n'est pas une couche de type point !"
+        )
+        return
+    if layer.fields().indexOf('fid') == -1:
+        display_error_message(
+            f"Erreur dans l'action \"{action_name}\", "
+            f"la couche {id_layer} n'a pas de champ 'fid' !"
+        )
+        return
+
+    if not target_table.startswith('aep_'):
+        display_error_message(
+            f"Erreur dans l'action \"{action_name}\", "
+            f"le nom de la table '{target_table}' est invalide, il doit commencer par 'aep_'"
+        )
+        return
+
+    layer_uri = layer.dataProvider().uri()
+    layer_schema = '_'.join(layer_uri.schema().split('_')[:-1])
+
+    metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
+    connection = metadata.createConnection(layer_uri.uri(), {})
+
+    target_schema = layer_uri.schema()
+
+    records = connection.execSql(
+        "SELECT fid FROM cnm_stareau.aep_pgr_path_to_nearest_target("
+        f"{fid_noeud}, '{target_schema}', '{target_table}')"
+    )
+
+    fids = [record[0] for record in records]
+    if not fids:
+        display_info_message("Aucun chemin n'a été trouvé pour atteindre la cible")
+        return
+
+    uri = QgsDataSourceUri(layer.dataProvider().uri())
+    uri.setWkbType(QgsWkbTypes.LineString)
+    uri.setDataSource(
+        f"{layer_schema}_principale",
+        "canalisation",
+        "geom",
+        f"fid IN ({','.join([str(fid) for fid in fids])})",
+        "fid",
+    )
+
+    source = QgsVectorLayer(uri.uri(), f"path_to_{target_table}", "postgres")
+    QgsProject.instance().addMapLayer(source)
+    source.loadNamedStyle(
+        str(plugin_path("actions", "styles", "path_to_target_symbology.qml")),
         categories = QgsMapLayer.Symbology,
     )
 

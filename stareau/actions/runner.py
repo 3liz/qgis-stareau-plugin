@@ -2,6 +2,7 @@ from inspect import Parameter, signature
 from typing import Any
 
 from .methods import (
+    aep_pgr_path_to_nearest_target,
     ass_downstream,
     ass_upstream,
     fermer_vanne,
@@ -18,6 +19,7 @@ ACTIONS = (
     fermer_vanne,
     ouvrir_vanne,
     noop_action,
+    aep_pgr_path_to_nearest_target,
 )
 
 
