@@ -193,7 +193,7 @@ def ass_downstream(id_noeud: str, id_layer: str):
     source = QgsVectorLayer(uri.uri(), "Downstream", "postgres")
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
-        plugin_path("actions", "styles", "downstream_symbology.qml"),
+        str(plugin_path("actions", "styles", "downstream_symbology.qml")),
         categories = QgsMapLayer.Symbology,
     )
 
@@ -255,7 +255,7 @@ def ass_upstream(id_noeud: str, id_layer: str):
     source = QgsVectorLayer(uri.uri(), "Upstream", "postgres")
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
-        plugin_path("actions", "styles", "upstream_symbology.qml"),
+        str(plugin_path("actions", "styles", "upstream_symbology.qml")),
         categories = QgsMapLayer.Symbology,
     )
 
