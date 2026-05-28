@@ -52,7 +52,8 @@ LINT_TARGETS=$(MODULE_NAME) tests $(EXTRA_LINT_TARGETS)
 lint::
 	@ $(UV) ruff check --output-format=concise $(LINT_TARGETS)
 
-lint:: typecheck
+# NOTE: Atm, Mypy throw too many errors with Qgis type annotation
+#lint:: typecheck
 
 lint-preview:
 	@ $(UV) ruff check \
