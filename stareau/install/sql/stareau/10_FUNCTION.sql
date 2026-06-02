@@ -407,34 +407,32 @@ CREATE FUNCTION stareau.ass_downstream(id_noeud_reseau text)
         $$
             WITH RECURSIVE walk_network(
                 idx, fid_canalisation,
-                fid_noeudinitial, id_noeudinitial,
-                fid_noeudterminal, id_noeudterminal,
+                id_noeudinitial,
+                id_noeudterminal,
                 all_parents
             ) AS (
-                SELECT 1 AS idx, c.fid,
-                    ni.fid, c.noeudinitial,
-                    nt.fid, c.noeudterminal,
+                SELECT 1 AS idx, c.fid as fid_canalisation,
+                    c.noeudinitial as id_noeudinitial,
+                    c.noeudterminal as id_noeudterminal,
                     array[c.fid] as all_parents
                 FROM stareau_principale.canalisation AS c
-                JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
-                LEFT JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
                 WHERE c.type_reseau <> 'aep'
                 AND c.noeudinitial = '%1$s'
-                AND ni.type_reseau <> 'aep'
-                AND (nt.type_reseau IS NULL OR nt.type_reseau <> 'aep')
                 UNION
-                SELECT w.idx+1 AS idx, c.fid,
-                    ni.fid, c.noeudinitial,
-                    nt.fid, c.noeudterminal,
+                SELECT w.idx+1 AS idx, c.fid as fid_canalisation,
+                    c.noeudinitial as id_noeudinitial,
+                    c.noeudterminal as id_noeudterminal,
                     w.all_parents || c.fid
                 FROM walk_network AS w
                 INNER JOIN stareau_principale.canalisation AS c ON c.noeudinitial = w.id_noeudterminal
-                JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
-                JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
                 WHERE NOT c.fid = ANY(w.all_parents)
             )
-            SELECT idx, fid_canalisation, fid_noeudinitial, id_noeudinitial, fid_noeudterminal, id_noeudterminal
-            FROM walk_network
+            SELECT w.idx, w.fid_canalisation,
+                ni.fid AS fid_noeudinitial, w.id_noeudinitial,
+                nt.fid AS fid_noeudterminal, w.id_noeudterminal
+            FROM walk_network AS w
+            JOIN stareau_principale.noeud_reseau AS ni ON w.id_noeudinitial = ni.id_noeud_reseau
+            LEFT JOIN stareau_principale.noeud_reseau AS nt ON w.id_noeudterminal = nt.id_noeud_reseau
             ORDER BY idx
         $$,
         id_noeud_reseau
@@ -443,7 +441,7 @@ CREATE FUNCTION stareau.ass_downstream(id_noeud_reseau text)
     $func$;
 
 -- FUNCTION ass_downstream(text)
-COMMENT ON FUNCTION stareau.ass_downstream(id_noeud_reseau text) IS
+COMMENT ON FUNCTION stareau.ass_downstream(text) IS
 'Fonction de parcours du réseau en aval d''un noeud de réseau ASS.
 Retourne les canalisations et les noeuds de réseau en aval du noeud de réseau passé en paramètre.
 ';
@@ -466,34 +464,32 @@ CREATE FUNCTION stareau.ass_upstream(id_noeud_reseau text)
         $$
             WITH RECURSIVE walk_network(
                 idx, fid_canalisation,
-                fid_noeudinitial, id_noeudinitial,
-                fid_noeudterminal, id_noeudterminal,
+                id_noeudinitial,
+                id_noeudterminal,
                 all_parents
             ) AS (
-                SELECT 1 AS idx, c.fid,
-                    ni.fid, c.noeudinitial,
-                    nt.fid, c.noeudterminal,
+                SELECT 1 AS idx, c.fid as fid_canalisation,
+                    c.noeudinitial as id_noeudinitial,
+                    c.noeudterminal as id_noeudterminal,
                     array[c.fid] as all_parents
                 FROM stareau_principale.canalisation AS c
-                JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
-                LEFT JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
                 WHERE c.type_reseau <> 'aep'
                 AND c.noeudterminal = '%1$s'
-                AND nt.type_reseau <> 'aep'
-                AND (ni.type_reseau IS NULL OR ni.type_reseau <> 'aep')
                 UNION
-                SELECT w.idx+1 AS idx, c.fid,
-                    ni.fid, c.noeudinitial,
-                    nt.fid, c.noeudterminal,
+                SELECT w.idx+1 AS idx, c.fid as fid_canalisation,
+                    c.noeudinitial as id_noeudinitial,
+                    c.noeudterminal as id_noeudterminal,
                     w.all_parents || c.fid
                 FROM walk_network AS w
                 INNER JOIN stareau_principale.canalisation AS c ON c.noeudterminal = w.id_noeudinitial
-                JOIN stareau_principale.noeud_reseau AS ni ON c.noeudinitial = ni.id_noeud_reseau
-                JOIN stareau_principale.noeud_reseau AS nt ON c.noeudterminal = nt.id_noeud_reseau
                 WHERE NOT c.fid = ANY(w.all_parents)
             )
-            SELECT idx, fid_canalisation, fid_noeudinitial, id_noeudinitial, fid_noeudterminal, id_noeudterminal
-            FROM walk_network
+            SELECT w.idx, w.fid_canalisation,
+                ni.fid AS fid_noeudinitial, w.id_noeudinitial,
+                nt.fid AS fid_noeudterminal, w.id_noeudterminal
+            FROM walk_network AS w
+            LEFT JOIN stareau_principale.noeud_reseau AS ni ON w.id_noeudinitial = ni.id_noeud_reseau
+            JOIN stareau_principale.noeud_reseau AS nt ON w.id_noeudterminal = nt.id_noeud_reseau
             ORDER BY idx
         $$,
         id_noeud_reseau
@@ -502,7 +498,7 @@ CREATE FUNCTION stareau.ass_upstream(id_noeud_reseau text)
     $func$;
 
 -- FUNCTION ass_upstream(text)
-COMMENT ON FUNCTION stareau.ass_upstream(id_noeud_reseau text) IS
+COMMENT ON FUNCTION stareau.ass_upstream(text) IS
 'Fonction de parcours du réseau en amnt d''un noeud de réseau ASS.
 Retourne les canalisations et les noeuds de réseau en amont du noeud de réseau passé en paramètre.
 ';
