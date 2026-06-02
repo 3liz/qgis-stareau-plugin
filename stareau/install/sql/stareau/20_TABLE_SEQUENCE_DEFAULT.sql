@@ -88,6 +88,68 @@ ALTER SEQUENCE stareau.test_id_seq OWNED BY stareau.test.id;
 -- test id
 ALTER TABLE ONLY stareau.test ALTER COLUMN id SET DEFAULT nextval('stareau.test_id_seq'::regclass);
 
+-- aep_vertex
+CREATE TABLE stareau.aep_vertex (
+    id integer NOT NULL,
+    fictif boolean NOT NULL,
+    geom geometry(Point, 2154) NOT NULL
+);
+
+
+-- aep_vertex
+COMMENT ON TABLE stareau.aep_vertex IS 'AEP Vertex for routing';
+
+
+-- aep_vertex_id_seq
+CREATE SEQUENCE stareau.aep_vertex_id_seq
+
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+-- aep_vertex_id_seq
+ALTER SEQUENCE stareau.aep_vertex_id_seq OWNED BY stareau.aep_vertex.id;
+
+
+-- test id
+ALTER TABLE ONLY stareau.aep_vertex ALTER COLUMN id SET DEFAULT nextval('stareau.aep_vertex_id_seq'::regclass);
+
+
+-- aep_edge
+CREATE TABLE stareau.aep_edge (
+    id integer NOT NULL,
+    source integer NOT NULL,
+    target integer NOT NULL,
+    cost real NOT NULL,
+    reverse_cost real NOT NULL,
+    geom geometry(linestring, 2154) NOT NULL
+);
+
+
+-- aep_edge
+COMMENT ON TABLE stareau.aep_edge IS 'AEP Edge for routing';
+
+
+-- aep_edge_id_seq
+CREATE SEQUENCE stareau.aep_edge_id_seq
+
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+-- aep_edge_id_seq
+ALTER SEQUENCE stareau.aep_edge_id_seq OWNED BY stareau.aep_edge.id;
+
+
+-- test id
+ALTER TABLE ONLY stareau.aep_edge ALTER COLUMN id SET DEFAULT nextval('stareau.aep_edge_id_seq'::regclass);
+
 
 --
 -- PostgreSQL database dump complete

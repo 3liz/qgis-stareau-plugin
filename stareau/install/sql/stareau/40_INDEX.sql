@@ -19,9 +19,12 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+-- stareau_aep_vertex_geom_idx
+CREATE INDEX stareau_aep_vertex_geom_idx ON stareau.aep_vertex USING gist (geom);
+
+-- stareau_aep_edge_geom_idx
+CREATE INDEX stareau_aep_edge_geom_idx ON stareau.aep_edge USING gist (geom);
+
 --
 -- PostgreSQL database dump complete
 --
-
-
-

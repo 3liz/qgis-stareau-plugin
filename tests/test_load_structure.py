@@ -34,6 +34,8 @@ SCHEMAS = [
 # created for the first version
 TABLES_FOR_FIRST_VERSION = {}
 TABLES_FOR_FIRST_VERSION["stareau"] = [
+    "aep_edge",
+    "aep_vertex",
     "glossary_test_category",
     "metadata",
     "test",
@@ -314,7 +316,7 @@ def test_processing_create(
     case.assertCountEqual(
         FUNCTIONS_FOR_FIRST_VERSION[db_schema],
         result,
-        f"La liste des tables du schéma `{db_schema}` n'est pas celle attendue",
+        f"La liste des fonctions du schéma `{db_schema}` n'est pas celle attendue",
     )
 
     # Close connection
@@ -425,7 +427,7 @@ def test_processing_create_with_schema_name(
     case.assertCountEqual(
         FUNCTIONS_FOR_FIRST_VERSION[db_schema],
         result,
-        f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue",
+        f"La liste des fonctions du schéma `{db_new_schema}` n'est pas celle attendue",
     )
 
     # clear
