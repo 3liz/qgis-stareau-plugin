@@ -629,6 +629,183 @@ CREATE FUNCTION stareau.aep_noeud_doublon()
 COMMENT ON FUNCTION stareau.aep_noeud_doublon() IS
 'Fonction de récupération des noeuds en doublon (sans lien avec une canalisation et situé au même endroit qu''un autre noeud) du réseau AEP.
 ';
+
+
+-- aep_pgr_nearest_vannes()
+CREATE FUNCTION stareau.aep_pgr_nearest_vannes(vertex_id integer)
+    RETURNS SETOF stareau_aep.aep_vanne
+    LANGUAGE plpgsql AS
+    $func$
+    BEGIN
+        RETURN QUERY EXECUTE
+        format(
+        $format$
+
+WITH shortest_path_to_vannes AS (
+  -- The shortest path from the provided vertex id to the 100 nearest vanne vertex
+  -- start_vid: the provided vertex id
+  -- end_vid: a vanne vertex
+  -- steps: the number of steps to go from start_vid to end_vid
+  -- max_step_cost: the cost of the most expensive step
+  -- agg_cost: the total cost of the path
+  SELECT start_vid, end_vid, MAX(path_seq) steps,
+         max("cost") as max_step_cost,
+         max(agg_cost) as agg_cost
+    FROM pgr_trsp(
+      -- The Edge SQL
+      $e$ SELECT id, source, target, cost, reverse_cost from cnm_stareau.aep_edge $e$,
+      -- The Restriction SQL, the cost the pass through a vanne vertex
+      $r$
+
+      WITH vanne_vertex AS (
+        -- The 100 nearest vanne vertex from the provided vertex id
+        SELECT vertex.id
+        FROM cnm_stareau_aep.aep_vanne vanne
+        JOIN cnm_stareau.aep_vertex vertex ON vertex.id = vanne.fid
+        ORDER BY (SELECT geom FROM cnm_stareau.aep_vertex WHERE id=%1$s) <-> vertex.geom
+        LIMIT 100
+      ),
+      vanne_vertex_edge AS (
+        -- The edges connected to the vanne vertex (source or target)
+        SELECT vertex.id as v_id, edge.id as e_id
+        FROM cnm_stareau_aep.aep_vanne vanne
+        JOIN vanne_vertex vertex ON vertex.id = vanne.fid
+        JOIN cnm_stareau.aep_edge edge ON (vertex.id = edge.source OR vertex.id = edge.target)
+      )
+      -- For each edges connected by a vanne vertex (the path), the cost to pass through is 10000
+      SELECT ARRAY[ve1.e_id, ve2.e_id] AS "path", 10000 as "cost"
+        FROM vanne_vertex_edge ve1 JOIN vanne_vertex_edge ve2 ON ve1.v_id = ve2.v_id
+        WHERE ve1.e_id <> ve2.e_id
+
+      $r$,
+      %1$s, ARRAY(
+        -- The 100 nearest vanne vertex from the provided vertex id
+        SELECT vertex.id
+        FROM cnm_stareau_aep.aep_vanne vanne
+        JOIN cnm_stareau.aep_vertex vertex ON vertex.id = vanne.fid
+        ORDER BY (SELECT geom FROM cnm_stareau.aep_vertex WHERE id=%1$s) <-> vertex.geom
+        LIMIT 100
+      )
+    )
+    GROUP BY start_vid, end_vid
+),
+nearest_path_to_vannes AS (
+    -- The nearest vannes are those with the path without a step through a vanne vertex
+    SELECT *
+      FROM shortest_path_to_vannes
+     WHERE max_step_cost < 10000
+    ORDER BY agg_cost
+)
+-- Return the nearest vanne data
+SELECT aep_vanne.*
+  FROM nearest_path_to_vannes
+  JOIN stareau_aep.aep_vanne aep_vanne ON aep_vanne.fid = nearest_path_to_vannes.end_vid
+
+        $format$,
+        vertex_id
+        );
+    END
+    $func$;
+
+COMMENT ON FUNCTION stareau.aep_pgr_nearest_vannes(integer) IS
+'Fonction de recherche des vannes les plus proches d''un vertex AEP (un noeud réseau AEP).';
+
+
+CREATE FUNCTION stareau.aep_pgr_nearest_vannes_withPoint(the_point geometry)
+    RETURNS SETOF stareau_aep.aep_vanne
+    LANGUAGE plpgsql AS
+    $func$
+    BEGIN
+        RETURN QUERY EXECUTE
+        format(
+        $format$
+
+WITH shortest_path_to_vannes AS (
+  -- The shortest path from the provided vertex id to the 100 nearest vanne vertex
+  -- start_vid: the provided vertex id
+  -- end_vid: a vanne vertex
+  -- steps: the number of steps to go from start_vid to end_vid
+  -- max_step_cost: the cost of the most expensive step
+  -- agg_cost: the total cost of the path
+  SELECT start_vid, end_vid, MAX(path_seq) steps,
+         max("cost") as max_step_cost,
+         max(agg_cost) as agg_cost
+    FROM pgr_trsp_withPoints(
+      -- The Edge SQL
+      $e$ SELECT id, source, target, cost, reverse_cost from cnm_stareau.aep_edge $e$,
+      -- The Restriction SQL, the cost the pass through a vanne vertex
+      $r$
+
+      WITH vanne_vertex AS (
+        -- The 100 nearest vanne vertex from the provided point
+        SELECT vertex.id
+        FROM cnm_stareau_aep.aep_vanne vanne
+        JOIN cnm_stareau.aep_vertex vertex ON vertex.id = vanne.fid
+        ORDER BY '%1$s'::geometry <-> vertex.geom
+        LIMIT 100
+      ),
+      vanne_vertex_edge AS (
+        -- The edges connected to the vanne vertex (source or target)
+        SELECT vertex.id as v_id, edge.id as e_id
+        FROM cnm_stareau_aep.aep_vanne vanne
+        JOIN vanne_vertex vertex ON vertex.id = vanne.fid
+        JOIN cnm_stareau.aep_edge edge ON (vertex.id = edge.source OR vertex.id = edge.target)
+      )
+      -- For each edges connected by a vanne vertex (the path), the cost to pass through is 10000
+      SELECT ARRAY[ve1.e_id, ve2.e_id] AS "path", 10000 as "cost"
+        FROM vanne_vertex_edge ve1 JOIN vanne_vertex_edge ve2 ON ve1.v_id = ve2.v_id
+        WHERE ve1.e_id <> ve2.e_id
+
+      $r$,
+      -- The points SQL, the edge closest to the point
+      $p$
+
+        SELECT edge_id, round(fraction::numeric, 2) AS fraction, side
+        FROM pgr_findCloseEdges(
+          -- The Edge SQL
+          $pe$ SELECT id, geom FROM stareau.aep_edge $pe$,
+          -- The provided point as geometry
+          '%1$s'::geometry,
+          -- The minimum distance and the number of edges to find
+          5, cap => 1
+        )
+
+      $p$,
+
+      -1, ARRAY(
+        -- The 100 nearest vanne vertex from the provided point
+        SELECT vertex.id
+        FROM cnm_stareau_aep.aep_vanne vanne
+        JOIN cnm_stareau.aep_vertex vertex ON vertex.id = vanne.fid
+        ORDER BY '%1$s'::geometry <-> vertex.geom
+        LIMIT 100
+      )
+    )
+    GROUP BY start_vid, end_vid
+),
+nearest_path_to_vannes AS (
+    -- The nearest vannes are those with the path without a step through a vanne vertex
+    SELECT *
+      FROM shortest_path_to_vannes
+     WHERE max_step_cost < 10000
+    ORDER BY agg_cost
+)
+-- Return the nearest vanne data
+SELECT aep_vanne.*
+  FROM nearest_path_to_vannes
+  JOIN stareau_aep.aep_vanne aep_vanne ON aep_vanne.fid = nearest_path_to_vannes.end_vid
+
+        $format$,
+        vertex_id
+        );
+    END
+    $func$;
+
+
+COMMENT ON FUNCTION stareau.aep_pgr_nearest_vannes_withPoint(geometry) IS
+'Fonction de recherche des vannes les plus proches d''un point proche du réseau AEP.';
+
+
 --
 -- PostgreSQL database dump complete
 --

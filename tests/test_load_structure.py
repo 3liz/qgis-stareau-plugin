@@ -200,6 +200,8 @@ FUNCTIONS_FOR_FIRST_VERSION["stareau"] = [
     "aep_noeud_doublon",
     "aep_noeud_manquant",
     "aep_noeud_orphelin",
+    "aep_pgr_nearest_vannes",
+    "aep_pgr_nearest_vannes_withpoint",
     "ass_downstream",
     "ass_noeud_doublon",
     "ass_noeud_manquant",
