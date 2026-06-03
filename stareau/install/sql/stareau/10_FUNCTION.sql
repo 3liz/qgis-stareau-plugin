@@ -704,7 +704,8 @@ SELECT aep_vanne.*
     $func$;
 
 COMMENT ON FUNCTION stareau.aep_pgr_nearest_vannes(integer) IS
-'Fonction de recherche des vannes les plus proches d''un vertex AEP (un noeud réseau AEP).';
+'Fonction de recherche des vannes les plus proches d''un vertex AEP (un noeud réseau AEP).
+⚠ Nécessite PGRouting.';
 
 
 CREATE FUNCTION stareau."aep_pgr_nearest_vannes_withPoint"(the_point geometry)
@@ -799,7 +800,8 @@ SELECT aep_vanne.*
 
 
 COMMENT ON FUNCTION stareau."aep_pgr_nearest_vannes_withPoint"(geometry) IS
-'Fonction de recherche des vannes les plus proches d''un point proche du réseau AEP.';
+'Fonction de recherche des vannes les plus proches d''un point proche du réseau AEP.
+⚠ Nécessite PGRouting.';
 
 
 CREATE FUNCTION stareau.aep_pgr_path_to_nearest_target(
