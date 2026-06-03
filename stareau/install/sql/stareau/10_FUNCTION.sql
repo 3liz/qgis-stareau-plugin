@@ -802,6 +802,61 @@ COMMENT ON FUNCTION stareau."aep_pgr_nearest_vannes_withPoint"(geometry) IS
 'Fonction de recherche des vannes les plus proches d''un point proche du réseau AEP.';
 
 
+CREATE FUNCTION stareau.aep_pgr_path_to_nearest_target(
+    vertex_id integer,
+	target_schema text,
+	target_table text)
+    RETURNS SETOF stareau_aep.aep_canalisation
+    LANGUAGE plpgsql AS
+    $func$
+    BEGIN
+        RETURN QUERY EXECUTE
+        format(
+        $format$
+
+        WITH target_search_path AS (
+            SELECT start_vid, end_vid, max(agg_cost) as agg_cost,
+                    array_agg(edge) FILTER (WHERE edge != -1) as edges
+                FROM pgr_bdDijkstra(
+                    -- The Edge SQL
+                    'SELECT id, source, target, cost, reverse_cost from stareau.aep_edge',
+                    -- The started vretex
+                    %1$s,
+                    -- The ended vertexes
+                    ARRAY(
+                        -- The 10 nearest target vertex from the provided vertex id
+                        SELECT vertex.id
+                        FROM "%2$I"."%3$I" AS target
+                        JOIN stareau.aep_vertex vertex ON vertex.id = target.fid
+                        WHERE NOT (vertex.id = %1$s)
+                        ORDER BY (SELECT geom FROM stareau.aep_vertex WHERE id=%1$s) <-> vertex.geom
+                        LIMIT 10
+                    )
+                )
+            GROUP BY start_vid, end_vid
+            ORDER BY agg_cost
+            LIMIT 1
+        )
+        SELECT canalisation.*
+        FROM target_search_path
+        JOIN UNNEST(target_search_path.edges) AS edge_id ON true
+        JOIN stareau_aep.aep_canalisation AS canalisation ON canalisation.fid = edge_id;
+
+        $format$,
+        vertex_id,
+		target_schema,
+		target_table
+        );
+    END
+    $func$;
+
+
+COMMENT ON FUNCTION stareau.aep_pgr_path_to_nearest_target(integer, text, text) IS
+'Fonction de recherche de la cible la plus proche d''un vertex AEP (un noeud réseau AEP).
+⚠ Nécessite PGRouting.';
+
+
+
 --
 -- PostgreSQL database dump complete
 --
