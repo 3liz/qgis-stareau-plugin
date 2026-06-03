@@ -16,6 +16,7 @@ from .tools_algs import (
     NoeudDoublon,
     NoeudManquant,
     NoeudOrphelin,
+    PipesWaterIntakeToTreatment
 )
 
 
@@ -38,6 +39,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(NoeudManquant())
         self.addAlgorithm(NoeudOrphelin())
         self.addAlgorithm(NoeudDoublon())
+        self.addAlgorithm(PipesWaterIntakeToTreatment())
 
         self.addAlgorithm(CreateDatabaseLocalInterface())
 
