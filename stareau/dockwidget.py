@@ -50,6 +50,8 @@ class PluginDockWidget(QtWidgets.QDockWidget, FORM_CLASS):  # type: ignore [misc
             "missing_nodes",
             "orphan_nodes",
             "duplicate_nodes",
+            "pipes_treatment_to_reservoir",
+            "pipes_water_intake_to_treatment",
         ]
         for alg in self.algorithms:
             button = self.findChild(QPushButton, f"button_{alg}")
