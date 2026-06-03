@@ -23,9 +23,9 @@ from .base import NETWORK_TYPES
 tr = i18n.tr
 
 
-class NoeudManquant(BaseDatabaseAlgorithm):
+class MissingNodes(BaseDatabaseAlgorithm):
     """
-    Get noeud manquant
+    Get missing nodes
     """
 
     CONNECTION_NAME = "CONNECTION_NAME"
@@ -35,14 +35,14 @@ class NoeudManquant(BaseDatabaseAlgorithm):
     DESTINATION = "DESTINATION"
 
     def name(self):
-        return "noeud_manquant"
+        return "missing_nodes"
 
     def displayName(self):
-        return tr("Noeuds manquants")
+        return tr("Get missing nodes")
 
     def shortHelpString(self):
         return tr(
-            "Récuparation des noeuds manquants du réseau d'eau!"
+            "Get missing nodes in the water network"
         )
 
     def initAlgorithm(self, config):
@@ -99,7 +99,7 @@ class NoeudManquant(BaseDatabaseAlgorithm):
             )
             return False, msg
 
-        return super(NoeudManquant, self).checkParameterValues(parameters, context)
+        return super(MissingNodes, self).checkParameterValues(parameters, context)
 
     def processAlgorithm(self, parameters, context, feedback):
         metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
@@ -129,7 +129,7 @@ class NoeudManquant(BaseDatabaseAlgorithm):
         for key, details in context.layersToLoadOnCompletion().items():
             if details.outputName != self.DESTINATION:
                 continue
-            details.name = 'Noeuds manquants'
+            details.name = tr('Missing nodes')
             details.forceName = True
             context.addLayerToLoadOnCompletion(key, details)
 

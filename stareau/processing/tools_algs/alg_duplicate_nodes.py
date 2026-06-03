@@ -23,9 +23,9 @@ from .base import NETWORK_TYPES
 tr = i18n.tr
 
 
-class NoeudDoublon(BaseDatabaseAlgorithm):
+class DuplicateNodes(BaseDatabaseAlgorithm):
     """
-    Get noeud doublon
+    Get duplicate nodes
     """
 
     CONNECTION_NAME = "CONNECTION_NAME"
@@ -35,14 +35,14 @@ class NoeudDoublon(BaseDatabaseAlgorithm):
     DESTINATION = "DESTINATION"
 
     def name(self):
-        return "noeud_doublon"
+        return "duplicate_nodes"
 
     def displayName(self):
-        return tr("Noeuds en doublon")
+        return tr("Get duplicate nodes")
 
     def shortHelpString(self):
         return tr(
-            "Récuparation des noeuds en doublon du réseau d'eau!"
+            "Get duplicate nodes in the water network"
         )
 
     def initAlgorithm(self, config):
@@ -99,7 +99,7 @@ class NoeudDoublon(BaseDatabaseAlgorithm):
             )
             return False, msg
 
-        return super(NoeudDoublon, self).checkParameterValues(parameters, context)
+        return super(DuplicateNodes, self).checkParameterValues(parameters, context)
 
     def processAlgorithm(self, parameters, context, feedback):
         metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
@@ -129,7 +129,7 @@ class NoeudDoublon(BaseDatabaseAlgorithm):
         for key, details in context.layersToLoadOnCompletion().items():
             if details.outputName != self.DESTINATION:
                 continue
-            details.name = 'Noeuds en doublon'
+            details.name = tr('Duplicate nodes')
             details.forceName = True
             context.addLayerToLoadOnCompletion(key, details)
 

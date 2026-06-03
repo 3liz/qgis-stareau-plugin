@@ -112,7 +112,7 @@ class UpgradeDatabaseStructure(BaseDatabaseAlgorithm):
         # Run migration
         run_migrations = self.parameterAsBool(parameters, self.RUN_MIGRATIONS, context)
         if not run_migrations:
-            msg = tr("Vous devez cocher cette case pour réaliser la mise à jour !")
+            msg = tr("You must check this box to apply the update !")
             raise QgsProcessingException(msg)
 
         metadata = QgsProviderRegistry.instance().providerMetadata("postgres")

@@ -23,9 +23,9 @@ from .base import NETWORK_TYPES
 tr = i18n.tr
 
 
-class NoeudOrphelin(BaseDatabaseAlgorithm):
+class OrphanNodes(BaseDatabaseAlgorithm):
     """
-    Get noeud orphelin
+    Get orphan nodes
     """
 
     CONNECTION_NAME = "CONNECTION_NAME"
@@ -35,14 +35,14 @@ class NoeudOrphelin(BaseDatabaseAlgorithm):
     DESTINATION = "DESTINATION"
 
     def name(self):
-        return "noeud_orphelin"
+        return "orphan_nodes"
 
     def displayName(self):
-        return tr("Noeuds orphelins")
+        return tr("Get orphan nodes")
 
     def shortHelpString(self):
         return tr(
-            "Récuparation des noeuds orphelins du réseau d'eau!"
+            "Get orphan nodes in the water network"
         )
 
     def initAlgorithm(self, config):
@@ -99,7 +99,7 @@ class NoeudOrphelin(BaseDatabaseAlgorithm):
             )
             return False, msg
 
-        return super(NoeudOrphelin, self).checkParameterValues(parameters, context)
+        return super(OrphanNodes, self).checkParameterValues(parameters, context)
 
     def processAlgorithm(self, parameters, context, feedback):
         metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
@@ -129,7 +129,7 @@ class NoeudOrphelin(BaseDatabaseAlgorithm):
         for key, details in context.layersToLoadOnCompletion().items():
             if details.outputName != self.DESTINATION:
                 continue
-            details.name = 'Noeuds orphelins'
+            details.name = tr('Orphan nodes')
             details.forceName = True
             context.addLayerToLoadOnCompletion(key, details)
 

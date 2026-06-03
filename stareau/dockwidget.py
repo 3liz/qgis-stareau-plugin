@@ -47,9 +47,9 @@ class PluginDockWidget(QtWidgets.QDockWidget, FORM_CLASS):  # type: ignore [misc
             "create_database_structure",
             "upgrade_database_structure",
             "create_database_local_interface",
-            "noeud_manquant",
-            "noeud_orphelin",
-            "noeud_doublon",
+            "missing_nodes",
+            "orphan_nodes",
+            "duplicate_nodes",
         ]
         for alg in self.algorithms:
             button = self.findChild(QPushButton, f"button_{alg}")
