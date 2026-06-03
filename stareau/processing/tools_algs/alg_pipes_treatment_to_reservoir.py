@@ -43,7 +43,7 @@ class PipesTreatmentToReservoir(BaseDatabaseAlgorithm):
 
     def shortHelpString(self):
         return tr(
-            "Create a new layer with the pipes between treatments and the nearest"
+            "Create a new layer with the pipes between treatments and the nearest "
             "reservoir in order to check the pipes function."
         )
 
