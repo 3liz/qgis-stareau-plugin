@@ -13,9 +13,9 @@ from .database import (
 )
 from .tools import provider_id
 from .tools_algs import (
-    NoeudDoublon,
-    NoeudManquant,
-    NoeudOrphelin,
+    DuplicateNodes,
+    MissingNodes,
+    OrphanNodes,
     PipesTreatmentToReservoir,
     PipesWaterIntakeToTreatment,
 )
@@ -37,9 +37,9 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(UpgradeDatabaseStructure())
 
         # Tools
-        self.addAlgorithm(NoeudManquant())
-        self.addAlgorithm(NoeudOrphelin())
-        self.addAlgorithm(NoeudDoublon())
+        self.addAlgorithm(MissingNodes())
+        self.addAlgorithm(OrphanNodes())
+        self.addAlgorithm(DuplicateNodes())
         self.addAlgorithm(PipesWaterIntakeToTreatment())
         self.addAlgorithm(PipesTreatmentToReservoir())
 

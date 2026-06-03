@@ -171,23 +171,23 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QPushButton" name="button_noeud_manquant">
+            <widget class="QPushButton" name="button_missing_nodes">
              <property name="text">
-              <string>Récupérer les noeuds manquants</string>
+              <string>Get missing nodes</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="button_noeud_orphelin">
+            <widget class="QPushButton" name="button_orphan_nodes">
              <property name="text">
-              <string>Récupérer les noeuds orphelins</string>
+              <string>Get orphan nodes</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="button_noeud_orphelin">
+            <widget class="QPushButton" name="button_duplicate_nodes">
              <property name="text">
-              <string>Récupérer les noeuds en doublon</string>
+              <string>Get duplicate nodes</string>
              </property>
             </widget>
            </item>
