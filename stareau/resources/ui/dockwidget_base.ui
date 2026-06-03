@@ -191,6 +191,20 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="button_pipes_treatment_to_reservoir">
+             <property name="text">
+              <string>Treatments to nearest reservoir</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="button_pipes_water_intake_to_treatment">
+             <property name="text">
+              <string>Water intake points to nearest treatment</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>

@@ -39,7 +39,7 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
         return "pipes_water_intake_to_treatment"
 
     def displayName(self):
-        return tr("Pipes from water intake points to treatment")
+        return tr("Water intake points to nearest treatment")
 
     def shortHelpString(self):
         return tr(
