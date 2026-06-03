@@ -14,6 +14,13 @@ def display_error_message(message: str):
     QgsMessageLog.logMessage(message, 'StarEau', Qgis.Critical)
     iface.messageBar().pushMessage(message, level=Qgis.Critical, duration=2)
 
+def display_info_message(message:str):
+    """
+    Display info message in QGIS message bar.
+    """
+    iface.messageBar().pushMessage(message, level=Qgis.Info, duration=4)
+
+
 def get_postgres_layers(id_layer: str, action_name: str) -> None|QgsVectorLayer:
     """
     Get a postgres layer from its id and check if it is valid.
