@@ -793,7 +793,7 @@ SELECT aep_vanne.*
   JOIN stareau_aep.aep_vanne aep_vanne ON aep_vanne.fid = nearest_path_to_vannes.end_vid
 
         $format$,
-        vertex_id
+        the_point
         );
     END
     $func$;
