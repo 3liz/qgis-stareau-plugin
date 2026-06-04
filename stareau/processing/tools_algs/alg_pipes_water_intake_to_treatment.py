@@ -43,7 +43,7 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
 
     def shortHelpString(self):
         return tr(
-            "Create a new layer with the pipes between water intake points and the nearest"
+            "Create a new layer with the pipes between water intake points and the nearest "
             "treatment in order to check the pipes function."
         )
 
