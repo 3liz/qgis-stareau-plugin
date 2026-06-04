@@ -482,7 +482,7 @@ CREATE FUNCTION stareau.ass_upstream(id_noeud_reseau text)
                     w.all_parents || c.fid
                 FROM walk_network AS w
                 INNER JOIN stareau_principale.canalisation AS c ON c.noeudterminal = w.id_noeudinitial
-                WHERE c.noeudinitial <> 'non_renseigne' AND NOT c.fid = ANY(w.all_parents)
+                WHERE c.noeudterminal <> 'non_renseigne' AND NOT c.fid = ANY(w.all_parents)
             )
             SELECT w.idx, w.fid_canalisation,
                 ni.fid AS fid_noeudinitial, w.id_noeudinitial,
