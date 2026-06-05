@@ -161,6 +161,8 @@ CREATE TABLE "stareau_principale".canalisation (
 )
 INHERITS ("stareau_principale".champ_commun);
 CREATE INDEX sidx_canalisation_geom ON stareau_principale.canalisation USING gist (geom); --- spatial indexation
+CREATE INDEX sidx_canalisation_geom_end_point ON stareau_principale.canalisation USING gist (St_EndPoint(geom)); --- spatial indexation
+CREATE INDEX sidx_canalisation_geom_start_point ON stareau_principale.canalisation USING gist (St_StartPoint(geom)); --- spatial indexation
 CREATE INDEX idx_canalisation_type_reseau ON stareau_principale.canalisation (type_reseau); --- btree indexation
 CREATE INDEX idx_canalisation_noeudterminal ON stareau_principale.canalisation (noeudterminal); --- btree indexation
 CREATE INDEX idx_canalisation_noeudinitial ON stareau_principale.canalisation (noeudinitial); --- btree indexation
