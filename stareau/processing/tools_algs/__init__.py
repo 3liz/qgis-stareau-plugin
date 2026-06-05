@@ -1,4 +1,5 @@
 from .alg_duplicate_nodes import DuplicateNodes
+from .alg_fill_vertices_edges import FillVerticesEdgesAEP
 from .alg_missing_nodes import MissingNodes
 from .alg_orphan_nodes import OrphanNodes
 from .alg_pipes_treatment_to_reservoir import PipesTreatmentToReservoir

@@ -52,6 +52,7 @@ class PluginDockWidget(QtWidgets.QDockWidget, FORM_CLASS):  # type: ignore [misc
             "duplicate_nodes",
             "pipes_treatment_to_reservoir",
             "pipes_water_intake_to_treatment",
+            "fill_vertices_edges_aep",
         ]
         for alg in self.algorithms:
             button = self.findChild(QPushButton, f"button_{alg}")

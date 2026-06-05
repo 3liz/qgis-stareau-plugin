@@ -192,6 +192,13 @@
             </widget>
            </item>
            <item>
+            <widget class="QPushButton" name="button_fill_vertices_edges_aep">
+             <property name="text">
+              <string>Fill AEP vertices and edges</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="button_pipes_treatment_to_reservoir">
              <property name="text">
               <string>Treatments to nearest reservoir</string>
