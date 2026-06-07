@@ -5,10 +5,10 @@ from qgis.core import (
     QgsFeatureSink,
     QgsProcessing,
     QgsProcessingException,
+    QgsProcessingParameterDatabaseSchema,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterProviderConnection,
-    QgsProcessingParameterString,
     QgsProject,
     QgsProviderRegistry,
     QgsVectorLayer,
@@ -59,11 +59,12 @@ class OrphanNodes(BaseDatabaseAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterString(
+            QgsProcessingParameterDatabaseSchema(
                 self.SCHEMA,
                 tr("Schema name"),
+                connectionParameterName=self.CONNECTION_NAME,
                 defaultValue=resources.schema_name(),
-            ),
+            )
         )
 
         self.addParameter(
