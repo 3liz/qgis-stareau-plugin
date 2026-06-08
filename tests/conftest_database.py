@@ -56,13 +56,7 @@ def db_test_sql(data: Path) -> Sequence[Path]:
     return ()
 
 
-# The following is executed  in each test
-#
-# Initialize (Override existing) and return a db
-# connection
-@pytest.fixture()
-def db_connection() -> Generator[psycopg.Connection, None, None]:
-    """Initialize (Override existing) and return a db connection"""
+def open_db_connection() -> psycopg.Connection:
     if os.getenv("TEST_RUNTYPE") == "docker":
         connection =  psycopg.connect(
             user="docker",
@@ -80,6 +74,17 @@ def db_connection() -> Generator[psycopg.Connection, None, None]:
             dbname="gis"
         )
 
+    return connection
+
+
+# The following is executed  in each test
+#
+# Initialize (Override existing) and return a db
+# connection
+@pytest.fixture()
+def db_connection() -> Generator[psycopg.Connection, None, None]:
+    """Initialize (Override existing) and return a db connection"""
+    connection = open_db_connection()
     with connection:
         yield connection
 
