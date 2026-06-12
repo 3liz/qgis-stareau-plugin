@@ -14,6 +14,7 @@ from .database import (
 from .tools import provider_id
 from .tools_algs import (
     DuplicateNodes,
+    FillVerticesEdgesAEP,
     MissingNodes,
     OrphanNodes,
     PipesTreatmentToReservoir,
@@ -37,6 +38,7 @@ class Provider(QgsProcessingProvider):
         self.addAlgorithm(UpgradeDatabaseStructure())
 
         # Tools
+        self.addAlgorithm(FillVerticesEdgesAEP())
         self.addAlgorithm(MissingNodes())
         self.addAlgorithm(OrphanNodes())
         self.addAlgorithm(DuplicateNodes())
