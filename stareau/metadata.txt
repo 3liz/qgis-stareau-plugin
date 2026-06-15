@@ -1,7 +1,7 @@
 [general]
 name=stareau
 qgisMinimumVersion=3.34
-description=stareau
+description=This plugin allows to manage data on underground water networks in accordance with the StaR'Eau geostandard.
 
 # Done by qgis-plugin-ci
 version=master
@@ -13,8 +13,8 @@ dateTime=
 
 author=3Liz
 email=info@3liz.com
-tags=stareau
-about=stareau
+tags=stareau,water,eau,france,french,water network,wastewater,drinking water
+about=This plugin allows to manage data on underground water networks (sewage, stormwater, and drinking water) in accordance with the StaR'Eau geostandard.<br/>Ce plugin permet de gérer les données de réseaux enterrés des eaux (usées, pluviales, potables) au géostandard StaR'Eau.
 icon=resources/icons/icon.png
 category=
 tracker=https://github.com/3liz/qgis-stareau-plugin
