@@ -1,5 +1,7 @@
 
+from psycopg2 import connect, sql
 from qgis.core import (
+    QgsDataSourceUri,
     QgsProcessingParameterDatabaseSchema,
     QgsProcessingParameterProviderConnection,
     QgsProject,
@@ -81,7 +83,9 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
         graph_schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
         main_schema = f'{graph_schema}_principale'
 
-        sql =f"""
+        pg_conn = connect(QgsDataSourceUri(connection.uri()).connectionInfo())
+
+        query = sql.SQL("""
         -- purge des tables
         TRUNCATE {graph_schema}.aep_edge RESTART IDENTITY;
         TRUNCATE {graph_schema}.aep_vertex RESTART IDENTITY;
@@ -90,7 +94,7 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
         INSERT INTO {graph_schema}.aep_vertex (id, fictif, geom)
             SELECT fid as id, False as fictif, geom FROM {main_schema}.noeud_reseau WHERE type_reseau = 'aep';
         -- Déplacement de la séquence à la valeur max
-        SELECT setval('{graph_schema}.aep_vertex_id_seq'::regclass,
+        SELECT setval({seq}::regclass,
             (SELECT MAX(id) FROM {graph_schema}.aep_vertex));
         -- Ajout des noeuds réseaux aep manquants
         INSERT INTO {graph_schema}.aep_vertex (fictif, geom)
@@ -136,19 +140,23 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
                     AND St_EndPoint(c.geom) = vt.geom
                 WHERE c.type_reseau = 'aep' AND NOT ST_IsEmpty(c.geom)
                     AND c.noeudinitial = 'non_renseigne' AND c.noeudterminal = 'non_renseigne';
-        """
+        """).format(
+            graph_schema=sql.Identifier(graph_schema),
+            main_schema=sql.Identifier(main_schema),
+            seq=sql.Literal(f"{graph_schema}.aep_vertex_id_seq"),
+        )
 
-        sql_index = f"""
+        query_index = sql.SQL("""
         -- Mise à jour des index
         REINDEX TABLE {graph_schema}.aep_vertex;
         REINDEX TABLE {graph_schema}.aep_edge;
-        """
+        """).format(graph_schema=sql.Identifier(graph_schema))
 
         try:
-            connection.execSql(sql)
+            connection.execSql(query.as_string(pg_conn))
             connection.vacuum(graph_schema, "aep_vertex")
             connection.vacuum(graph_schema, "aep_edge")
-            connection.execSql(sql_index)
+            connection.execSql(query_index.as_string(pg_conn))
             feedback.pushInfo(tr("Edges and vertex are correctly generated"))
 
         except QgsProviderConnectionException as e:
@@ -156,5 +164,7 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
                 f"An error occured while filling edges and vertex : \n {e}"),
                 fatalError=True
             )
+        finally:
+            pg_conn.close()
 
         return {}

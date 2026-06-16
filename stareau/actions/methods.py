@@ -1,4 +1,5 @@
 
+from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
     QgsMapLayer,
@@ -43,10 +44,16 @@ def inverser_canalisation(fid_canalisation: int, id_layer: str):
 
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
-    connection.executeSql(
-        f"UPDATE \"{uri.schema()}\".\"{uri.table()}\" "
-        f"SET geom = ST_Reverse(geom) WHERE fid = {fid_canalisation};"
+    pg_conn = connect(uri.connectionInfo())
+    query = sql.SQL(
+        "UPDATE {schema}.{table} SET geom = ST_Reverse(geom) WHERE fid = {fid};"
+    ).format(
+        schema=sql.Identifier(uri.schema()),
+        table=sql.Identifier(uri.table()),
+        fid=sql.Literal(fid_canalisation),
     )
+    connection.executeSql(query.as_string(pg_conn))
+    pg_conn.close()
     layer.triggerRepaint()
 
 
@@ -86,10 +93,16 @@ def fermer_vanne(fid_vanne: int, id_layer: str):
 
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
-    connection.executeSql(
-        f"UPDATE \"{uri.schema()}\".\"{uri.table()}\" "
-        f"SET etat_ouverture = 'fermee' WHERE fid = {fid_vanne};"
+    pg_conn = connect(uri.connectionInfo())
+    query = sql.SQL(
+        "UPDATE {schema}.{table} SET etat_ouverture = 'fermee' WHERE fid = {fid};"
+    ).format(
+        schema=sql.Identifier(uri.schema()),
+        table=sql.Identifier(uri.table()),
+        fid=sql.Literal(fid_vanne),
     )
+    connection.executeSql(query.as_string(pg_conn))
+    pg_conn.close()
     layer.triggerRepaint()
 
 
@@ -129,10 +142,16 @@ def ouvrir_vanne(fid_vanne: int, id_layer: str):
 
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
-    connection.executeSql(
-        f"UPDATE \"{uri.schema()}\".\"{uri.table()}\" "
-        f"SET etat_ouverture = 'ouverte' WHERE fid = {fid_vanne};"
+    pg_conn = connect(uri.connectionInfo())
+    query = sql.SQL(
+        "UPDATE {schema}.{table} SET etat_ouverture = 'ouverte' WHERE fid = {fid};"
+    ).format(
+        schema=sql.Identifier(uri.schema()),
+        table=sql.Identifier(uri.table()),
+        fid=sql.Literal(fid_vanne),
     )
+    connection.executeSql(query.as_string(pg_conn))
+    pg_conn.close()
     layer.triggerRepaint()
 
 
@@ -174,10 +193,15 @@ def ass_downstream(id_noeud: str, id_layer: str):
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
 
-    # 63906 'BC2AD790347B4ACEA7D15FA12473AFEB'
-    records = connection.execSql(
-        f"SELECT d.idx, d.fid_canalisation FROM \"{schema}\".ass_downstream('{id_noeud}') d "
+    pg_conn = connect(uri.connectionInfo())
+    query = sql.SQL(
+        "SELECT d.idx, d.fid_canalisation FROM {schema}.ass_downstream({id_noeud}) d"
+    ).format(
+        schema=sql.Identifier(schema),
+        id_noeud=sql.Literal(id_noeud),
     )
+    records = connection.execSql(query.as_string(pg_conn))
+    pg_conn.close()
     fids = [record[1] for record in records]
 
     uri = QgsDataSourceUri(layer.dataProvider().uri())
@@ -236,10 +260,15 @@ def ass_upstream(id_noeud: str, id_layer: str):
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
 
-    # 63906 'BC2AD790347B4ACEA7D15FA12473AFEB'
-    records = connection.execSql(
-        f"SELECT d.idx, d.fid_canalisation FROM \"{schema}\".ass_upstream('{id_noeud}') d "
+    pg_conn = connect(uri.connectionInfo())
+    query = sql.SQL(
+        "SELECT d.idx, d.fid_canalisation FROM {schema}.ass_upstream({id_noeud}) d"
+    ).format(
+        schema=sql.Identifier(schema),
+        id_noeud=sql.Literal(id_noeud),
     )
+    records = connection.execSql(query.as_string(pg_conn))
+    pg_conn.close()
     fids = [record[1] for record in records]
 
     uri = QgsDataSourceUri(layer.dataProvider().uri())
@@ -308,11 +337,17 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: 
     connection = metadata.createConnection(layer_uri.uri(), {})
 
     target_schema = layer_uri.schema()
-
-    records = connection.execSql(
-        "SELECT fid FROM cnm_stareau.aep_pgr_path_to_nearest_target("
-        f"{fid_noeud}, '{target_schema}', '{target_table}')"
+    pg_conn = connect(layer_uri.connectionInfo())
+    query = sql.SQL(
+        "SELECT fid FROM cnm_stareau.aep_pgr_path_to_nearest_target(" \
+        "{fid_noeud}, {target_schema}, {target_table})"
+    ).format(
+        fid_noeud=sql.Literal(fid_noeud),
+        target_schema=sql.Literal(target_schema),
+        target_table=sql.Literal(target_table),
     )
+    records = connection.execSql(query.as_string(pg_conn))
+    pg_conn.close()
 
     fids = [record[0] for record in records]
     if not fids:

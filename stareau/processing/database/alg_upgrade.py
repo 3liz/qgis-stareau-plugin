@@ -1,5 +1,8 @@
 
+from psycopg2 import connect
+from psycopg2 import sql as psql
 from qgis.core import (
+    QgsDataSourceUri,
     QgsProcessingException,
     QgsProcessingOutputNumber,
     QgsProcessingOutputString,
@@ -120,17 +123,18 @@ class UpgradeDatabaseStructure(BaseDatabaseAlgorithm):
         schema = self.parameterAsString(parameters, self.SCHEMA, context)
 
         connection = metadata.findConnection(connection_name)
+        pg_conn = connect(QgsDataSourceUri(connection.uri()).connectionInfo())
 
         # Get database version
-        sql = f"""
+        query = psql.SQL("""
             SELECT me_version
             FROM {schema}.metadata
             WHERE me_status = 1
             ORDER BY me_version_date DESC
             LIMIT 1;
-        """
+        """).format(schema=psql.Identifier(schema))
         try:
-            data = connection.executeSql(sql)
+            data = connection.executeSql(query.as_string(pg_conn))
         except QgsProviderConnectionException as e:
             raise QgsProcessingException(str(e)) from None
 
@@ -174,11 +178,15 @@ class UpgradeDatabaseStructure(BaseDatabaseAlgorithm):
 
             # Add SQL database version in adresse.metadata
             feedback.pushInfo(tr("* NEW DB VERSION ") + str(new_db_version))
-            sql += f"""
+            update_query = psql.SQL("""
                 UPDATE {schema}.metadata
                 SET (me_version, me_version_date)
-                = ( '{new_db_version}', now()::timestamp(0) );
-            """
+                = ( {version}, now()::timestamp(0) );
+            """).format(
+                schema=psql.Identifier(schema),
+                version=psql.Literal(new_db_version),
+            ).as_string(pg_conn)
+            sql += update_query
 
             try:
                 connection.executeSql(sql)
@@ -190,17 +198,21 @@ class UpgradeDatabaseStructure(BaseDatabaseAlgorithm):
             feedback.pushInfo(f"* {sql_file} -- OK !")
 
         # Everything is fine, we now update to the plugin version
-        sql = f"""
+        query = psql.SQL("""
             UPDATE {schema}.metadata
             SET (me_version, me_version_date)
-            = ( '{current_version}', now()::timestamp(0) );
-        """
+            = ( {version}, now()::timestamp(0) );
+        """).format(
+            schema=psql.Identifier(schema),
+            version=psql.Literal(current_version),
+        )
 
         try:
-            connection.executeSql(sql)
+            connection.executeSql(query.as_string(pg_conn))
         except QgsProviderConnectionException as e:
             raise QgsProcessingException(str(e)) from None
 
+        pg_conn.close()
         msg = tr("*** THE DATABASE STRUCTURE HAS BEEN UPDATED ***")
         feedback.pushInfo(msg)
 

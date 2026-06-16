@@ -3,7 +3,10 @@ import csv
 from pathlib import Path
 from typing import List
 
+from psycopg2 import connect
+from psycopg2 import sql as psql
 from qgis.core import (
+    QgsDataSourceUri,
     QgsProcessingException,
     QgsProcessingFeedback,
     QgsProcessingOutputNumber,
@@ -144,6 +147,8 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
         if not connection:
             raise QgsProcessingException(f"La connexion {connection_name} n'existe pas.")
 
+        pg_conn = connect(QgsDataSourceUri(connection.uri()).connectionInfo())
+
         # Drop schema if needed
         if override:
             feedback.pushInfo(tr(f"Trying to drop schema {schema}…"))
@@ -270,31 +275,39 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                 ")" for row in additional_values
             )
             values = ",\n".join(table_values)
-            sql = (
-                f"INSERT INTO {schema}_valeur.{table_name} (code, valeur, description) VALUES\n"
-                f"{values}\n"
-                f"ON CONFLICT (code) DO NOTHING"
+            query = psql.SQL(
+                "INSERT INTO {schema}.{table} (code, valeur, description) VALUES\n{values}\nON "
+                "CONFLICT (code) DO NOTHING"
+            ).format(
+                schema=psql.Identifier(f"{schema}_valeur"),
+                table=psql.Identifier(table_name),
+                values=psql.SQL(values),
             )
 
             try:
-                connection.executeSql(sql)
+                connection.executeSql(query.as_string(pg_conn))
             except QgsProviderConnectionException as e:
                 raise QgsProcessingException(str(e)) from None
 
             feedback.pushInfo("  Success !")
 
         metadata_version = version
-        sql = f"""
+        query = psql.SQL("""
             INSERT INTO {schema}.metadata
             (id, me_version, me_version_date, me_status)
             VALUES (
-                1, '{metadata_version}', now()::timestamp(0), 1
-            )"""
+                1, {version}, now()::timestamp(0), 1
+            )""").format(
+            schema=psql.Identifier(schema),
+            version=psql.Literal(metadata_version),
+        )
 
         try:
-            connection.executeSql(sql)
+            connection.executeSql(query.as_string(pg_conn))
         except QgsProviderConnectionException as e:
             raise QgsProcessingException(str(e)) from None
+
+        pg_conn.close()
 
     def processAlgorithm(self, parameters, context, feedback):
         connection_name = self.parameterAsConnectionName(parameters, self.CONNECTION_NAME, context)
