@@ -3,7 +3,7 @@
 # should be the same as the plugin's metatada.txt
 [project]
 name = "stareau"
-version = "0.5.0"
+version = "0.5.1"
 description = "An exemple of plugin development setup"
 authors = [
     { name = "3Liz", email = "info@3liz.com" }

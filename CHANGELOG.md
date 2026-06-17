@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.5.1 - 2026-06-17
+
+* Fix: Possible SQL injections detect by Bandit at medium severity level
+
 ## 0.5.0 - 2026-06-15
 
 * Feature: Create the plugin structure in Database (Create schema, tables and others)
