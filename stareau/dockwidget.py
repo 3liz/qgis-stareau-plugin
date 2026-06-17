@@ -4,10 +4,13 @@ from functools import partial
 from typing import Optional
 
 from processing import execAlgorithmDialog
+from psycopg2 import connect, sql
 from qgis.core import (
     Qgis,
+    QgsDataSourceUri,
     QgsExpressionContextUtils,
     QgsProject,
+    QgsProviderRegistry,
 )
 from qgis.PyQt import QtWidgets
 from qgis.PyQt.QtCore import pyqtSignal
@@ -80,21 +83,25 @@ class PluginDockWidget(QtWidgets.QDockWidget, FORM_CLASS):  # type: ignore [misc
     @staticmethod
     def check_database_version() -> Optional[int]:
         """Get the database version"""
-        # Query the database
-        sql = f"""
-            SELECT me_version
-            FROM {schema_name()}.metadata
-            WHERE me_status = 1
-            ORDER BY me_version_date DESC
-            LIMIT 1;
-        """
         project = QgsProject.instance()
         connection_name = get_connection_name(project)
 
         get_data = QgsExpressionContextUtils.globalScope().variable("stareau_get_database_data")
         db_version = None
         if get_data == "yes" and connection_name in get_postgis_connection_list():
-            result, _ = fetch_data_from_sql_query(connection_name, sql)
+            metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
+            qgis_conn = metadata.findConnection(connection_name)
+            uri = QgsDataSourceUri(qgis_conn.uri())
+            pg_conn = connect(uri.connectionInfo())
+            query = sql.SQL("""
+                SELECT me_version
+                FROM {schema}.metadata
+                WHERE me_status = 1
+                ORDER BY me_version_date DESC
+                LIMIT 1;
+            """).format(schema=sql.Identifier(schema_name()))
+            result, _ = fetch_data_from_sql_query(connection_name, query.as_string(pg_conn))
+            pg_conn.close()
             if result:
                 for a in result:
                     db_version = int(a[0])

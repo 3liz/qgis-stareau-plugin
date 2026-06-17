@@ -1,4 +1,5 @@
 
+from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
     QgsFeatureRequest,
@@ -103,30 +104,43 @@ class PipesTreatmentToReservoir(BaseDatabaseAlgorithm):
         uri = QgsDataSourceUri(connection.uri())
 
         # get treatments fids
-        traitement_fids = connection.execSql(
-                f"SELECT fid FROM {schema_aep}.aep_traitement"
-        )
+        # psycopg2 composed request
+        query_traitements = sql.SQL("""
+            SELECT fid FROM {schemaname}.aep_traitement
+        """).format(schemaname=sql.Identifier(schema_aep))
+
+        # psycopg2 connection
+        conn = connect(uri.connectionInfo())
+        traitement_fids = connection.executeSql(query_traitements.as_string(conn))
 
         # get canalisations fids between each treatment and the nearest reservoir
         canalisation_fids = []
 
         for fid in traitement_fids:
-            records = connection.execSql(
-                f"SELECT fid FROM {schema_global}.aep_pgr_path_to_nearest_target("
-                f"{fid[0]}, '{schema_aep}'::text, 'aep_reservoir'::text)"
+            query_canal = sql.SQL("""
+                SELECT fid FROM {sg}.aep_pgr_path_to_nearest_target(
+                {f}, {saep}::text, 'aep_reservoir'::text)
+            """).format(
+                sg=sql.Identifier(schema_global),
+                f=sql.Literal(fid[0]),
+                saep=sql.Literal(schema_aep),
             )
+            records = connection.execSql(query_canal.as_string(conn))
             fids = [record[0] for record in records]
             canalisation_fids.append(fids)
 
+        # psycopg2 connection close
+        conn.close()
+
         # Select canalisations
-        sql = f"""
+        canalisations_sql = f"""
             fid IN ({','.join([str(fid) for fids in canalisation_fids for fid in fids])})
         """
         uri.setDataSource(
             f"{schema_aep}",
             "aep_canalisation",
             "geom",
-            sql,
+            canalisations_sql,
             "fid"
         )
         uri.setWkbType(QgsWkbTypes.LineString)

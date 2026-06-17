@@ -1,4 +1,5 @@
 
+from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
     QgsFeatureRequest,
@@ -110,12 +111,21 @@ class MissingNodes(BaseDatabaseAlgorithm):
         n_type = self.parameterAsEnum(parameters, self.NETWORK_TYPE, context)
 
         uri = QgsDataSourceUri(connection.uri())
+        pg_conn = connect(uri.connectionInfo())
         if NETWORK_TYPES[n_type] == 'ASS':
-            uri.setDataSource("", f"( SELECT * FROM \"{schema}\".ass_noeud_manquant() )", "geom", "", "fid")
+            subquery = sql.SQL("( SELECT * FROM {schema}.ass_noeud_manquant() )").format(
+                schema=sql.Identifier(schema),
+            ).as_string(pg_conn)
+            uri.setDataSource("", subquery, "geom", "", "fid")
         elif NETWORK_TYPES[n_type] == 'AEP':
-            uri.setDataSource("", f"( SELECT * FROM \"{schema}\".aep_noeud_manquant() )", "geom", "", "fid")
+            subquery = sql.SQL("( SELECT * FROM {schema}.aep_noeud_manquant() )").format(
+                schema=sql.Identifier(schema),
+            ).as_string(pg_conn)
+            uri.setDataSource("", subquery, "geom", "", "fid")
         else:
+            pg_conn.close()
             raise QgsProcessingException(tr("Network type not supported!"))
+        pg_conn.close()
 
         source = QgsVectorLayer(uri.uri(), "layername", "postgres")
 
