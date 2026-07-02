@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix: remove hardcoded schema name in path_to_nearest_target function
+
 ## 0.5.1 - 2026-06-17
 
 * Fix: Possible SQL injections detect by Bandit at medium severity level

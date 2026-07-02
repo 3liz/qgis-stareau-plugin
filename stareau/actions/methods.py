@@ -339,9 +339,10 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: 
     target_schema = layer_uri.schema()
     pg_conn = connect(layer_uri.connectionInfo())
     query = sql.SQL(
-        "SELECT fid FROM cnm_stareau.aep_pgr_path_to_nearest_target(" \
+        "SELECT fid FROM {layer_schema}.aep_pgr_path_to_nearest_target(" \
         "{fid_noeud}, {target_schema}, {target_table})"
     ).format(
+        layer_schema=sql.Identifier(layer_schema),
         fid_noeud=sql.Literal(fid_noeud),
         target_schema=sql.Literal(target_schema),
         target_table=sql.Literal(target_table),
