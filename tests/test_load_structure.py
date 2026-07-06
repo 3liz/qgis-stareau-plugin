@@ -523,7 +523,7 @@ def test_upgrade_from(
     )
 
     # Get the installation dir
-    install_dir = data.joinpath(f"install-version-{current_version}", "sql")
+    install_dir = data.joinpath(f"install-version-{current_version}")
     assert install_dir.exists()
 
     feedback = LoggerProcessingFeedBack()

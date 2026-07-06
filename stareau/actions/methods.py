@@ -3,6 +3,7 @@ from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
     QgsMapLayer,
+    QgsPointXY,
     QgsProject,
     QgsProviderRegistry,
     QgsVectorLayer,
@@ -21,7 +22,7 @@ def inverser_canalisation(fid_canalisation: int, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action(
+        plugins['stareau'].run_action(
             'inverser_canalisation',
             fid_canalisation = [% fid %],
             id_layer = '[% @layer_id %]',
@@ -64,7 +65,7 @@ def fermer_vanne(fid_vanne: int, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action(
+        plugins['stareau'].run_action(
             'fermer_vanne',
             fid_vanne = [% fid %],
             id_layer='[% @layer_id %]',
@@ -113,7 +114,7 @@ def ouvrir_vanne(fid_vanne: int, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action(
+        plugins['stareau'].run_action(
             'ouvrir_vanne',
             fid_vanne = [% fid %],
             id_layer='[% @layer_id %]',
@@ -163,7 +164,7 @@ def ass_downstream(id_noeud: str, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action(
+        plugins['stareau'].run_action(
             'ass_downstream',
             id_noeud = '[% id_noeud_reseau %]',
             id_layer = '[% @layer_id %]',
@@ -230,7 +231,7 @@ def ass_upstream(id_noeud: str, id_layer: str):
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action(
+        plugins['stareau'].run_action(
             'ass_upstream',
             id_noeud = '[% id_noeud_reseau %]',
             id_layer = '[% @layer_id %]',
@@ -297,7 +298,7 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: 
     These lines are included in the QGIS project.
 
         from qgis.utils import plugins
-        plugins['raepa'].run_action(
+        plugins['stareau'].run_action(
             'aep_pgr_path_to_nearest_target',
             fid_noeud = [% fid %],
             id_layer = '[% @layer_id %]',
@@ -339,7 +340,7 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: 
     target_schema = layer_uri.schema()
     pg_conn = connect(layer_uri.connectionInfo())
     query = sql.SQL(
-        "SELECT fid FROM {layer_schema}.aep_pgr_path_to_nearest_target(" \
+        "SELECT fid FROM {layer_schema}.aep_pgr_path_to_nearest_target_avoiding_closed_valves(" \
         "{fid_noeud}, {target_schema}, {target_table})"
     ).format(
         layer_schema=sql.Identifier(layer_schema),
@@ -372,6 +373,87 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: 
         categories = QgsMapLayer.Symbology,
     )
 
+
+def aep_pgr_nearest_vannes(id_layer: str, point_x: float, point_y: float, closed_valves_only: bool = False):
+    """
+    Parcourir le réseau de canalisations AEP à partir d'un point sur une canalisation
+    et afficher les vannes les plus proches.
+
+    These lines are included in the QGIS project.
+
+        from qgis.utils import plugins
+        plugins['stareau'].run_action(
+            'aep_pgr_nearest_vannes',
+            id_layer = '[% @layer_id %]',
+            point_x = [% point_x %],
+            point_y = [% point_y %],
+            closed_valves_only = [% closed_valves_only %]
+        )
+    """
+    action_name = "aep_pgr_nearest_vannes"
+
+    function_name = "aep_pgr_nearest_closed_vannes" if closed_valves_only else "aep_pgr_nearest_vannes"
+
+    point_wkt = QgsPointXY(point_x, point_y).asWkt()
+
+    layer = get_postgres_layers(id_layer, action_name)
+    if layer is None:
+        # Message d'erreur déjà affiché dans get_postgres_layers
+        return
+    if layer.wkbType() != QgsWkbTypes.LineString:
+        display_error_message(
+            f"Erreur dans l'action \"{action_name}\", "
+            f"la couche {id_layer} n'est pas une couche de type ligne !"
+        )
+        return
+    if layer.fields().indexOf('fid') == -1:
+        display_error_message(
+            f"Erreur dans l'action \"{action_name}\", "
+            f"la couche {id_layer} n'a pas de champ 'fid' !"
+        )
+        return
+
+    layer_uri = layer.dataProvider().uri()
+    layer_schema = '_'.join(layer_uri.schema().split('_')[:-1])
+
+    metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
+    connection = metadata.createConnection(layer_uri.uri(), {})
+
+    pg_conn = connect(layer_uri.connectionInfo())
+    query = sql.SQL(
+        'SELECT fid FROM {layer_schema}.{function_name}(' \
+        'ST_GeomFromText({point_wkt}, 2154))'
+    ).format(
+        layer_schema=sql.Identifier(layer_schema),
+        function_name=sql.Identifier(function_name),
+        point_wkt=sql.Literal(point_wkt)
+    )
+
+    records = connection.execSql(query.as_string(pg_conn))
+    pg_conn.close()
+
+    fids = [record[0] for record in records]
+    if not fids:
+        display_info_message("Aucune vanne n'a été trouvée")
+        return
+
+    # Selected valves
+    uri = QgsDataSourceUri(layer.dataProvider().uri())
+    uri.setWkbType(QgsWkbTypes.Point)
+    uri.setDataSource(
+        f"{layer_schema}_aep",
+        "aep_vanne",
+        "geom",
+        f"fid IN ({','.join([str(fid) for fid in fids])})",
+        "fid",
+    )
+
+    source = QgsVectorLayer(uri.uri(), "vannes_trouvées", "postgres")
+    QgsProject.instance().addMapLayer(source)
+    source.loadNamedStyle(
+        str(plugin_path("actions", "styles", "selected_vannes_symbology.qml")),
+        categories = QgsMapLayer.Symbology,
+    )
 
 def noop_action(a: str, b: int, c: bool):
     """Test action
