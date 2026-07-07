@@ -1,0 +1,15 @@
+[pytest]
+log_cli = true
+log_cli_level = "critical"
+qgis_gui_enabled = false
+norecursedirs = [
+    "tests/data",
+    ".local",
+    ".venv",
+    ".docker",
+    ".ruff_cache",
+    "*.egg-info",
+]
+markers = [
+    "pgrouting: mark as pgrouting test",
+]
