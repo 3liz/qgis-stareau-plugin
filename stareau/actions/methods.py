@@ -290,7 +290,11 @@ def ass_upstream(id_noeud: str, id_layer: str):
     )
 
 
-def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: str):
+def aep_pgr_path_to_nearest_target(fid_noeud: str,
+                                   id_layer: str,
+                                   target_table: str,
+                                   avoiding_closed_valves: bool = False
+):
     """
     Parcourir le réseau de canalisations AEP à partir du noeud sélectionné
     et afficher les canalisations entre le noeud sélectionné et cible la plus proche.
@@ -303,9 +307,16 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: 
             fid_noeud = [% fid %],
             id_layer = '[% @layer_id %]',
             target_table = 'target_table',
+            avoiding_closed_valves = False
         )
     """
     action_name = "aep_pgr_path_to_nearest_target"
+
+    function_name = (
+        "aep_pgr_path_to_nearest_target_avoiding_closed_valves"
+        if avoiding_closed_valves
+        else "aep_pgr_path_to_nearest_target"
+    )
 
     layer = get_postgres_layers(id_layer, action_name)
     if layer is None:
@@ -340,10 +351,11 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str, id_layer: str, target_table: 
     target_schema = layer_uri.schema()
     pg_conn = connect(layer_uri.connectionInfo())
     query = sql.SQL(
-        "SELECT fid FROM {layer_schema}.aep_pgr_path_to_nearest_target_avoiding_closed_valves(" \
+        "SELECT fid FROM {layer_schema}.{function_name}(" \
         "{fid_noeud}, {target_schema}, {target_table})"
     ).format(
         layer_schema=sql.Identifier(layer_schema),
+        function_name=sql.Identifier(function_name),
         fid_noeud=sql.Literal(fid_noeud),
         target_schema=sql.Literal(target_schema),
         target_table=sql.Literal(target_table),
