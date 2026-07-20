@@ -16,6 +16,7 @@ from stareau.plugin_tools.resources import (
     srid_value,
 )
 from stareau.processing.database import CreateDatabaseStructure
+from stareau.processing.database.alg_upgrade import UpgradeDatabaseStructure
 from stareau.processing.provider import Provider
 
 SCHEMAS = [
@@ -214,10 +215,28 @@ FUNCTIONS_FOR_FIRST_VERSION["stareau"] = [
 
 # Expected list of tables for current version
 # Must be changed any time the SQL structure is changed
-TABLES_FOR_CURRENT_VERSION = [
-    "glossary_test_category",
-    "metadata",
-    "test",
+TABLES_FOR_CURRENT_VERSION = {}
+TABLES_FOR_CURRENT_VERSION["stareau"] = TABLES_FOR_FIRST_VERSION["stareau"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_commun"] = TABLES_FOR_FIRST_VERSION["stareau_commun"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_principale"] = TABLES_FOR_FIRST_VERSION["stareau_principale"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_ass"] = TABLES_FOR_FIRST_VERSION["stareau_ass"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_ass_brcht"] = TABLES_FOR_FIRST_VERSION["stareau_ass_brcht"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_aep"] = TABLES_FOR_FIRST_VERSION["stareau_aep"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_aep_brcht"] = TABLES_FOR_FIRST_VERSION["stareau_aep_brcht"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_valeur"] = TABLES_FOR_FIRST_VERSION["stareau_valeur"][:]
+TABLES_FOR_CURRENT_VERSION["stareau_defense_incendie"] = (
+    TABLES_FOR_FIRST_VERSION["stareau_defense_incendie"][:]
+)
+
+# Expected list of functions for current version
+# Must be changed any time the SQL structure is changed
+FUNCTIONS_FOR_CURRENT_VERSION = {}
+FUNCTIONS_FOR_CURRENT_VERSION["stareau"] = [
+    *FUNCTIONS_FOR_FIRST_VERSION["stareau"],
+    "aep_pgr_nearest_vannes",  # Same name but different signature (vertex id vs point geom)
+    "aep_pgr_find_captages_from_traitement",
+    "aep_pgr_nearest_closed_vannes",
+    "aep_pgr_path_to_nearest_target_avoiding_closed_valves",
 ]
 
 
@@ -253,7 +272,7 @@ def test_processing_create(
         )
         records = cursor.fetchall()
         case.assertEqual(
-            len(TABLES_FOR_FIRST_VERSION[db_schema]),
+            len(TABLES_FOR_CURRENT_VERSION[db_schema]),
             records[0][0],
             f"Le nombre de table du schéma `{db_schema}` n'est pas celui attendu",
         )
@@ -269,13 +288,13 @@ def test_processing_create(
         records = cursor.fetchall()
         result = [r[0] for r in records]
         case.assertCountEqual(
-            TABLES_FOR_FIRST_VERSION[db_schema],
+            TABLES_FOR_CURRENT_VERSION[db_schema],
             result,
             f"La liste des tables du schéma `{db_schema}` n'est pas celle attendue",
         )
 
     db_schema = "stareau_valeur"
-    for table in TABLES_FOR_FIRST_VERSION[db_schema]:
+    for table in TABLES_FOR_CURRENT_VERSION[db_schema]:
         # Check the number of rows in each table
         cursor.execute(
             f"""
@@ -301,7 +320,7 @@ def test_processing_create(
     )
     records = cursor.fetchall()
     case.assertEqual(
-        len(FUNCTIONS_FOR_FIRST_VERSION[db_schema]),
+        len(FUNCTIONS_FOR_CURRENT_VERSION[db_schema]),
         records[0][0],
         f"Le nombre de fonctions du schéma `{db_schema}` n'est pas celui attendu",
     )
@@ -317,7 +336,7 @@ def test_processing_create(
     records = cursor.fetchall()
     result = [r[0] for r in records]
     case.assertCountEqual(
-        FUNCTIONS_FOR_FIRST_VERSION[db_schema],
+        FUNCTIONS_FOR_CURRENT_VERSION[db_schema],
         result,
         f"La liste des fonctions du schéma `{db_schema}` n'est pas celle attendue",
     )
@@ -362,7 +381,7 @@ def test_processing_create_with_schema_name(
         )
         records = cursor.fetchall()
         case.assertEqual(
-            len(TABLES_FOR_FIRST_VERSION[db_schema]),
+            len(TABLES_FOR_CURRENT_VERSION[db_schema]),
             records[0][0],
             f"Le nombre de table du schéma `{db_new_schema}` n'est pas celui attendu",
         )
@@ -378,14 +397,14 @@ def test_processing_create_with_schema_name(
         records = cursor.fetchall()
         result = [r[0] for r in records]
         case.assertCountEqual(
-            TABLES_FOR_FIRST_VERSION[db_schema],
+            TABLES_FOR_CURRENT_VERSION[db_schema],
             result,
             f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue",
         )
 
     db_schema = "stareau_valeur"
     db_new_schema = db_schema.replace(f"{plugin_schema_name}", f"{schema}")
-    for table in TABLES_FOR_FIRST_VERSION[db_schema]:
+    for table in TABLES_FOR_CURRENT_VERSION[db_schema]:
         # Check the number of rows in each table
         cursor.execute(
             f"""
@@ -412,7 +431,7 @@ def test_processing_create_with_schema_name(
     )
     records = cursor.fetchall()
     case.assertEqual(
-        len(FUNCTIONS_FOR_FIRST_VERSION[db_schema]),
+        len(FUNCTIONS_FOR_CURRENT_VERSION[db_schema]),
         records[0][0],
         f"Le nombre de fonctions du schéma `{db_new_schema}` n'est pas celui attendu",
     )
@@ -428,7 +447,7 @@ def test_processing_create_with_schema_name(
     records = cursor.fetchall()
     result = [r[0] for r in records]
     case.assertCountEqual(
-        FUNCTIONS_FOR_FIRST_VERSION[db_schema],
+        FUNCTIONS_FOR_CURRENT_VERSION[db_schema],
         result,
         f"La liste des fonctions du schéma `{db_new_schema}` n'est pas celle attendue",
     )
@@ -505,7 +524,6 @@ def test_processing_create_with_crs(
     db_connection.close()
 
 
-@unittest.skip("not yet ready")
 def test_upgrade_from(
     db_schema: str,
     db_install_version: int,
@@ -516,14 +534,20 @@ def test_upgrade_from(
     """Test the algorithms for creating and updating the database structure."""
 
     current_version = schema_version()
+    plugin_schema_name = schema_name()
 
-    assert db_install_version is not None, "This test require at least one availabl upgrade"
+    print("\n::test_upgrade_from::current_version::", current_version)
+    print("::test_upgrade_from::db_install_version::", db_install_version)
+    print("::test_upgrade_from::available_migrations::", available_migrations())
+
+    assert db_install_version is not None, "This test require at least one available upgrade"
     assert current_version >= db_install_version, (
         "Current schema version cannot be lower than install version"
     )
 
-    # Get the installation dir
-    install_dir = data.joinpath(f"install-version-{current_version}")
+    # Get the installation dir of the previous version
+    test_version = 1
+    install_dir = data.joinpath(f"install-version-{test_version}")
     assert install_dir.exists()
 
     feedback = LoggerProcessingFeedBack()
@@ -533,7 +557,7 @@ def test_upgrade_from(
         "test",
         db_schema,
         2154,
-        version=db_install_version,
+        version=test_version,
         override=True,
         install_dir=install_dir,
         feedback=feedback,
@@ -545,23 +569,67 @@ def test_upgrade_from(
 
     cursor = db_connection.cursor()
 
-    # Check the list of tables and views from the database
+    # Expected tables in the specific version written above at the beginning of the test.
+    # DO NOT CHANGE HERE, change below at the end of the test.
+    for schema in SCHEMAS:
+        db_new_schema = schema.replace(plugin_schema_name, db_schema)
+        cursor.execute(
+            f"""
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = '{db_new_schema}'
+            ORDER BY table_name
+            """
+        )
+        records = cursor.fetchall()
+        result = [r[0] for r in records]
+        case.assertCountEqual(
+            TABLES_FOR_FIRST_VERSION[schema],
+            result,
+            f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue",
+        )
+
+    # Check the list of functions
     cursor.execute(
         f"""
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = '{db_schema}'
-        ORDER BY table_name
+        SELECT routine_name
+        FROM information_schema.routines
+        WHERE routine_schema = '{db_schema}'
+        ORDER BY routine_name
         """
     )
     records = cursor.fetchall()
     result = [r[0] for r in records]
+    case.assertCountEqual(
+        FUNCTIONS_FOR_FIRST_VERSION[plugin_schema_name],
+        result,
+        f"La liste des fonctions du schéma `{db_schema}` n'est pas celle attendue",
+    )
 
-    # Expected tables in the specific version written above at the beginning of the test.
-    # DO NOT CHANGE HERE, change below at the end of the test.
-    case.assertCountEqual(TABLES_FOR_FIRST_VERSION, result)
+    # Check if it's the first version of the db
+    sql = f"""
+        SELECT me_version
+        FROM {db_schema}.metadata
+        WHERE me_status = 1
+        ORDER BY me_version_date DESC
+        LIMIT 1;
+    """
+    cursor.execute(sql)
+    record = cursor.fetchone()
+    assert record is not None
+    assert int(record[0]) == test_version
 
-    assert result == TABLES_FOR_CURRENT_VERSION
+
+    # # Run the update database structure alg
+    # Since the structure has been created with db_install_version above
+    feedback.pushDebugInfo("Update the database")
+    update_needed = UpgradeDatabaseStructure.upgrade_database(
+        "test",
+        db_schema,
+        run_migrations=True,
+        feedback=feedback,
+    )
+    assert update_needed
 
     # Check if the version has been written in the metadata table
     sql = f"""
@@ -574,58 +642,49 @@ def test_upgrade_from(
     cursor.execute(sql)
     record = cursor.fetchone()
     assert record is not None
-    assert int(record[0]) == db_install_version
-
-    # Run the update database structure alg
-    # Since the structure has been created with db_install_version above
-    # The expected list of tables
-    feedback.pushDebugInfo("Update the database")
-    params = {"CONNECTION_NAME": "test", "RUN_MIGRATIONS": True}
-    alg = f"{provider_id}:upgrade_database_structure"
-    results = processing.run(alg, params, feedback=feedback)
-
-    assert results["OUTPUT_STATUS"] == 1
-    assert results["OUTPUT_STRING"] == "*** THE DATABASE STRUCTURE HAS BEEN UPDATED ***"
-
-    # Check the version has been updated
-    sql = f"""
-        SELECT me_version
-        FROM {db_schema}.metadata
-        WHERE me_status = 1
-        ORDER BY me_version_date DESC
-        LIMIT 1;
-    """
-    cursor.execute(sql)
-    record = cursor.fetchone()
-
-    migrations = available_migrations()
-    if migrations:
-        version, _ = migrations[-1]
-        assert record is not None
-        assert int(record[0]) == version
+    assert int(record[0]) == current_version
 
     # Check the list of tables
+    for schema in SCHEMAS:
+        db_new_schema = schema.replace(plugin_schema_name, db_schema)
+        cursor.execute(
+            f"""
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = '{db_new_schema}'
+            ORDER BY table_name
+            """
+        )
+        records = cursor.fetchall()
+        result = [r[0] for r in records]
+        case.assertCountEqual(
+            TABLES_FOR_CURRENT_VERSION[schema],
+            result,
+            f"La liste des tables du schéma `{db_new_schema}` n'est pas celle attendue",
+        )
+
+    # Check the list of functions
     cursor.execute(
         f"""
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = '{db_schema}'
-        ORDER BY table_name
+        SELECT routine_name
+        FROM information_schema.routines
+        WHERE routine_schema = '{db_schema}'
+        ORDER BY routine_name
         """
     )
     records = cursor.fetchall()
     result = [r[0] for r in records]
-    case.assertCountEqual(TABLES_FOR_CURRENT_VERSION, result)
+    case.assertCountEqual(
+        FUNCTIONS_FOR_CURRENT_VERSION[plugin_schema_name],
+        result,
+        f"La liste des fonctions du schéma `{db_schema}` n'est pas celle attendue",
+    )
 
-    # Create the database structure with override
+    # Close the connection
+    db_connection.close()
+
+
     # This will delete and recreate the structure for the last version
-    feedback.pushDebugInfo("Relaunch the algorithm without override")
-    params = {
-        "CONNECTION_NAME": "test",
-        "OVERRIDE": True,
-    }
-
-    # Check we need to run upgrade or not
     feedback.pushDebugInfo("Update the database")
     params = {"CONNECTION_NAME": "test", "RUN_MIGRATIONS": True}
     alg = f"{provider_id}:upgrade_database_structure"
@@ -634,19 +693,3 @@ def test_upgrade_from(
     assert results["OUTPUT_STRING"] == (
         " The database version already matches the plugin version. No upgrade needed."
     )
-
-    # Check the list of tables
-    cursor.execute(
-        f"""
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = '{db_schema}'
-        ORDER BY table_name
-        """
-    )
-    records = cursor.fetchall()
-    result = [r[0] for r in records]
-
-    case.assertCountEqual(TABLES_FOR_CURRENT_VERSION, result)
-
-    assert result == TABLES_FOR_CURRENT_VERSION
