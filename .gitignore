@@ -65,3 +65,6 @@ docs/database
 
 .docker/stareau/
 .test-migration-*
+
+# tests
+.qgis-settings
