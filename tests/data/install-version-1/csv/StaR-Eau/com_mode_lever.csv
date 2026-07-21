@@ -1,0 +1,7 @@
+"gnss","gnss","gnss (gps) standard"
+"rtk","gnss-rtk","gnss centimétrique"
+"station","station totale","théodolite de lever"
+"lidar","lidar","télédétection par laser"
+"georadar","georadar","géoradar"
+"orthophoto","orthophotographie","orthophotographie ou photogrammétrie"
+"manuelle","saisie manuelle","saisie faite à la main : mètre, décamètre…"
