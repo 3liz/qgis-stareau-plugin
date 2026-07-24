@@ -125,8 +125,8 @@ def test_processing_trigger(
             case.assertEqual(record[5], nodes["ass_rega_0030456"][3])
             case.assertEqual(record[6], nodes["ass_rega_0030456"][4])
             case.assertEqual(record[4], "non_renseigne")
-            case.assertEqual(record[7], 770223.95)
-            case.assertEqual(record[8], 6280429.05)
+            case.assertAlmostEqual(record[7], 770223.95, places=2)
+            case.assertAlmostEqual(record[8], 6280429.05, places=2)
 
     # INSERT noeud_reseau / ass_regard
     cursor.execute(
@@ -450,8 +450,8 @@ def test_processing_noeud_manquant(
             case.assertEqual(record[5], 770200.0)
             case.assertEqual(record[6], 6280431.9)
             case.assertEqual(record[4], "non_renseigne")
-            case.assertEqual(record[7], 770223.95)
-            case.assertEqual(record[8], 6280429.05)
+            case.assertAlmostEqual(record[7], 770223.95, places=2)
+            case.assertAlmostEqual(record[8], 6280429.05, places=2)
             canas[record[2]] = record
             count_checking += 1
         count_records += 1

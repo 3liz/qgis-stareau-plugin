@@ -2,6 +2,7 @@ from inspect import Parameter, signature
 from typing import Any
 
 from .methods import (
+    aep_pgr_nearest_vannes,
     aep_pgr_path_to_nearest_target,
     ass_downstream,
     ass_upstream,
@@ -20,6 +21,7 @@ ACTIONS = (
     ouvrir_vanne,
     noop_action,
     aep_pgr_path_to_nearest_target,
+    aep_pgr_nearest_vannes,
 )
 
 
@@ -50,6 +52,7 @@ def run(name: str, **kwargs: Any) -> RunActionError | None:
         - ass_upstream
         - fermer_vanne
         - ouvrir_vanne
+        - aep_pgr_nearest_vannes
     :param **kwargs: Arguments to pass to the action.
     :return: None
     """

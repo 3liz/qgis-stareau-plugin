@@ -27,5 +27,5 @@ supportQt6=True
 hasProcessingProvider=True
 
 [stareau]
-schemaVersion=1
+schemaVersion=2
 schemaName=stareau

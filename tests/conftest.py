@@ -13,6 +13,8 @@ from .conftest_database import (  # noqa F401
     db_connection,
     db_install_version,
     db_schema,
+    db_test_sql,
+    initialized_database,
     open_db_connection,
     processing_provider,
 )
@@ -43,7 +45,7 @@ def pytest_report_header(config):
     from osgeo import gdal
 
     with open_db_connection() as conn:
-        extensions = "\n".join(f"* {name:<20} {version}" 
+        extensions = "\n".join(f"* {name:<20} {version}"
             for (name, version) in conn.execute("SELECT extname, extversion FROM pg_extension"))
 
     return (
