@@ -25,12 +25,12 @@ jobs:
 
       - name: Run linter
         run: ruff check --output-format=concise ${{ env.PLUGIN_SOURCE }}
-            
+
       - name: Run typechecker
         run: mypy ${{ env.PLUGIN_SOURCE }}
 
-      - name: Run security check
-        run: bandit -r ${{ env.PLUGIN_SOURCE }} --severity-level=medium
+      - name: Run QGIS plugins security check
+        run: bandit -r ${{ env.PLUGIN_SOURCE }} --severity-level all
 
   tests:
     needs: [linter]

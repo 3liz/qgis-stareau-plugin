@@ -457,7 +457,10 @@ def noop_action(a: str, b: int, c: bool):
 
     Permet de vérifier le passage de paramètre
     """
-    assert isinstance(a, str)  # noqa S101
-    assert isinstance(b, int)  # noqa S101
-    assert isinstance(c, bool)  # noqa S101
+    if not isinstance(a, str):
+        raise ValueError(f"a `{a}` is not a string")
+    if not isinstance(b, int):
+        raise ValueError(f"b `{b}` is not an int")
+    if not isinstance(c, bool):
+        raise ValueError(f"c `{c}` is not a bool")
     pass

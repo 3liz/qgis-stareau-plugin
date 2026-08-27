@@ -73,6 +73,9 @@ typecheck:
 scan:
 	@ $(UV) bandit -r $(MODULE_NAME) --severity-level=medium $(SCAN_OPTS)
 
+scan-qgis:
+	@ $(UV) bandit -r $(MODULE_NAME) --severity-level all
+
 
 # Database rules
 -include database.mk
