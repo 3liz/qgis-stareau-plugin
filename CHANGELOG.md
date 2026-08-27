@@ -1,8 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 - 2026-08-27
 
 * Fix: remove hardcoded schema name in path_to_nearest_target function
+* Feature: Add new functions for AEP to get nearest target with PgRouting - database version 2
+* Fix: apply provided SRID
+* Fix: migration database tests
 
 ## 0.5.1 - 2026-06-17
 

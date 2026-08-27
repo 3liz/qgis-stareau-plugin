@@ -3,13 +3,13 @@
 # should be the same as the plugin's metatada.txt
 [project]
 name = "stareau"
-version = "0.5.1"
+version = "0.6.0"
 description = "An exemple of plugin development setup"
 authors = [
     { name = "3Liz", email = "info@3liz.com" }
 ]
 requires-python = ">= 3.10"
-license = "GPL-2.0-only" 
+license = "GPL-2.0-only"
 license-files = ["LICENSE"]
 readme = "README.md"
 classifiers = [
@@ -30,7 +30,7 @@ tracker = "https://github.com/3liz/qgis-qgis-stareau-plugin-plugin"
 repository = "https://github.com/3liz/qgis-qgis-stareau-plugin-plugin"
 homepage = "https://github.com/3liz/qgis-qgis-stareau-plugin-plugin"
 
-# Organize dependencies so that uv can build appropriates 
+# Organize dependencies so that uv can build appropriates
 # requirement files for CI
 [dependency-groups]
 dev = [
@@ -47,7 +47,7 @@ tests = [
 lint = [
     "ruff",
     "mypy",
-    "bandit",    
+    "bandit",
     "vulture",
     "types-psycopg2",
 ]
@@ -107,7 +107,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
-    "T201", 
+    "T201",
     "S101",
 ]
 "__init__.py" = [
@@ -116,7 +116,7 @@ ignore = [
 
 [tool.ruff.lint.isort]
 lines-between-types = 1
-known-first-party = [ 
+known-first-party = [
     "stareau",
 ]
 known-third-party = [
