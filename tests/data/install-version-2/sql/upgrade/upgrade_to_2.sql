@@ -239,7 +239,7 @@ COMMENT ON FUNCTION stareau.aep_pgr_nearest_closed_vannes(geometry) IS
 ⚠ Nécessite PGRouting.';
 
 
--- Path to nearest targets (multiple targets)
+-- stareau.aep_pgr_find_captages_from_traitement
 CREATE OR REPLACE FUNCTION stareau.aep_pgr_find_captages_from_traitement(
     vertex_id integer,
 	target_schema text,
