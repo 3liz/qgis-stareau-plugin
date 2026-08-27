@@ -43,7 +43,7 @@ class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
         return f"{plugin_name_normalized()}_administration"
 
     def shortHelpString(self):
-        return  tr(
+        return tr(
             "This algorithm will create a new QGIS project file for "
             "administration purpose."
             "\n"
@@ -84,7 +84,7 @@ class CreateDatabaseLocalInterface(BaseProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterCrs(
                 self.CRS,
-                tr('Geometry CRS'),
+                tr("Geometry CRS"),
                 defaultValue=f"EPSG:{resources.srid_value()}",
                 optional=False,
             )

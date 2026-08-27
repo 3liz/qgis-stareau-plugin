@@ -1,4 +1,3 @@
-
 from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
@@ -42,9 +41,7 @@ class MissingNodes(BaseDatabaseAlgorithm):
         return tr("Get missing nodes")
 
     def shortHelpString(self):
-        return tr(
-            "Get missing nodes in the water network"
-        )
+        return tr("Get missing nodes in the water network")
 
     def initAlgorithm(self, config):
         project = QgsProject.instance()
@@ -96,9 +93,7 @@ class MissingNodes(BaseDatabaseAlgorithm):
         schema = self.parameterAsString(parameters, self.SCHEMA, context)
 
         if schema not in connection.schemas():
-            msg = tr(
-                f"Schema {schema} does not exist in database!"
-            )
+            msg = tr(f"Schema {schema} does not exist in database!")
             return False, msg
 
         return super(MissingNodes, self).checkParameterValues(parameters, context)
@@ -112,15 +107,23 @@ class MissingNodes(BaseDatabaseAlgorithm):
 
         uri = QgsDataSourceUri(connection.uri())
         pg_conn = connect(uri.connectionInfo())
-        if NETWORK_TYPES[n_type] == 'ASS':
-            subquery = sql.SQL("( SELECT * FROM {schema}.ass_noeud_manquant() )").format(
-                schema=sql.Identifier(schema),
-            ).as_string(pg_conn)
+        if NETWORK_TYPES[n_type] == "ASS":
+            subquery = (
+                sql.SQL("( SELECT * FROM {schema}.ass_noeud_manquant() )")
+                .format(
+                    schema=sql.Identifier(schema),
+                )
+                .as_string(pg_conn)
+            )
             uri.setDataSource("", subquery, "geom", "", "fid")
-        elif NETWORK_TYPES[n_type] == 'AEP':
-            subquery = sql.SQL("( SELECT * FROM {schema}.aep_noeud_manquant() )").format(
-                schema=sql.Identifier(schema),
-            ).as_string(pg_conn)
+        elif NETWORK_TYPES[n_type] == "AEP":
+            subquery = (
+                sql.SQL("( SELECT * FROM {schema}.aep_noeud_manquant() )")
+                .format(
+                    schema=sql.Identifier(schema),
+                )
+                .as_string(pg_conn)
+            )
             uri.setDataSource("", subquery, "geom", "", "fid")
         else:
             pg_conn.close()
@@ -129,8 +132,9 @@ class MissingNodes(BaseDatabaseAlgorithm):
 
         source = QgsVectorLayer(uri.uri(), "layername", "postgres")
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.DESTINATION, context,
-                                           source.fields(), QgsWkbTypes.Point, source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters, self.DESTINATION, context, source.fields(), QgsWkbTypes.Point, source.sourceCrs()
+        )
 
         sink.addFeatures(source.getFeatures(QgsFeatureRequest()), QgsFeatureSink.FastInsert)
 
@@ -140,7 +144,7 @@ class MissingNodes(BaseDatabaseAlgorithm):
         for key, details in context.layersToLoadOnCompletion().items():
             if details.outputName != self.DESTINATION:
                 continue
-            details.name = tr('Missing nodes')
+            details.name = tr("Missing nodes")
             details.forceName = True
             context.addLayerToLoadOnCompletion(key, details)
 

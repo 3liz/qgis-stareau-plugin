@@ -1,4 +1,4 @@
-""" Tests SQL functions """
+"""Tests SQL functions"""
 
 import unittest
 
@@ -325,13 +325,13 @@ def test_processing_trigger_with_reverse(
     )
     records = cursor.fetchall()
     for record in records:
-        if record[2] == 'ass_cana_0001774':
-            case.assertEqual(record[3], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[5], nodes['ass_rega_0034073'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0034073'][4])
-            case.assertEqual(record[4], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[7], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[8], nodes['ass_rega_0030456'][4])
+        if record[2] == "ass_cana_0001774":
+            case.assertEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0034073"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0034073"][4])
+            case.assertEqual(record[4], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[7], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0030456"][4])
 
     # Reverse canalisation
     cursor.execute(
@@ -352,23 +352,23 @@ def test_processing_trigger_with_reverse(
     )
     records = cursor.fetchall()
     for record in records:
-        if record[2] == 'ass_cana_0001774':
+        if record[2] == "ass_cana_0001774":
             # Start is not the same
-            case.assertNotEqual(record[3], nodes['ass_rega_0034073'][1])
-            case.assertNotEqual(record[5], nodes['ass_rega_0034073'][3])
-            case.assertNotEqual(record[6], nodes['ass_rega_0034073'][4])
+            case.assertNotEqual(record[3], nodes["ass_rega_0034073"][1])
+            case.assertNotEqual(record[5], nodes["ass_rega_0034073"][3])
+            case.assertNotEqual(record[6], nodes["ass_rega_0034073"][4])
             # Start is the old end
-            case.assertEqual(record[3], nodes['ass_rega_0030456'][1])
-            case.assertEqual(record[5], nodes['ass_rega_0030456'][3])
-            case.assertEqual(record[6], nodes['ass_rega_0030456'][4])
+            case.assertEqual(record[3], nodes["ass_rega_0030456"][1])
+            case.assertEqual(record[5], nodes["ass_rega_0030456"][3])
+            case.assertEqual(record[6], nodes["ass_rega_0030456"][4])
             # End is not the same
-            case.assertNotEqual(record[4], nodes['ass_rega_0030456'][1])
-            case.assertNotEqual(record[7], nodes['ass_rega_0030456'][3])
-            case.assertNotEqual(record[8], nodes['ass_rega_0030456'][4])
+            case.assertNotEqual(record[4], nodes["ass_rega_0030456"][1])
+            case.assertNotEqual(record[7], nodes["ass_rega_0030456"][3])
+            case.assertNotEqual(record[8], nodes["ass_rega_0030456"][4])
             # End is the old start
-            case.assertEqual(record[4], nodes['ass_rega_0034073'][1])
-            case.assertEqual(record[7], nodes['ass_rega_0034073'][3])
-            case.assertEqual(record[8], nodes['ass_rega_0034073'][4])
+            case.assertEqual(record[4], nodes["ass_rega_0034073"][1])
+            case.assertEqual(record[7], nodes["ass_rega_0034073"][3])
+            case.assertEqual(record[8], nodes["ass_rega_0034073"][4])
 
     # Close connection
     db_connection.close()
@@ -554,7 +554,6 @@ def test_processing_noeud_orphelin(
         count_records += 1
     case.assertEqual(count_records, 3)
 
-
     # Get orphelins
     cursor.execute(
         f"""
@@ -630,7 +629,6 @@ def test_processing_noeud_orphelin(
         count_records += 1
     case.assertEqual(count_records, 1)
     case.assertEqual(count_checking, 1)
-
 
     # Get orphelins
     cursor.execute(
@@ -862,7 +860,7 @@ def test_processing_downstream(
     for record in records:
         if record[0] == 1:
             case.assertEqual(record[2], nodes["ass_rega_0030456"][1])
-            case.assertEqual(record[3], 'non_renseigne')
+            case.assertEqual(record[3], "non_renseigne")
             case.assertEqual(record[1], "ass_cana_0001775_v")
             count_checking += 1
         count_records += 1
@@ -1078,7 +1076,7 @@ def test_processing_upstream(
     count_checking = 0
     for record in records:
         if record[0] == 1:
-            case.assertEqual(record[2], 'non_renseigne')
+            case.assertEqual(record[2], "non_renseigne")
             case.assertEqual(record[3], nodes["ass_rega_0077750"][1])
             case.assertEqual(record[1], "ass_cana_0001775_v")
             count_checking += 1

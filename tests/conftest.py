@@ -45,8 +45,10 @@ def pytest_report_header(config):
     from osgeo import gdal
 
     with open_db_connection() as conn:
-        extensions = "\n".join(f"* {name:<20} {version}"
-            for (name, version) in conn.execute("SELECT extname, extversion FROM pg_extension"))
+        extensions = "\n".join(
+            f"* {name:<20} {version}"
+            for (name, version) in conn.execute("SELECT extname, extversion FROM pg_extension")
+        )
 
     return (
         f"QGIS : {QGIS_VERSION_INT}\n"
@@ -55,6 +57,7 @@ def pytest_report_header(config):
         f"QT : {QT_VERSION_STR}\n"
         f"PostgreSQL: Installed extensions:\n{extensions}"
     )
+
 
 #
 # Fixtures

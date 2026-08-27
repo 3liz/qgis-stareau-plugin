@@ -25,9 +25,7 @@ def provider_id() -> str:
 
 
 def set_connection_name(project: QgsProject, connection_name: str):
-    QgsExpressionContextUtils.setProjectVariable(
-        project, CONNECTION_NAME_CONTEXT_VAR, connection_name
-    )
+    QgsExpressionContextUtils.setProjectVariable(project, CONNECTION_NAME_CONTEXT_VAR, connection_name)
 
 
 def get_connection_name(project: QgsProject) -> str:
@@ -115,7 +113,7 @@ def createAdministrationProjectFromTemplate(
     # Replace the schema name
     if schema_name != plugin_schema_name:
         filedata = filedata.replace(" table=&quot;stareau", f" table=&quot;{schema_name}")
-        filedata = filedata.replace(" table=\"stareau", f" table=\"{schema_name}")
+        filedata = filedata.replace(' table="stareau', f' table="{schema_name}')
 
     # Replace the CRS
     if crs.postgisSrid() != plugin_srid:
@@ -159,7 +157,7 @@ def createAdministrationProjectFromTemplate(
                 "<geographicflag>false</geographicflag>",
                 "<geographicflag>true</geographicflag>",
             )
-        filedata = filedata.replace(f" crs=\"{default_crs.authid()}\"", f" crs=\"{crs.authid()}\"")
+        filedata = filedata.replace(f' crs="{default_crs.authid()}"', f' crs="{crs.authid()}"')
 
     # Replace also the QGIS project variable
     filedata = filedata.replace("stareau_connection_name_value", connection_name)

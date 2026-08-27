@@ -1,4 +1,3 @@
-
 from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
@@ -63,9 +62,7 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterDatabaseSchema(
-                self.SCHEMA,
-                tr("Main schema"),
-                connectionParameterName=self.CONNECTION_NAME
+                self.SCHEMA, tr("Main schema"), connectionParameterName=self.CONNECTION_NAME
             )
         )
 
@@ -88,9 +85,7 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
         schema = self.parameterAsString(parameters, self.SCHEMA, context)
 
         if schema not in connection.schemas():
-            msg = tr(
-                f"Schema {schema} does not exist in database!"
-            )
+            msg = tr(f"Schema {schema} does not exist in database!")
             return False, msg
 
         return super(PipesWaterIntakeToTreatment, self).checkParameterValues(parameters, context)
@@ -100,7 +95,7 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
         connection_name = self.parameterAsConnectionName(parameters, self.CONNECTION_NAME, context)
         connection = metadata.findConnection(connection_name)
         schema_global = self.parameterAsSchema(parameters, self.SCHEMA, context)
-        schema_aep =  schema_global + "_aep"
+        schema_aep = schema_global + "_aep"
         uri = QgsDataSourceUri(connection.uri())
 
         # get captages fids
@@ -121,11 +116,7 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
             query_canal = sql.SQL("""
                 SELECT fid FROM {sg}.aep_pgr_path_to_nearest_target(
                 {f}, {saep}::text, 'aep_traitement'::text)
-            """).format(
-                sg=sql.Identifier(schema_global),
-                f=sql.Literal(fid[0]),
-                saep=sql.Literal(schema_aep)
-            )
+            """).format(sg=sql.Identifier(schema_global), f=sql.Literal(fid[0]), saep=sql.Literal(schema_aep))
 
             records = connection.execSql(query_canal.as_string(conn))
             fids = [record[0] for record in records]
@@ -136,25 +127,19 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
 
         # Select canalisations
         canalisations_sql = f"""
-            fid IN ({','.join([str(fid) for fids in canalisation_fids for fid in fids])})
+            fid IN ({",".join([str(fid) for fids in canalisation_fids for fid in fids])})
         """
-        uri.setDataSource(
-            f"{schema_aep}",
-            "aep_canalisation",
-            "geom",
-            canalisations_sql,
-            "fid"
-        )
+        uri.setDataSource(f"{schema_aep}", "aep_canalisation", "geom", canalisations_sql, "fid")
         uri.setWkbType(QgsWkbTypes.LineString)
         source = QgsVectorLayer(uri.uri(), "pipes_function", "postgres")
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                           source.fields(), QgsWkbTypes.LineString, source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters, self.OUTPUT, context, source.fields(), QgsWkbTypes.LineString, source.sourceCrs()
+        )
         sink.addFeatures(source.getFeatures(QgsFeatureRequest()), QgsFeatureSink.FastInsert)
         self.dest_id = dest_id
 
         return {self.OUTPUT: dest_id}
-
 
     def postProcessAlgorithm(self, context, feedback):
         # Rename layer
@@ -168,7 +153,7 @@ class PipesWaterIntakeToTreatment(BaseDatabaseAlgorithm):
         if layer:
             layer.loadNamedStyle(
                 str(plugin_path("resources", "styles", "pipes_function_symbology.qml")),
-                categories = QgsMapLayer.Symbology,
+                categories=QgsMapLayer.Symbology,
             )
             layer.triggerRepaint()
         return {}

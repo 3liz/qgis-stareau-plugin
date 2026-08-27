@@ -5,7 +5,7 @@ from stareau.actions import runner
 
 def test_action_run():
     """Test that action is indeed run"""
-    runner.run("noop_action", a="hello", b=1,  c=True)
+    runner.run("noop_action", a="hello", b=1, c=True)
 
     with pytest.raises(runner.InvalidArgumentError):
         raise runner.run("noop_action", a="hello", b="world", c=True)

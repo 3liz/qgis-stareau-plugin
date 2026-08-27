@@ -242,7 +242,8 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                     "" + ("'" + row[0].replace("'", "''") + "'" if row[0] else "NULL") + ", "
                     "" + ("'" + row[1].replace("'", "''") + "'" if row[0] else "NULL") + ", "
                     "" + ("'" + row[2].replace("'", "''") + "'" if row[0] else "NULL") + ""
-                    ")" for row in cf
+                    ")"
+                    for row in cf
                 )
             additional_values = [
                 (
@@ -272,7 +273,8 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
                 "" + ("'" + row[0].replace("'", "''") + "'" if row[0] else "NULL") + ", "
                 "" + ("'" + row[1].replace("'", "''") + "'" if row[0] else "NULL") + ", "
                 "" + ("'" + row[2].replace("'", "''") + "'" if row[0] else "NULL") + ""
-                ")" for row in additional_values
+                ")"
+                for row in additional_values
             )
             values = ",\n".join(table_values)
             query = psql.SQL(

@@ -41,7 +41,6 @@ class MethodNotFoundError(RunActionError):
     pass
 
 
-
 def run(name: str, **kwargs: Any) -> RunActionError | None:
     """
     Run the action with the given name and arguments.
@@ -79,17 +78,13 @@ def run(name: str, **kwargs: Any) -> RunActionError | None:
             args = {arg: check(param) for arg, param in params.items()}
         except RunActionError as err:
             display_error_message(
-                f"Arguments invalides for action \"{name}\", "
-                f"Attendus: {sig}, "
-                f"Reçus: {kwargs}"
+                f'Arguments invalides for action "{name}", Attendus: {sig}, Reçus: {kwargs}'
             )
             return err
 
         action(**args)
         return None
 
-    display_error_message(
-        f"L'action \"{name}\" n'a pas été trouvée!"
-    )
+    display_error_message(f"L'action \"{name}\" n'a pas été trouvée!")
 
     return MethodNotFoundError(name)

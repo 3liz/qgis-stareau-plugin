@@ -1,4 +1,5 @@
 """Base class for tests using a database."""
+
 import os
 
 from pathlib import Path
@@ -88,12 +89,12 @@ def initialized_database(
 
 def open_db_connection() -> psycopg.Connection:
     if os.getenv("TEST_RUNTYPE") == "docker":
-        connection =  psycopg.connect(
+        connection = psycopg.connect(
             user="docker",
             password="docker",  # noqa S106
             host="db",
             port="5432",
-            dbname="gis"
+            dbname="gis",
         )
     else:
         connection = psycopg.connect(
@@ -101,7 +102,7 @@ def open_db_connection() -> psycopg.Connection:
             password="docker",  # noqa S106
             host="localhost",
             port="35432",
-            dbname="gis"
+            dbname="gis",
         )
 
     return connection
@@ -117,4 +118,3 @@ def db_connection() -> Generator[psycopg.Connection, None, None]:
     connection = open_db_connection()
     with connection:
         yield connection
-

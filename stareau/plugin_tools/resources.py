@@ -87,6 +87,7 @@ def plugin_name_normalized() -> str:
 def srid_value() -> int:
     return 2154
 
+
 #
 # UI
 #

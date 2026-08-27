@@ -1,4 +1,3 @@
-
 from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
@@ -31,9 +30,7 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
         return tr("Fill AEP vertices and edges")
 
     def shortHelpString(self):
-        return tr(
-            "Fill the graph schema with the AEP edges and vertices from the main schema "
-        )
+        return tr("Fill the graph schema with the AEP edges and vertices from the main schema ")
 
     def initAlgorithm(self, config):
         project = QgsProject.instance()
@@ -68,9 +65,7 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
         schema = self.parameterAsString(parameters, self.SCHEMA, context)
 
         if schema not in connection.schemas():
-            msg = tr(
-                f"Schema {schema} does not exist in database!"
-            )
+            msg = tr(f"Schema {schema} does not exist in database!")
             return False, msg
 
         return super(FillVerticesEdgesAEP, self).checkParameterValues(parameters, context)
@@ -81,7 +76,7 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
         connection = metadata.findConnection(connection_name)
 
         graph_schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
-        main_schema = f'{graph_schema}_principale'
+        main_schema = f"{graph_schema}_principale"
 
         pg_conn = connect(QgsDataSourceUri(connection.uri()).connectionInfo())
 
@@ -160,9 +155,8 @@ class FillVerticesEdgesAEP(BaseDatabaseAlgorithm):
             feedback.pushInfo(tr("Edges and vertex are correctly generated"))
 
         except QgsProviderConnectionException as e:
-            feedback.reportError(tr(
-                f"An error occured while filling edges and vertex : \n {e}"),
-                fatalError=True
+            feedback.reportError(
+                tr(f"An error occured while filling edges and vertex : \n {e}"), fatalError=True
             )
         finally:
             pg_conn.close()

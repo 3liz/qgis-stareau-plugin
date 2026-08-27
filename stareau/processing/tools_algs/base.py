@@ -1,1 +1,1 @@
-NETWORK_TYPES = ['ASS', 'AEP']
+NETWORK_TYPES = ["ASS", "AEP"]

@@ -224,9 +224,9 @@ TABLES_FOR_CURRENT_VERSION["stareau_ass_brcht"] = TABLES_FOR_FIRST_VERSION["star
 TABLES_FOR_CURRENT_VERSION["stareau_aep"] = TABLES_FOR_FIRST_VERSION["stareau_aep"][:]
 TABLES_FOR_CURRENT_VERSION["stareau_aep_brcht"] = TABLES_FOR_FIRST_VERSION["stareau_aep_brcht"][:]
 TABLES_FOR_CURRENT_VERSION["stareau_valeur"] = TABLES_FOR_FIRST_VERSION["stareau_valeur"][:]
-TABLES_FOR_CURRENT_VERSION["stareau_defense_incendie"] = (
-    TABLES_FOR_FIRST_VERSION["stareau_defense_incendie"][:]
-)
+TABLES_FOR_CURRENT_VERSION["stareau_defense_incendie"] = TABLES_FOR_FIRST_VERSION["stareau_defense_incendie"][
+    :
+]
 
 # Expected list of functions for current version
 # Must be changed any time the SQL structure is changed
@@ -619,7 +619,6 @@ def test_upgrade_from(
     assert record is not None
     assert int(record[0]) == test_version
 
-
     # # Run the update database structure alg
     # Since the structure has been created with db_install_version above
     feedback.pushDebugInfo("Update the database")
@@ -682,7 +681,6 @@ def test_upgrade_from(
 
     # Close the connection
     db_connection.close()
-
 
     # This will delete and recreate the structure for the last version
     feedback.pushDebugInfo("Update the database")

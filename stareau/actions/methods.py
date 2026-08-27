@@ -1,4 +1,3 @@
-
 from psycopg2 import connect, sql
 from qgis.core import (
     QgsDataSourceUri,
@@ -14,6 +13,7 @@ from ..plugin_tools.resources import plugin_path
 from .tools import display_error_message, display_info_message, get_postgres_layers
 
 # NOTE: Supported parameter types are (str, int, bool, float)
+
 
 def inverser_canalisation(fid_canalisation: int, id_layer: str):
     """
@@ -36,7 +36,7 @@ def inverser_canalisation(fid_canalisation: int, id_layer: str):
         return
     if layer.wkbType() != QgsWkbTypes.LineString:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'est pas une couche de type ligne !"
         )
         return
@@ -46,9 +46,7 @@ def inverser_canalisation(fid_canalisation: int, id_layer: str):
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
     pg_conn = connect(uri.connectionInfo())
-    query = sql.SQL(
-        "UPDATE {schema}.{table} SET geom = ST_Reverse(geom) WHERE fid = {fid};"
-    ).format(
+    query = sql.SQL("UPDATE {schema}.{table} SET geom = ST_Reverse(geom) WHERE fid = {fid};").format(
         schema=sql.Identifier(uri.schema()),
         table=sql.Identifier(uri.table()),
         fid=sql.Literal(fid_canalisation),
@@ -79,13 +77,13 @@ def fermer_vanne(fid_vanne: int, id_layer: str):
         return
     if layer.wkbType() != QgsWkbTypes.Point:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'est pas une couche de type point !"
         )
         return
-    if layer.fields().indexOf('etat_ouverture') == -1:
+    if layer.fields().indexOf("etat_ouverture") == -1:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'a pas de champ 'etat_ouverture' !"
         )
         return
@@ -95,9 +93,7 @@ def fermer_vanne(fid_vanne: int, id_layer: str):
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
     pg_conn = connect(uri.connectionInfo())
-    query = sql.SQL(
-        "UPDATE {schema}.{table} SET etat_ouverture = 'fermee' WHERE fid = {fid};"
-    ).format(
+    query = sql.SQL("UPDATE {schema}.{table} SET etat_ouverture = 'fermee' WHERE fid = {fid};").format(
         schema=sql.Identifier(uri.schema()),
         table=sql.Identifier(uri.table()),
         fid=sql.Literal(fid_vanne),
@@ -128,13 +124,13 @@ def ouvrir_vanne(fid_vanne: int, id_layer: str):
         return
     if layer.wkbType() != QgsWkbTypes.Point:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'est pas une couche de type point !"
         )
         return
-    if layer.fields().indexOf('etat_ouverture') == -1:
+    if layer.fields().indexOf("etat_ouverture") == -1:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'a pas de champ 'etat_ouverture' !"
         )
         return
@@ -144,9 +140,7 @@ def ouvrir_vanne(fid_vanne: int, id_layer: str):
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
     pg_conn = connect(uri.connectionInfo())
-    query = sql.SQL(
-        "UPDATE {schema}.{table} SET etat_ouverture = 'ouverte' WHERE fid = {fid};"
-    ).format(
+    query = sql.SQL("UPDATE {schema}.{table} SET etat_ouverture = 'ouverte' WHERE fid = {fid};").format(
         schema=sql.Identifier(uri.schema()),
         table=sql.Identifier(uri.table()),
         fid=sql.Literal(fid_vanne),
@@ -178,26 +172,24 @@ def ass_downstream(id_noeud: str, id_layer: str):
         return
     if layer.wkbType() != QgsWkbTypes.Point:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'est pas une couche de type point !"
         )
         return
-    if layer.fields().indexOf('id_noeud_reseau') == -1:
+    if layer.fields().indexOf("id_noeud_reseau") == -1:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'a pas de champ 'id_noeud_reseau' !"
         )
         return
 
     uri = layer.dataProvider().uri()
-    schema = '_'.join(uri.schema().split('_')[:-1])
+    schema = "_".join(uri.schema().split("_")[:-1])
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
 
     pg_conn = connect(uri.connectionInfo())
-    query = sql.SQL(
-        "SELECT d.idx, d.fid_canalisation FROM {schema}.ass_downstream({id_noeud}) d"
-    ).format(
+    query = sql.SQL("SELECT d.idx, d.fid_canalisation FROM {schema}.ass_downstream({id_noeud}) d").format(
         schema=sql.Identifier(schema),
         id_noeud=sql.Literal(id_noeud),
     )
@@ -219,7 +211,7 @@ def ass_downstream(id_noeud: str, id_layer: str):
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
         str(plugin_path("actions", "styles", "downstream_symbology.qml")),
-        categories = QgsMapLayer.Symbology,
+        categories=QgsMapLayer.Symbology,
     )
 
 
@@ -245,26 +237,24 @@ def ass_upstream(id_noeud: str, id_layer: str):
         return
     if layer.wkbType() != QgsWkbTypes.Point:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'est pas une couche de type point !"
         )
         return
-    if layer.fields().indexOf('id_noeud_reseau') == -1:
+    if layer.fields().indexOf("id_noeud_reseau") == -1:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'a pas de champ 'id_noeud_reseau' !"
         )
         return
 
     uri = layer.dataProvider().uri()
-    schema = '_'.join(uri.schema().split('_')[:-1])
+    schema = "_".join(uri.schema().split("_")[:-1])
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(uri.uri(), {})
 
     pg_conn = connect(uri.connectionInfo())
-    query = sql.SQL(
-        "SELECT d.idx, d.fid_canalisation FROM {schema}.ass_upstream({id_noeud}) d"
-    ).format(
+    query = sql.SQL("SELECT d.idx, d.fid_canalisation FROM {schema}.ass_upstream({id_noeud}) d").format(
         schema=sql.Identifier(schema),
         id_noeud=sql.Literal(id_noeud),
     )
@@ -286,14 +276,12 @@ def ass_upstream(id_noeud: str, id_layer: str):
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
         str(plugin_path("actions", "styles", "upstream_symbology.qml")),
-        categories = QgsMapLayer.Symbology,
+        categories=QgsMapLayer.Symbology,
     )
 
 
-def aep_pgr_path_to_nearest_target(fid_noeud: str,
-                                   id_layer: str,
-                                   target_table: str,
-                                   avoiding_closed_valves: bool = False
+def aep_pgr_path_to_nearest_target(
+    fid_noeud: str, id_layer: str, target_table: str, avoiding_closed_valves: bool = False
 ):
     """
     Parcourir le réseau de canalisations AEP à partir du noeud sélectionné
@@ -324,26 +312,25 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str,
         return
     if layer.wkbType() != QgsWkbTypes.Point:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'est pas une couche de type point !"
         )
         return
-    if layer.fields().indexOf('fid') == -1:
+    if layer.fields().indexOf("fid") == -1:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
-            f"la couche {id_layer} n'a pas de champ 'fid' !"
+            f"Erreur dans l'action \"{action_name}\", la couche {id_layer} n'a pas de champ 'fid' !"
         )
         return
 
-    if not target_table.startswith('aep_'):
+    if not target_table.startswith("aep_"):
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"le nom de la table '{target_table}' est invalide, il doit commencer par 'aep_'"
         )
         return
 
     layer_uri = layer.dataProvider().uri()
-    layer_schema = '_'.join(layer_uri.schema().split('_')[:-1])
+    layer_schema = "_".join(layer_uri.schema().split("_")[:-1])
 
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(layer_uri.uri(), {})
@@ -351,8 +338,7 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str,
     target_schema = layer_uri.schema()
     pg_conn = connect(layer_uri.connectionInfo())
     query = sql.SQL(
-        "SELECT fid FROM {layer_schema}.{function_name}(" \
-        "{fid_noeud}, {target_schema}, {target_table})"
+        "SELECT fid FROM {layer_schema}.{function_name}({fid_noeud}, {target_schema}, {target_table})"
     ).format(
         layer_schema=sql.Identifier(layer_schema),
         function_name=sql.Identifier(function_name),
@@ -382,7 +368,7 @@ def aep_pgr_path_to_nearest_target(fid_noeud: str,
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
         str(plugin_path("actions", "styles", "path_to_target_symbology.qml")),
-        categories = QgsMapLayer.Symbology,
+        categories=QgsMapLayer.Symbology,
     )
 
 
@@ -414,31 +400,29 @@ def aep_pgr_nearest_vannes(id_layer: str, point_x: float, point_y: float, closed
         return
     if layer.wkbType() != QgsWkbTypes.LineString:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
+            f'Erreur dans l\'action "{action_name}", '
             f"la couche {id_layer} n'est pas une couche de type ligne !"
         )
         return
-    if layer.fields().indexOf('fid') == -1:
+    if layer.fields().indexOf("fid") == -1:
         display_error_message(
-            f"Erreur dans l'action \"{action_name}\", "
-            f"la couche {id_layer} n'a pas de champ 'fid' !"
+            f"Erreur dans l'action \"{action_name}\", la couche {id_layer} n'a pas de champ 'fid' !"
         )
         return
 
     layer_uri = layer.dataProvider().uri()
-    layer_schema = '_'.join(layer_uri.schema().split('_')[:-1])
+    layer_schema = "_".join(layer_uri.schema().split("_")[:-1])
 
     metadata = QgsProviderRegistry.instance().providerMetadata("postgres")
     connection = metadata.createConnection(layer_uri.uri(), {})
 
     pg_conn = connect(layer_uri.connectionInfo())
     query = sql.SQL(
-        'SELECT fid FROM {layer_schema}.{function_name}(' \
-        'ST_GeomFromText({point_wkt}, 2154))'
+        "SELECT fid FROM {layer_schema}.{function_name}(ST_GeomFromText({point_wkt}, 2154))"
     ).format(
         layer_schema=sql.Identifier(layer_schema),
         function_name=sql.Identifier(function_name),
-        point_wkt=sql.Literal(point_wkt)
+        point_wkt=sql.Literal(point_wkt),
     )
 
     records = connection.execSql(query.as_string(pg_conn))
@@ -464,16 +448,16 @@ def aep_pgr_nearest_vannes(id_layer: str, point_x: float, point_y: float, closed
     QgsProject.instance().addMapLayer(source)
     source.loadNamedStyle(
         str(plugin_path("actions", "styles", "selected_vannes_symbology.qml")),
-        categories = QgsMapLayer.Symbology,
+        categories=QgsMapLayer.Symbology,
     )
+
 
 def noop_action(a: str, b: int, c: bool):
     """Test action
 
     Permet de vérifier le passage de paramètre
     """
-    assert isinstance(a, str)   # noqa S101
-    assert isinstance(b, int)   # noqa S101
+    assert isinstance(a, str)  # noqa S101
+    assert isinstance(b, int)  # noqa S101
     assert isinstance(c, bool)  # noqa S101
     pass
-

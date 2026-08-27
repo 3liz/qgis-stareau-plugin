@@ -10,6 +10,7 @@ A = "'Point (785691.34999999997671694 6272226.25)'"
 B = "'Point (783029.5 6270588.45000000018626451)'"
 C = "'Point (783835.09999999997671694 6272302.65000000037252903)'"
 
+
 @pytest.mark.pgrouting
 def test_nearest_vannes(initialized_database: psycopg.Connection):
     db_connection = initialized_database

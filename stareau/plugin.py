@@ -1,4 +1,3 @@
-
 from typing import Any
 
 from qgis.core import QgsApplication, QgsSettings
