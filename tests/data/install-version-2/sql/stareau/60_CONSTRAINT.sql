@@ -21,7 +21,6 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-
 -- glossary_test_category glossary_test_category_pkey
 ALTER TABLE ONLY stareau.glossary_test_category
     ADD CONSTRAINT glossary_test_category_pkey PRIMARY KEY (id);
@@ -35,3 +34,6 @@ ALTER TABLE ONLY stareau.test
 --
 -- PostgreSQL database dump complete
 --
+
+
+

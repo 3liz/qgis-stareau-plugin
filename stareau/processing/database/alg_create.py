@@ -222,6 +222,7 @@ class CreateDatabaseStructure(BaseDatabaseAlgorithm):
 
             if srid != plugin_srid:
                 sql = sql.replace(f", {plugin_srid})", f", {srid})")
+                sql = sql.replace(f",{plugin_srid})", f",{srid})")
 
             try:
                 connection.executeSql(sql)

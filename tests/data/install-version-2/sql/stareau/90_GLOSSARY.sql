@@ -37,3 +37,6 @@ SELECT pg_catalog.setval('stareau.glossary_test_category_id_seq', 2, true);
 --
 -- PostgreSQL database dump complete
 --
+
+
+

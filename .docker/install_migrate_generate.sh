@@ -23,6 +23,11 @@ echo "== Installation from version $db_version"
 psql service=test -c "DROP SCHEMA IF EXISTS ${SCHEMA} CASCADE;" > /dev/null
 psql service=test -f $install_dir/00_initialize_database.sql > /dev/null
 
+for sql_file in $install_dir/StaR-Eau/*.sql; do
+  echo "${sql_file}"
+  psql service=test -f "${sql_file}" > /dev/null
+done
+
 for sql_file in `ls -d -v $install_dir/${SCHEMA}/*.sql`; do
   echo "${sql_file}"
   psql service=test -f ${sql_file} > /dev/null
@@ -57,7 +62,7 @@ popd
 # Generate a diff file between current and install version
 echo "== Creating patch file"
 set +e  # Suppress exit on erreur
-diff -urB $MODULE_NAME/install/sql/$SCHEMA  $destination_dir/sql/$SCHEMA > $destination_dir/sql.patch 
+diff -urB $MODULE_NAME/install/sql/$SCHEMA  $destination_dir/sql/$SCHEMA > $destination_dir/sql.patch
 RESULT=$?
 if [[ $RESULT -eq 0 ]]; then
   echo "👍 NO DIFFERENCES FOUND. Everything is OK."
