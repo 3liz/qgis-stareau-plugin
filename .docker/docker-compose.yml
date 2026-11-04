@@ -70,6 +70,7 @@ services:
     profiles:
     - schemaspy
     - dbrunner
+    - screenshots
       
   # Wait for db-runner to set the /tmp/.db-runner-ok file
   schemaspy:
@@ -77,9 +78,30 @@ services:
     volumes:
     - {type: bind, source: "../docs/database", target: /output}
     command: >-
-      -t pgsql -host db -db gis -u docker -p docker -port 5432 -s ${SCHEMA} -nopages
+      -t pgsql11 -host db -db gis -u docker -p docker -port 5432 -nopages
+      -schemas ${SCHEMA},${SCHEMA}_principale,${SCHEMA}_commun,${SCHEMA}_aep,${SCHEMA}_aep_brcht,${SCHEMA}_ass,${SCHEMA}_ass_brcht,${SCHEMA}_defense_incendie,${SCHEMA}_valeur
     depends_on:
       db-runner:
         condition: service_healthy
     profiles:
     - schemaspy
+
+  # Screenshots of the Processing algorithm dialogs, used in the documentation
+  # Wait for db-runner to install the database structure
+  screenshots:
+    image: ${QGIS_IMAGE_TAG}
+    user: ${UID}:${GID}
+    command: python3 .docker/processing_screenshots.py docs/media
+    working_dir: /src
+    environment:
+      HOME: /tmp
+    volumes:
+    - {type: bind, source: "..", target: /src}
+    - type: bind
+      source: ./pg_service.conf
+      target: /etc/postgresql-common/pg_service.conf
+    depends_on:
+      db-runner:
+        condition: service_healthy
+    profiles:
+    - screenshots
