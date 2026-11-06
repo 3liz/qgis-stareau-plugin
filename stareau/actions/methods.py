@@ -1,5 +1,6 @@
 from psycopg2 import connect, sql
 from qgis.core import (
+    QgsCoordinateTransform,
     QgsDataSourceUri,
     QgsMapLayer,
     QgsPointXY,
@@ -392,8 +393,6 @@ def aep_pgr_nearest_vannes(id_layer: str, point_x: float, point_y: float, closed
 
     function_name = "aep_pgr_nearest_closed_vannes" if closed_valves_only else "aep_pgr_nearest_vannes"
 
-    point_wkt = QgsPointXY(point_x, point_y).asWkt()
-
     layer = get_postgres_layers(id_layer, action_name)
     if layer is None:
         # Message d'erreur déjà affiché dans get_postgres_layers
@@ -410,6 +409,11 @@ def aep_pgr_nearest_vannes(id_layer: str, point_x: float, point_y: float, closed
         )
         return
 
+    # The point is in the project CRS, transform it to the layer CRS
+    project = QgsProject.instance()
+    transform = QgsCoordinateTransform(project.crs(), layer.crs(), project)
+    point_wkt = transform.transform(QgsPointXY(point_x, point_y)).asWkt()
+
     layer_uri = layer.dataProvider().uri()
     layer_schema = "_".join(layer_uri.schema().split("_")[:-1])
 
@@ -418,11 +422,12 @@ def aep_pgr_nearest_vannes(id_layer: str, point_x: float, point_y: float, closed
 
     pg_conn = connect(layer_uri.connectionInfo())
     query = sql.SQL(
-        "SELECT fid FROM {layer_schema}.{function_name}(ST_GeomFromText({point_wkt}, 2154))"
+        "SELECT fid FROM {layer_schema}.{function_name}(ST_GeomFromText({point_wkt}, {srid}))"
     ).format(
         layer_schema=sql.Identifier(layer_schema),
         function_name=sql.Identifier(function_name),
         point_wkt=sql.Literal(point_wkt),
+        srid=sql.Literal(layer.crs().postgisSrid()),
     )
 
     records = connection.execSql(query.as_string(pg_conn))
@@ -452,7 +457,7 @@ def aep_pgr_nearest_vannes(id_layer: str, point_x: float, point_y: float, closed
     )
 
 
-def noop_action(a: str, b: int, c: bool):
+def noop_action(a: str, b: int, c: bool, d: str = "default"):
     """Test action
 
     Permet de vérifier le passage de paramètre
@@ -463,4 +468,6 @@ def noop_action(a: str, b: int, c: bool):
         raise ValueError(f"b `{b}` is not an int")
     if not isinstance(c, bool):
         raise ValueError(f"c `{c}` is not a bool")
+    if not isinstance(d, str):
+        raise ValueError(f"d `{d}` is not a string")
     pass

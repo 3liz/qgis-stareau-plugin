@@ -63,6 +63,9 @@ def run(name: str, **kwargs: Any) -> RunActionError | None:
 
         def check(param: Parameter) -> Any:
             if param.name not in kwargs:
+                # Optional parameter: use its default value
+                if param.default is not Parameter.empty:
+                    return param.default
                 raise MissingParameterError(param.name)
 
             anno = param.annotation

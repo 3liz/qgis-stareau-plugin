@@ -654,6 +654,72 @@ def test_processing_noeud_orphelin(
     db_connection.close()
 
 
+def test_processing_aep_noeud_doublon(
+    db_connection: psycopg.Connection,
+    processing_provider: Provider,
+):
+    params = {
+        "CONNECTION_NAME": "test",
+        "OVERRIDE": True,
+    }
+
+    feedback = LoggerProcessingFeedBack()
+
+    # Run create database structure alg
+    alg = f"{processing_provider.id()}:create_database_structure"
+    processing_output = processing.run(alg, params, feedback=feedback)
+
+    assert processing_output["OUTPUT_STATUS"] == 1
+    assert processing_output["OUTPUT_VERSION"] == schema_version()
+
+    cursor = db_connection.cursor()
+    case = unittest.TestCase()
+
+    plugin_schema_name = schema_name()
+
+    # INSERT noeud_reseau / aep_vanne: two valves at the same place, one valve elsewhere
+    cursor.execute(
+        f"""
+        INSERT INTO "{plugin_schema_name}_aep".aep_vanne (
+            type_reseau, etat_service, insee_commune, maitre_ouvrage, exploitant,
+            precision_xy, precision_z, an_pose_sup, date_creation, origine_creation, date_maj,
+            geom, id_aep_vanne
+        ) VALUES (
+            'aep', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            St_SetSRID(ST_MakePoint(770192.9, 6280461.4), 2154), 'aep_vanne_1'
+        ), (
+            'aep', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            St_SetSRID(ST_MakePoint(770192.9, 6280461.4), 2154), 'aep_vanne_2'
+        ), (
+            'aep', 'non_renseigne', '34172', 'non_renseigne', 'non_renseigne',
+            'N', 'N', -9999, NOW(), 'non_renseigne', NOW(),
+            St_SetSRID(ST_MakePoint(770223.9, 6280429.0), 2154), 'aep_vanne_3'
+        );
+        """
+    )
+
+    # Get doublons: the two valves at the same place
+    cursor.execute(
+        f"""
+        SELECT v.id_aep_vanne
+        FROM "{plugin_schema_name}".aep_noeud_doublon() d
+        JOIN "{plugin_schema_name}_aep".aep_vanne v ON v.fid = d.fid
+        ORDER BY v.id_aep_vanne;
+        """
+    )
+    records = cursor.fetchall()
+    case.assertEqual([record[0] for record in records], ["aep_vanne_1", "aep_vanne_2"])
+
+    # The AEP nodes are not ASS doublons
+    cursor.execute(f'SELECT count(*) FROM "{plugin_schema_name}".ass_noeud_doublon();')
+    case.assertEqual(cursor.fetchone()[0], 0)
+
+    # Close connection
+    db_connection.close()
+
+
 def test_processing_downstream(
     db_connection: psycopg.Connection,
     processing_provider: Provider,
