@@ -6,6 +6,9 @@ from stareau.actions import runner
 def test_action_run():
     """Test that action is indeed run"""
     runner.run("noop_action", a="hello", b=1, c=True)
+    # Optional parameter
+    assert runner.run("noop_action", a="hello", b=1, c=True, d="world") is None
+    assert runner.run("noop_action", a="hello", b=1, c=True) is None
 
     with pytest.raises(runner.InvalidArgumentError):
         raise runner.run("noop_action", a="hello", b="world", c=True)
