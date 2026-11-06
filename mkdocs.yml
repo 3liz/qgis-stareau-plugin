@@ -11,17 +11,20 @@ site_dir: build
 nav:
     - docs.3liz.org: '../'
     - Home: index.md
-    - User guide:
-      - Main: user-guide/index.md
-      - Installation: user-guide/installation.md
-    - Admin guide: admin-guide/index.md
-    - Concepts:
-      - Main: concepts/index.md
-    - Processing: processing/README.md
-    # - Références: references.md
+    - Concepts: concepts/index.md
+    - Installation: installation/index.md
+    - User Guide:
+      - Introduction: user-guide/index.md
+      - QGIS project and tools: user-guide/qgis-project.md
+      - Processing algorithms: user-guide/processing.md
+      - Network topology: user-guide/topology.md
+      - Network analysis: user-guide/network-analysis.md
     - Changelog: changelog.md
     - Contribution: contributing.md
-    - Database: database/index.html
+    - Database:
+      - Tables and fields: database-guide/tables.md
+      - Useful functions: database-guide/functions.md
+      - Database structure: database-guide/structure.md
 
 plugins:
   - search

@@ -126,6 +126,19 @@ docker-test:
 #	cd .docker && ./processing_doc.sh
 #	@docker run --rm -w /plugin -v $(shell pwd):/plugin etrimaille/pymarkdown:latest docs/pro#cessing/README.md docs/processing/index.html
 
+# Screenshots of the Processing algorithm dialogs, used in the documentation
+# Rendered by QGIS in the docker image, without display,
+# with the docker database containing the database structure
+processing-screenshots:
+	set -e; \
+	export DB_COMMAND="./install_db_and_wait.sh"; \
+	cd .docker; \
+	docker compose --profile=screenshots up \
+		--quiet-pull \
+		--abort-on-container-exit \
+		--exit-code-from screenshots; \
+	docker compose --profile=screenshots down -v;
+
 #
 # Update the project's environment
 #
