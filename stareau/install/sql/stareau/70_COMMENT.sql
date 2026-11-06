@@ -111,7 +111,7 @@ COMMENT ON FUNCTION stareau.before_canalisation_insert_or_update() IS 'Fonction 
 Si le point initial de la géometrie de la canalisation est à moins de 10cm d''un noeud de réseau,
 alors on lie la canalisation à ce noeud en modifiant la géométrie et le champ noeudinitial
 sinon la valeur ''non_renseigne'' est précisée dans le champs noeudinitial
-Si le point final de la géometrie de la canalisation est à moins de 10m d''un noeud de réseau,
+Si le point final de la géometrie de la canalisation est à moins de 10cm d''un noeud de réseau,
 alors on lie la canalisation à ce noeud en modifiant la géométrie et le champ noeudterminal
 sinon la valeur ''non_renseigne'' est précisée dans le champs noeudterminal
 ';
